@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Frost.Server.props" />
+</Project>

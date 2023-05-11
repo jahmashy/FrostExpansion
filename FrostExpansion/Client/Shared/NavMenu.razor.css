@@ -1,0 +1,108 @@
+.nav-div {
+    display: flex;
+    flex-direction: row;
+    height: 80px;
+    background: #6B9BC3;
+    align-items: center;
+}
+nav {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+}
+nav ul li:hover {
+    background: #A1BFD9;
+}
+.nav-item {
+    cursor: pointer;
+    font-family: Open Sans,Arial,sans-serif;
+    font-size: 1.3em;
+    color: white;
+}
+.nav-item:hover {
+    background: #89AFCF;
+}
+nav ul li {
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    transition: background-color 0.3s ease;
+}
+
+ul {
+    display:flex;
+    height: 100%;
+    margin: 0;
+}
+li {
+    height: 100%;
+    padding-inline: 24px;
+}
+.logo-div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-inline-start:24px;
+    height: 100%;
+    width: 260px;
+    background: rgb(107,155,195);
+    background: linear-gradient(90deg, rgba(107,155,195,1) 5%, rgba(0,212,255,1) 20%, rgba(0,212,255,1) 84%, rgba(107,155,195,1) 100%);
+    cursor:pointer;
+}
+.nav-div .logo-div img{
+    height: 100%;
+}
+.add-item-button {
+    text-decoration: none;
+    font-weight: 600;
+    color: #2699FB;
+    background-color: white;
+    padding: 10px;
+    margin-right: 130px;
+    cursor: pointer;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 6px;
+    border-color: white;
+}
+.login-div {
+    height: 100%;
+    padding-inline: 14px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-inline:24px;
+    font-weight: 600;
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+.login-div:hover{
+    background: #89AFCF;
+}
+.login-div a{
+    padding-inline-start:7px;
+}
+.language-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: 0px;
+    padding: 8px;
+    width: 46px;
+    color: white;
+    border-width: 3px;
+    border-style: solid;
+    border-radius: 6px;
+    border-color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.language-button:hover {
+    background: #89AFCF;
+    }
+h1{
+    font-family: Impact,'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
