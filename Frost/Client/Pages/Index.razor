@@ -1,0 +1,28 @@
+﻿@page "/"
+@using Newtonsoft.Json;
+@inject IStringLocalizer<Resource> localizer
+<Filters propertyFilters="@propertyFilters" />
+<h2>@localizer["PromotedOffers"]</h2>
+<PropertyList propertyList="promotedOffers"></PropertyList>
+
+@code{
+    private PropertyFiltersDTO propertyFilters = new();
+
+    public List<PropertyOffer> promotedOffers = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        promotedOffers = await InitializePromotedOffersAsync();
+    }
+    private async Task<List<PropertyOffer>> InitializePromotedOffersAsync()
+    {
+        string apiString = "https://localhost:44350/api/property/promotedoffers";
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var response = await httpClient.GetAsync(apiString);
+            var result = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<PropertyOffer>>(result);
+        }
+    }
+
+}

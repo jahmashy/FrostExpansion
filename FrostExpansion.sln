@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Frost.Client", "Frost\Clien
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Frost.Shared", "Frost\Shared\Frost.Shared.csproj", "{55534534-ADDD-42CE-9C45-076F5AE3C704}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrostTests", "FrostTests\FrostTests.csproj", "{12ED6792-8130-4DA1-99C8-0408D3F0FBC6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{55534534-ADDD-42CE-9C45-076F5AE3C704}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55534534-ADDD-42CE-9C45-076F5AE3C704}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55534534-ADDD-42CE-9C45-076F5AE3C704}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12ED6792-8130-4DA1-99C8-0408D3F0FBC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12ED6792-8130-4DA1-99C8-0408D3F0FBC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12ED6792-8130-4DA1-99C8-0408D3F0FBC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12ED6792-8130-4DA1-99C8-0408D3F0FBC6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

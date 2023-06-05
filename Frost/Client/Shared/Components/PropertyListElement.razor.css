@@ -1,0 +1,56 @@
+﻿.propertyListElement-div{
+    display:flex;
+    flex-direction:row;
+    max-width:1000px;
+    height:270px;
+    
+}
+.propertyListElement-div h3{
+    font-size:1.5rem;
+}
+.propertyListElement-div p span{
+    font-weight:600;
+}
+.image-slider{
+    height:100%;
+    max-width:300px;
+}
+.slide {
+    height:270px;
+    width: 100%;
+}
+
+.slide img {
+    width: 300px;
+    min-height: 100%;
+    object-fit:cover;
+}
+
+
+.propertyContent-div {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    background-color: #F1F9FF;
+}
+.p:first-of-type{
+    margin-bottom:0.5rem;
+}
+.bottomContent{
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+}
+.bottomContent button{
+    margin-left:auto;
+}
+    .bottomContent span {
+        color: #2699FB;
+        font-weight:600;
+    }
+    .bottomContent span img{
+        margin-right:0.5rem;
+    }
+.description{
+    margin-left:1rem;
+}

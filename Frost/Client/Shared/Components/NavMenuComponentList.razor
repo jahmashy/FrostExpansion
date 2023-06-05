@@ -1,0 +1,51 @@
+﻿@using System.Reflection;
+@inject IStringLocalizer<Resource> localizer
+@inject IJSRuntime JS
+@implements IDisposable
+<div id="@id" class="componentList-div" style="visibility: @(isVisible? "visible" : "collapse")">
+    <ul>
+        @foreach (var value in values)
+        {
+            <li>
+                <a>@localizer[value]</a>
+            </li>
+        }
+    </ul>
+</div>
+
+
+@code {
+    [Parameter]
+    public string id { get; set; }
+    [Parameter]
+    public List<string> values { get; set; }
+    [Parameter]
+    public bool isVisible { get; set; }
+    [Parameter]
+    public EventCallback<bool> OnVisibilityChange { get; set; }
+
+    private DotNetObjectReference<NavMenuComponentList> objRef;
+    protected override void OnInitialized()
+    {
+        objRef = DotNetObjectReference.Create(this);
+
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("addDocumentClickListener",objRef,id);
+        }
+    }
+    [JSInvokable]
+    public void ToggleDropdownVisibility(bool visibility)
+    {
+        isVisible = visibility;
+        OnVisibilityChange.InvokeAsync(isVisible);
+        this.StateHasChanged();
+    }
+    public void Dispose()
+    {
+        objRef?.Dispose();
+    }
+}

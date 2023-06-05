@@ -1,0 +1,115 @@
+﻿.filters-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content:center;;
+    align-items: center;
+    width: 100%;
+    min-height: 365px;
+    background-image: url("/images/houses.jpg");
+    background-size: 100% 365px;
+    background-repeat: no-repeat;
+}
+
+    .filters-wrapper img {
+        max-width: 100%;
+        filter: blur(5px);
+        z-index:-1;
+    }
+
+.main-filters-box {
+    width: 800px;
+    height: 250px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(188,224,253,0.85);
+    border-color: white;
+    border-radius: 20px;
+    border-bottom-left-radius:0px;
+    border-bottom-right-radius:0px;
+}
+
+.valid.modified:not([type=checkbox]) {
+    outline: none;
+}
+
+::deep input, ::deep select {
+    height: 50px;
+    width: 180px;
+}
+
+  main-filter-box  ::deep input:focus {
+                outline:none;
+        border:none;
+        box-shadow:none;
+    }
+
+
+::deep form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#search-form-button {
+    color: white;
+    background-color: #2699FB;
+    border: 2px solid #2699FB;
+    height: 50px;
+    width: 180px;
+}
+
+.filter-elements-div {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    margin-bottom: 15px;
+    margin-top:15px;
+}
+
+.input-div {
+    height: 50px;
+    width: 180px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: white;
+    border: 2px solid #80C6FF;
+    border-radius: 4px;
+    color: #80C6FF;
+}
+
+    .input-div:focus-within {
+        outline: none;
+        border-color: #2699FB;
+        box-shadow: 0 0 5px rgba(0, 102, 204, 0.5);
+    }
+
+    .input-div ::deep input[type=number] {
+        height: 45px;
+        width: 150px;
+        border: none;
+    }
+
+        .input-div ::deep input[type=number]:focus {
+            outline: none;
+            border-color: transparent;
+        }
+.advanced-filters-div {
+    position: relative;
+}
+.advanced-filters-button {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 0px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    color: white;
+    background-color: rgb(38,153,251);
+}
+.advanced-filters-button-unfolded {
+    border-radius: 0px;
+}

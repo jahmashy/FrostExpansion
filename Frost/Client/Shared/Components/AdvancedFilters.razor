@@ -1,0 +1,71 @@
+﻿@using Frost.Shared.Models.Enums;
+@inject IStringLocalizer<Resource> localizer
+
+<div class="advanced-filters-box" style="visibility: @(areAdvancedFiltersVisible? "visible" : "collapse")">
+    <EditForm Model="propertyFilters">
+        <div class="advanced-filters-elements-div">
+            <h3>@localizer["RoomsNumber"]</h3>
+            <InputNumber @bind-Value="propertyFilters.roomsNumber" placeholder="@localizer["AnyF"]"></InputNumber>
+            <h3>@localizer["MeterPrice"]</h3>
+            <div class="inline-input-div">
+                <InputNumber @bind-Value="propertyFilters.minMeterPrice" placeholder="@localizer["Min"]"></InputNumber>
+                <span>-</span>
+                <InputNumber @bind-Value="propertyFilters.maxMeterPrice" placeholder="@localizer["Max"]"></InputNumber>
+            </div>
+            <h3>@localizer["BuildingType"]</h3>
+            <InputSelect @bind-Value="propertyFilters.buildingType">
+                @foreach (var cType in Enum.GetValues(typeof(ConstructionType)))
+                {
+                    if (cType.ToString() == "Any")
+                    {
+                        <option value="@cType">@localizer["AnyM"]</option>
+                    }
+                    else
+                    {
+                        <option value="@cType">@localizer[cType.ToString()]</option>
+                    }
+                    
+                }
+            </InputSelect>
+            <h3>@localizer["Roommates"]</h3>
+            <InputSelect @bind-Value="propertyFilters.roommates">
+                @foreach (var rmType in Enum.GetValues(typeof(Roommates)))
+                {
+                    <option value="@rmType">@localizer[rmType.ToString()]</option>
+                }
+            </InputSelect>
+        </div>
+        <div class="advanced-filters-elements-div">
+            <h3>@localizer["Floor"]</h3>
+            <InputNumber @bind-Value="propertyFilters.floor" placeholder="@localizer["AnyI"]"></InputNumber>
+            <h3>@localizer["ConstructionYear"]</h3>
+            <div class ="inline-input-div">
+                <InputNumber @bind-Value="propertyFilters.minConstructionYear" placeholder="@localizer["Earliest"]"></InputNumber>
+                <span>-</span>
+                <InputNumber @bind-Value="propertyFilters.maxConstructionYear" placeholder="@localizer["Latest"]"></InputNumber>
+            </div>
+            <h3>@localizer["Market"]</h3>
+            <InputSelect @bind-Value="propertyFilters._MarketType">
+                @foreach (var mType in Enum.GetValues(typeof(MarketType)))
+                {
+                    if (mType.ToString() == "Any")
+                    {
+                        <option value="@mType">@localizer["AnyM"]</option>
+                    }
+                    else
+                    {
+                        <option value="@mType">@localizer[mType.ToString()]</option>
+                    } 
+                }
+            </InputSelect>
+        </div>
+    </EditForm>
+
+</div>
+@code {
+    [Parameter]
+    public PropertyFiltersDTO propertyFilters { get; set; }
+
+    [Parameter]
+    public bool areAdvancedFiltersVisible { get; set; }
+}

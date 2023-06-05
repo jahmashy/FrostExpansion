@@ -1,0 +1,62 @@
+﻿@using Frost.Shared.Models.Enums;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
+@inject IStringLocalizer<Resource> localizer
+@inject IJSRuntime JS
+<div class="filters-wrapper">
+    <div class="filters-div">
+        <div class="main-filters-box">
+            <EditForm Model="@propertyFilters">
+                <div class="filter-elements-div">
+                    <InputSelect @bind-Value="propertyFilters.propertyType">
+                        @foreach (var pType in Enum.GetValues(typeof(PropertyType)))
+                        {
+                            <option value="@pType">@localizer[pType.ToString()]</option>
+                        }
+                    </InputSelect>
+                    <InputSelect class="filter-select" @bind-Value="propertyFilters.transactionType">
+                        @foreach (var tType in Enum.GetValues(typeof(OfferType)))
+                        {
+                            <option value="@tType">@localizer[tType.ToString()]</option>
+                        }
+                    </InputSelect>
+                    <LocationSearch propertyFilters="propertyFilters"></LocationSearch>
+                    <button type="submit" id="search-form-button">@localizer["Search"]</button>
+                </div>
+                <div class="filter-elements-div">
+                    <div class="input-div">
+                        <InputNumber @bind-Value="propertyFilters.minPrice" placeholder="@localizer["MinPrice"]" />
+                        <span>zł</span>
+                    </div>
+                    <div class="input-div">
+                        <InputNumber @bind-Value="propertyFilters.maxPrice" placeholder="@localizer["MaxPrice"]" />
+                        <span>zł</span>
+                    </div>
+                    <div class="input-div">
+                        <InputNumber @bind-Value="propertyFilters.minSurface" placeholder="@localizer["MinSurface"]" />
+                        <span>m²</span>
+                    </div>
+                    <div class="input-div">
+                        <InputNumber @bind-Value="propertyFilters.maxSurface" placeholder="@localizer["MaxSurface"]" />
+                        <span>m²</span>
+                    </div>
+                </div>
+            </EditForm>
+
+        </div>
+        <div class="advanced-filters-button-div">
+            <button class="advanced-filters-button @(areAdvancedFiltersVisible? "advanced-filters-button-unfolded":"")" @onclick="changeAFiltersVisibility">@localizer["AdvancedFilters"]</button>
+        </div>
+        <div class="advanced-filters-div">
+            <AdvancedFilters propertyFilters="propertyFilters" areAdvancedFiltersVisible="areAdvancedFiltersVisible"></AdvancedFilters>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public PropertyFiltersDTO propertyFilters { get; set; }
+    bool areAdvancedFiltersVisible = false;
+    public void changeAFiltersVisibility() => areAdvancedFiltersVisible = !areAdvancedFiltersVisible;
+
+}

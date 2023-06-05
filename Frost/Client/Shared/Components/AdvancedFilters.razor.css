@@ -1,0 +1,50 @@
+﻿.advanced-filters-box {
+    width: 800px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    z-index:10;
+    background-color: rgba(188,224,253,1);
+    padding: 2rem;
+    padding-top: 0;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border: 1px solid rgb(38,153,251);
+    border-top: 0px;
+    position:absolute;
+}
+    .advanced-filters-box > ::deep form {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items:baseline;
+        gap: 70px;
+    }
+    .advanced-filters-box ::deep input, .advanced-filters-box ::deep select {
+        width: 100%
+    }
+.advanced-filters-elements-div {
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+}
+.inline-input-div {
+    display: flex;
+    flex-direction: row;
+    align-items:center;
+    gap:5px;
+}
+.inline-input-div > ::deep input {
+    width:100%;
+}
+.advanced-filters-box ::deep input:focus {
+    outline: none;
+    border-color: #2699FB;
+    box-shadow: 0 0 5px rgba(0, 102, 204, 0.5);
+}
+h3{
+    margin-top:1rem;
+    margin-bottom:0.4rem;
+    font-weight:normal;
+    font-size:1.2rem;
+}

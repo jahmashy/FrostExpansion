@@ -1,0 +1,69 @@
+﻿@using System.Globalization;
+@using System.Reflection;
+@inject IStringLocalizer<Resource> localizer
+@inject ILocalStorageService localStorage
+@inject NavigationManager NavManager
+
+<div class="nav-div">
+    <div class="logo-div" @onfocus= "@(()=>Console.WriteLine("foc"))">
+        <img class="logo" src="/images/logo.png" alt="Frost logo">
+        <h1>Frost</h1>
+    </div>
+    <nav>
+        <ul>
+            <li>
+                <a>@localizer["Roommates"]</a>
+            </li>
+
+            <li>
+                <a style="background:@(buyDropdownListVisibility? "#89AFCF" : "")" @onclick="@(()=> buyDropdownListVisibility = !buyDropdownListVisibility)">@localizer["Buy"]</a>
+                <NavMenuComponentList id="buyDropdownList" values="listValues" isVisible="buyDropdownListVisibility" OnVisibilityChange="@((bool e)=> buyDropdownListVisibility = e)"></NavMenuComponentList>
+            </li>
+            <li>
+                <a style="background:@(sellDropdownListVisibility? "#89AFCF" : "")" @onclick="@(()=> sellDropdownListVisibility = !sellDropdownListVisibility)">@localizer["Rent"]</a>
+                <NavMenuComponentList id="rentDropdownList" values="listValues" isVisible="sellDropdownListVisibility" OnVisibilityChange="@((bool e)=> sellDropdownListVisibility = e)"></NavMenuComponentList>
+            </li>
+        </ul>
+    </nav>
+    <div class="user-div">
+        <button class="action-button" @onclick="ChangeCulture">@localizer["Language"]</button>
+        <div class="login-div">
+            <img src="/images/Profile.png" />
+            <a>@localizer["LogIn"]</a>
+        </div>
+        <button class="action-button">@localizer["AddOffer"]</button>
+    </div>
+</div>
+@code {
+    List<string> listValues = new List<string> { "Flats","Houses","Plots","Establishments","Garages","Rooms" };
+    [Parameter]
+    public bool buyDropdownListVisibility { get; set; } 
+
+    [Parameter]
+    public bool sellDropdownListVisibility { get; set; } 
+
+
+    CultureInfo cultureEn = new CultureInfo("en-US");
+    CultureInfo culturePl = new CultureInfo("pl-PL");
+    CultureInfo Culture
+    {
+        get => CultureInfo.CurrentCulture;
+        set
+        {
+                localStorage.SetItemAsync<string>("culture", value.Name);
+                NavManager.NavigateTo(NavManager.Uri, forceLoad: true);
+        }
+    }
+    public void ChangeCulture()
+    {
+        if(Culture.Name != culturePl.Name)
+        {
+            Culture = culturePl;
+        }
+        else
+        {
+            Culture = cultureEn;
+        }
+
+    }
+}

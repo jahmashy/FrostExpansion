@@ -1,0 +1,43 @@
+﻿@using Frost.Shared.Models;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
+@inject IStringLocalizer<Resource> localizer
+<div class="search-div">
+    <InputText @bind-Value="propertyFilters.localization" @onfocus="() => isVisible = true" @onblur = "() => {isVisible = false;}"@oninput="Search" placeholder="@localizer["Localization"]" />
+    <div style="visibility: @(isVisible? "visible" : "collapse")">
+        <ul>
+            @foreach (var predictedLocation in predictionList)
+            {
+                <li @onmousedown="() => propertyFilters.localization = predictedLocation.cityName">
+                    <span>@predictedLocation.cityName</span>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public PropertyFiltersDTO propertyFilters { get; set; }
+
+    List<Location> predictionList = new();
+    private bool isVisible = false;
+
+    public async Task getPredictedLocationsAsync()
+    {
+        string apiString = $"https://localhost:44350/api/location?userinput={propertyFilters.localization}";
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var response = await httpClient.GetAsync(apiString);
+            var result = await response.Content.ReadAsStringAsync();
+            predictionList = JsonConvert.DeserializeObject<List<Location>>(result);
+            this.StateHasChanged();
+        }
+    }
+    public async Task Search(ChangeEventArgs e)
+    {
+        propertyFilters.localization = e.Value.ToString();
+        await getPredictedLocationsAsync();
+    }
+}
