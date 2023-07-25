@@ -1,0 +1,17 @@
+﻿@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navManager
+@inject IStringLocalizer<Resource> localizer
+@page "/addoffer"
+<h1>@localizer["NewOffer"]</h1>
+<PropertyForm editForm="false"></PropertyForm>
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            navManager.NavigateTo("/login");
+        }
+    }
+}

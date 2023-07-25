@@ -8,20 +8,20 @@
 @code{
     private PropertyFiltersDTO propertyFilters = new();
 
-    public List<PropertyOffer> promotedOffers = new();
+    public List<PropertyDetailsDTO> promotedOffers = new();
 
     protected override async Task OnInitializedAsync()
     {
         promotedOffers = await InitializePromotedOffersAsync();
     }
-    private async Task<List<PropertyOffer>> InitializePromotedOffersAsync()
+    private async Task<List<PropertyDetailsDTO>> InitializePromotedOffersAsync()
     {
         string apiString = "https://localhost:44350/api/property/promotedoffers";
         using (HttpClient httpClient = new HttpClient())
         {
             var response = await httpClient.GetAsync(apiString);
             var result = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<List<PropertyOffer>>(result);
+            return JsonConvert.DeserializeObject<List<PropertyDetailsDTO>>(result);
         }
     }
 

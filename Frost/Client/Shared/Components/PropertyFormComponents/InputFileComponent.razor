@@ -1,0 +1,135 @@
+﻿@using System.Net.Http.Headers;
+@inject IStringLocalizer<Resource> localizer
+@inject IJSRuntime JS
+<div class="image-component-wrapper">
+    <div class="preview-image-div">
+        <label>@(localizer["Images"]) (@selectedFiles.Count)</label>
+        <div class="image-slider">
+            @if (selectedFiles.Count == 0)
+            {
+                <img src="/images/Icons/initialPhoto.png" />
+            }
+            else
+            {
+                @foreach (var file in selectedFiles)
+                {
+                    <div class="slide-div">
+                        <img src="@ImageDataUrlDict.GetValueOrDefault(file)">
+                    </div>
+                }
+            }
+        </div>
+        @if (selectedFiles.Count > 0)
+        {
+            <img @onclick="RemoveFile" class="cancel-button" src="/images/Icons/Cancel-X.png" />
+        }
+        <InputFile style="display:none" @ref="inputFile" OnChange="LoadFiles" multiple accept=".png,.jpg,.jpeg,.webp"></InputFile>
+        <button type="button" @onclick="InvokeInputFile">@localizer["AddImage"]</button>
+    </div>
+    <div>
+
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public List<IBrowserFile> selectedFiles { get; set; } = new();
+    [Parameter]
+    public List<string> errors { get; set; } = new();
+    [Parameter]
+    public EventCallback<string> AddError { get; set; }
+
+    public long maxFileSize = 1024 * 1024 * 5;
+    public int minRequiredFiles = 5;
+    public int maxAllowedFiles = 15;
+
+
+    private InputFile inputFile = new();
+    string[] allowExtensions = { ".jpg", ".png", ".jpeg", ".webp" };
+    private Dictionary<IBrowserFile, string> ImageDataUrlDict = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JS.InvokeVoidAsync("import", "/js/InitializeSlickCarousel.js");
+        await JS.InvokeVoidAsync("import", "/js/InvokeInput.js");
+    }
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        errors.Clear();
+        foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+        {
+
+            if (file.Size > maxFileSize)
+            {
+                await AddError.InvokeAsync(file.Name + " " + localizer["FileTooBigError"]);
+            }else if (selectedFiles.Count >= maxAllowedFiles)
+            {
+                await AddError.InvokeAsync(localizer["TooManyFilesError"]);
+            }
+            else
+            {
+                var extension = Path.GetExtension(file.Name);
+                if (allowExtensions.Contains(extension.ToLower()))
+                {
+                    string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), ".webp");
+                    var fileContent = new StreamContent(file.OpenReadStream(maxFileSize));
+
+                    using MemoryStream ms = new();
+                    await fileContent.CopyToAsync(ms);
+
+                    var imageDataUri = $"data:image/webp;base64,{Convert.ToBase64String(ms.ToArray())}";
+                    ImageDataUrlDict.Add(file, imageDataUri);
+
+                    if (selectedFiles.Count > 1)
+                        await JS.InvokeVoidAsync("unslick");
+                    selectedFiles.Add(file);
+                    this.StateHasChanged();
+                    if (selectedFiles.Count > 1)
+                        await JS.InvokeVoidAsync("initializeSlickCarousel");
+
+                }
+                else
+                {
+                    await AddError.InvokeAsync(file.Name + " " + localizer["InvalidExtensionError"]);
+                }
+
+            }
+
+        }
+
+    }
+    private async Task RemoveFile()
+    {
+        int displayedImageIndex = 0;
+        if(selectedFiles.Count > 1)
+        {
+            displayedImageIndex = await JS.InvokeAsync<int>("getCurrentSlide");
+            await JS.InvokeVoidAsync("unslick");
+        }
+
+        selectedFiles.RemoveAt(displayedImageIndex);
+        this.StateHasChanged();
+        if (selectedFiles.Count > 1)
+            await JS.InvokeVoidAsync("initializeSlickCarousel");
+
+
+    }
+
+    private async Task<string> getDataUrlFromFIle(IBrowserFile file)
+    {
+        var imageFile = await file.RequestImageFileAsync("image/jpg", 200, 200);
+        using Stream fileStream = file.OpenReadStream(maxFileSize);
+        using MemoryStream ms = new();
+
+        await fileStream.CopyToAsync(ms);
+
+        string imageDataUri = $"data:image/webp;base64,{Convert.ToBase64String(ms.ToArray())}";
+
+        return imageDataUri;
+    }
+    private async Task InvokeInputFile()
+    {
+        await JS.InvokeVoidAsync("inputFileInterop.invokeInputFile", inputFile.Element);
+    }
+
+}

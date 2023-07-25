@@ -1,0 +1,22 @@
+﻿@inject IStringLocalizer<Resource> localizer
+@inject ILocalStorageService localStorage
+@inject NavigationManager navManager
+@page "/login"
+<div class="loginView-wrapper">
+    <div class="form-wrapper">
+        <LoginForm></LoginForm>
+        <RegistrationForm></RegistrationForm>
+    </div>
+</div>
+
+@code {
+
+    [CascadingParameter]
+    public bool isUserLoggedIn { get; set; }
+    protected override async Task OnParametersSetAsync()
+    {
+        if (isUserLoggedIn)
+            navManager.NavigateTo("/", forceLoad: true);
+    }
+
+}

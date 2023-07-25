@@ -1,0 +1,96 @@
+﻿@inject IStringLocalizer<Resource> localizer
+@using Microsoft.AspNetCore.Authorization
+@inject IJSRuntime JS
+@inject NavigationManager navManager
+@layout MainLayout
+@inherits LayoutComponentBase
+<AuthorizeView>
+    <Authorized>
+        <CascadingValue Value="this">
+            <div class="top-div">
+                <div class="offers-div">
+                    <h2 @onclick="@(()=> {ToggleOffVisibility(); isOfferMenuVisible=true;}  )">
+                        @localizer["Offers"]
+                    </h2>
+                    <div class="menu-div" style="visibility: @(isOfferMenuVisible? "visible" : "collapse")">
+                        <div class="proxy">
+                            <h3>
+                                @localizer["Templates"]
+                            </h3>
+                            <h3>
+                                @localizer["Created"]
+                            </h3>
+                            <h3>
+                                @localizer["Followed"]
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="messages-div">
+                    <h2 @onclick="@(()=> {ToggleOffVisibility(); areMessagesVisible=true;}  )">
+                        @localizer["Messages"]
+                    </h2>
+                </div>
+                <div id="settingsId" class="settings-div">
+                    <h2 @onclick="@(()=> {ToggleOffVisibility(); isSettingsMenuVisible=true;}  )">
+                        @localizer["Settings"]
+                    </h2>
+                    <div class="menu-div" style="visibility: @(isSettingsMenuVisible? "visible" : "collapse")">
+                        <div class="proxy">
+                            <h3>
+                                @localizer["Account"]
+                            </h3>
+                            <h3>
+                                @localizer["LoginDetails"]
+                            </h3>
+                            <h3>
+                                @localizer["Notifications"]
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="header-div">
+                <h4>
+                    @localizer[header]
+                </h4>
+            </div>
+            @Body
+        </CascadingValue>
+    </Authorized>
+    <NotAuthorized>
+        @{
+            navManager.NavigateTo("/login");
+        }
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+    public bool isOfferMenuVisible { get; set; } = false;
+    public bool isSettingsMenuVisible { get; set; } = false;
+    public bool areMessagesVisible { get; set; } = false;
+
+    public bool areTemplatesVisible { get; set; } = false;
+    public bool areCreatedOffersVisible { get; set; } = false;
+    public bool areFollowedOffersVisible { get; set; } = false;
+
+    public bool isAccountVisible { get; set; } = false;
+    public bool areCreatedOffersViible { get; set; } = false;
+    public bool areFollowedOffersViible { get; set; } = false;
+
+    public string header { get; set; } = "null";
+    
+    public void ToggleOffVisibility()
+    {
+        isOfferMenuVisible = false;
+        isSettingsMenuVisible = false;
+        areMessagesVisible = false;
+    }
+    public void ChangeHeader(string newHeader)
+    {
+        header = newHeader;
+        this.StateHasChanged();
+    }
+    
+}

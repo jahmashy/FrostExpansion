@@ -1,0 +1,62 @@
+﻿.user-div {
+    display: flex;
+    flex-direction: column;
+    margin-inline: 24px;
+    height:100%;
+}
+.login-div {
+    height: 100%;
+    padding-inline: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    font-weight: 600;
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+    .login-div:hover {
+        background: #89AFCF;
+    }
+
+    .login-div a {
+        padding-inline-start: 7px;
+        text-align: center;
+    }
+    .login-div span{
+        display:inline-block;
+        text-wrap:nowrap;
+    }
+
+ul {
+    color: #2699FB;
+    background: white;
+}
+.user-dropdownlist {
+    display:flex;
+    margin-top: auto;
+    position:relative;
+}
+    .user-dropdownlist ul {
+        padding: 0px;
+        width: 100%;
+        flex: 1;
+        position: absolute;
+        z-index: 1;
+        border: 1px solid;
+        border-top: 0px;
+    }
+li {
+    display:flex;
+    flex-direction:row;
+    justify-content:center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    cursor: pointer;
+}
+
+    li:hover {
+        background-color: aliceblue;
+    }

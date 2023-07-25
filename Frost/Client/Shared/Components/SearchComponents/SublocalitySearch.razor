@@ -1,0 +1,53 @@
+﻿@using Frost.Shared.Models;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
+@inject IStringLocalizer<Resource> localizer
+<InputSearchComponent OnSelect="LocationChanged" OnInput="Search" selectionList="districtNames" placeholder="@localizer["District"]"></InputSearchComponent>
+
+
+@code {
+    public string userInput { get; set; }
+
+    [Parameter]
+    public string selectedCity { get; set; }
+
+    [Parameter]
+    public EventCallback<Location> OnLocationChange { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnUserInput { get; set; }
+
+    private List<Location> predictionList = new();
+    public List<string> districtNames = new();
+
+    public async Task getPredictedLocationsAsync(string input)
+    {
+        string apiString = $"https://localhost:44350/api/location/districts?userinput={input}&city={selectedCity}";
+        if (!string.IsNullOrWhiteSpace(selectedCity))
+        {
+            using (HttpClient httpClient = new HttpClient())
+            {
+                var response = await httpClient.GetAsync(apiString);
+                var result = await response.Content.ReadAsStringAsync();
+                predictionList = JsonConvert.DeserializeObject<List<Location>>(result);
+                districtNames.Clear();
+                foreach (var prediction in predictionList)
+                {
+                    districtNames.Add(prediction.districtName);
+                }
+            }
+        }
+    }
+
+    public async Task LocationChanged(string districtName)
+    {
+        Location selectedLocation = predictionList.First(l => l.districtName == districtName);
+        await OnLocationChange.InvokeAsync(selectedLocation);
+    }
+
+    public async Task Search(string userInput)
+    {
+        await OnUserInput.InvokeAsync(userInput);
+        await getPredictedLocationsAsync(userInput);
+    }
+}

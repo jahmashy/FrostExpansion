@@ -1,6 +1,7 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 html, body {
+    /*min-height:100vh;*/
     font-family: Fira Sans,Helvetica,Arial,sans-serif;
 }
 
@@ -21,17 +22,31 @@ a{
 }
 
 .content {
+    flex:1;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 .valid.modified:not([type=checkbox]) {
-    outline: none;
+    /*outline: 1px solid #26b050;*/
 }
 
 .invalid {
-    outline: none;
+    border: 2px solid red !important;
+}
+.input-div {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+.input-div span {
+    color: #80C6FF;
+    position: absolute;
+    right: 0;
 }
 
 .validation-message {
@@ -40,20 +55,37 @@ a{
 button {
     text-decoration: none;
     font-weight: 600;
-    color: #2699FB;
-    background-color: white;
+    color: white;
+    background-color: #2699FB;
     padding: 10px;
     cursor: pointer;
-    border-width: 1px;
-    border-style: solid;
+    border: 2px solid #2699FB;
     border-radius: 6px;
-    border-color: white;
-    transition: background-color 0.3s ease;
 }
+.button-delete {
+    text-decoration: none;
+    font-weight: 600;
+    color: white;
+    background-color: red;
+    padding: 10px;
+    cursor: pointer;
+    border: 2px solid red;
+    border-radius: 6px;
+}
+.form-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+    .form-div h3 {
+        color: #2699FB
+    }
 
-button {
-    color:white;
-    background-color: #2699FB;
+.form-box {
+    display: flex;
+    flex-direction: row;
+    padding: 50px;
+    background-color: #BCE0FD;
 }
 
 
@@ -91,9 +123,9 @@ button {
 }
 
 .slick-next {
-    right: 25px;
+    right: 5%;
 }
 .slick-prev{
-    left:25px;
+    left:5%;
     z-index:1
 }

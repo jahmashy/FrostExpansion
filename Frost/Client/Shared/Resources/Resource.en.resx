@@ -117,11 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Account" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="AddImage" xml:space="preserve">
+    <value>Add image</value>
+  </data>
   <data name="AddOffer" xml:space="preserve">
     <value>Add offer</value>
   </data>
   <data name="AdvancedFilters" xml:space="preserve">
     <value>Advanced Filters</value>
+  </data>
+  <data name="Advertiser" xml:space="preserve">
+    <value>Advertiser</value>
+  </data>
+  <data name="AllowRoommates" xml:space="preserve">
+    <value>Allow for roomates.</value>
   </data>
   <data name="Any" xml:space="preserve">
     <value>Any</value>
@@ -141,11 +153,41 @@
   <data name="Buy" xml:space="preserve">
     <value>Buy</value>
   </data>
+  <data name="City" xml:space="preserve">
+    <value>City</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Confirm Password</value>
+  </data>
+  <data name="ConfirmPasswordPlaceholder" xml:space="preserve">
+    <value>Confirm password</value>
+  </data>
   <data name="ConstructionYear" xml:space="preserve">
     <value>Construction Year</value>
   </data>
+  <data name="Created" xml:space="preserve">
+    <value>Created</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="District" xml:space="preserve">
+    <value>District</value>
+  </data>
   <data name="Earliest" xml:space="preserve">
     <value>Earliest</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="EmailPlaceholder" xml:space="preserve">
+    <value>Enter email</value>
   </data>
   <data name="Establishment" xml:space="preserve">
     <value>Establishment</value>
@@ -165,6 +207,12 @@
   <data name="Floor" xml:space="preserve">
     <value>Floor</value>
   </data>
+  <data name="Followed" xml:space="preserve">
+    <value>Followed</value>
+  </data>
+  <data name="FollowOffer" xml:space="preserve">
+    <value>Follow offer</value>
+  </data>
   <data name="Garage" xml:space="preserve">
     <value>Garage</value>
   </data>
@@ -180,8 +228,32 @@
   <data name="Houses" xml:space="preserve">
     <value>Houses</value>
   </data>
+  <data name="Images" xml:space="preserve">
+    <value>Images</value>
+  </data>
+  <data name="ImagesAmountRequirement" xml:space="preserve">
+    <value>You need to upload at least 5 images but no more than 15.</value>
+  </data>
+  <data name="ImagesExtensionRequirement" xml:space="preserve">
+    <value>Images should have following extensions: JPG, PNG, JPEG or WEBP.</value>
+  </data>
+  <data name="ImagesRequirements" xml:space="preserve">
+    <value>Uploaded images should meet following requirements:</value>
+  </data>
+  <data name="ImagesSizeRequirement" xml:space="preserve">
+    <value>Size of an individual image should not exceed 5MB.</value>
+  </data>
   <data name="Included" xml:space="preserve">
     <value>Included</value>
+  </data>
+  <data name="InvalidCredentials" xml:space="preserve">
+    <value>Login details are incorrect</value>
+  </data>
+  <data name="InvalidExtensionError" xml:space="preserve">
+    <value>Extension of a file is not valid</value>
+  </data>
+  <data name="JoinFirst" xml:space="preserve">
+    <value>Be the first to join!</value>
   </data>
   <data name="Language" xml:space="preserve">
     <value>EN</value>
@@ -192,8 +264,20 @@
   <data name="Localization" xml:space="preserve">
     <value>Location</value>
   </data>
+  <data name="Location" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="LocationNotChosenError" xml:space="preserve">
+    <value>Please select city from the list</value>
+  </data>
   <data name="LogIn" xml:space="preserve">
     <value>Log in</value>
+  </data>
+  <data name="LoginDetails" xml:space="preserve">
+    <value>Login details</value>
+  </data>
+  <data name="LogOut" xml:space="preserve">
+    <value>Logout</value>
   </data>
   <data name="Market" xml:space="preserve">
     <value>Market</value>
@@ -204,6 +288,9 @@
   <data name="MaxSurface" xml:space="preserve">
     <value>Max Surface</value>
   </data>
+  <data name="Messages" xml:space="preserve">
+    <value>Messages</value>
+  </data>
   <data name="MeterPrice" xml:space="preserve">
     <value>Price per meter</value>
   </data>
@@ -213,11 +300,50 @@
   <data name="MinSurface" xml:space="preserve">
     <value>Min Surface</value>
   </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="NamePlaceholder" xml:space="preserve">
+    <value>Enter name</value>
+  </data>
+  <data name="NewOffer" xml:space="preserve">
+    <value>New offer</value>
+  </data>
+  <data name="NoChats" xml:space="preserve">
+    <value>You have no active chats</value>
+  </data>
+  <data name="NoResults" xml:space="preserve">
+    <value>No results</value>
+  </data>
+  <data name="NotEnoughFilesError" xml:space="preserve">
+    <value>You need to upload at least</value>
+  </data>
+  <data name="NotEnoughFilesError_files" xml:space="preserve">
+    <value>files</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="Offers" xml:space="preserve">
+    <value>Offers</value>
+  </data>
+  <data name="OfferType" xml:space="preserve">
+    <value>Offer type</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="PasswordPlaceholder" xml:space="preserve">
+    <value>Enter password</value>
+  </data>
   <data name="Plot" xml:space="preserve">
     <value>Plot</value>
   </data>
   <data name="Plots" xml:space="preserve">
     <value>Plots</value>
+  </data>
+  <data name="Price" xml:space="preserve">
+    <value>Price</value>
   </data>
   <data name="Primary" xml:space="preserve">
     <value>Primary</value>
@@ -225,14 +351,29 @@
   <data name="PromotedOffers" xml:space="preserve">
     <value>Promoted offers</value>
   </data>
+  <data name="PropertyType" xml:space="preserve">
+    <value>Property type</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="Registration" xml:space="preserve">
+    <value>Registration</value>
+  </data>
   <data name="Rent" xml:space="preserve">
     <value>Rent</value>
+  </data>
+  <data name="RequiredField" xml:space="preserve">
+    <value>Required field</value>
   </data>
   <data name="Room" xml:space="preserve">
     <value>Room</value>
   </data>
   <data name="Roommates" xml:space="preserve">
     <value>Roommates</value>
+  </data>
+  <data name="RoommateSearch" xml:space="preserve">
+    <value>Looking for roommate</value>
   </data>
   <data name="Rooms" xml:space="preserve">
     <value>Rooms</value>
@@ -243,6 +384,9 @@
   <data name="RowHouse" xml:space="preserve">
     <value>Row house</value>
   </data>
+  <data name="SaveTemplate" xml:space="preserve">
+    <value>Save template</value>
+  </data>
   <data name="Search" xml:space="preserve">
     <value>Search</value>
   </data>
@@ -252,7 +396,34 @@
   <data name="SendMessage" xml:space="preserve">
     <value>Send message</value>
   </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="SurfaceArea" xml:space="preserve">
+    <value>Surface area</value>
+  </data>
+  <data name="TelNumber" xml:space="preserve">
+    <value>Telephone number</value>
+  </data>
+  <data name="TelNumberPlaceholder" xml:space="preserve">
+    <value>Enter telephone number</value>
+  </data>
+  <data name="Templates" xml:space="preserve">
+    <value>Templates</value>
+  </data>
   <data name="Tenement" xml:space="preserve">
     <value>Tenement</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="UserAlreadyExists" xml:space="preserve">
+    <value>User with given email address already exists.</value>
+  </data>
+  <data name="YourMessages" xml:space="preserve">
+    <value>Your messages</value>
+  </data>
+  <data name="YourOffers" xml:space="preserve">
+    <value>Your offers</value>
   </data>
 </root>

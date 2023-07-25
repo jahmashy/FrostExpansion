@@ -1,0 +1,18 @@
+﻿<div class="list-Wrapper">
+    <ul>
+        @foreach (var chat in chatList)
+        {
+            <li>
+                <ChatListElement chat="chat"></ChatListElement>
+            </li>
+        }
+    </ul>
+</div>
+
+@code {
+    [Parameter]
+    public List<ChatPreviewDTO> chatList { get; set; }
+
+    [Parameter]
+    public int selectedChatId { get; set; }
+}

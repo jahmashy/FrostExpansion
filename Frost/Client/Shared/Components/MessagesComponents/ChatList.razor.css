@@ -1,0 +1,17 @@
+﻿
+.list-Wrapper {
+    width: 25%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    
+}
+    .list-Wrapper ul {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        overflow-y: auto;
+        max-width: 100%;
+    }

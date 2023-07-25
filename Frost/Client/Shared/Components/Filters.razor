@@ -20,7 +20,7 @@
                             <option value="@tType">@localizer[tType.ToString()]</option>
                         }
                     </InputSelect>
-                    <LocationSearch propertyFilters="propertyFilters"></LocationSearch>
+                    <LocationSearch></LocationSearch>
                     <button type="submit" id="search-form-button">@localizer["Search"]</button>
                 </div>
                 <div class="filter-elements-div">
@@ -55,7 +55,12 @@
 
 @code {
     [Parameter]
-    public PropertyFiltersDTO propertyFilters { get; set; }
+    public PropertyFiltersDTO propertyFilters { get; set; } = new();
+    protected override void OnInitialized()
+    {
+        propertyFilters.location = new ();
+        base.OnInitialized();
+    }
     bool areAdvancedFiltersVisible = false;
     public void changeAFiltersVisibility() => areAdvancedFiltersVisible = !areAdvancedFiltersVisible;
 

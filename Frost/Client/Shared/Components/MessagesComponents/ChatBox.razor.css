@@ -1,0 +1,77 @@
+﻿.chatBox-div {
+    position:relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    width: 50%;
+    background: #7FC4FD;
+    padding: 1rem;
+}
+.messages-div {
+    position: absolute;
+    height: calc(100% - 7rem);
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+}
+.message-div{
+    display:flex;
+    flex-direction:column;
+    margin:1rem;
+}
+.message-box {
+    padding:0.5rem;
+    background-color: #F1F9FF;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #F1F9FF;
+    border-radius: 4px;
+    max-width:400px;
+}
+.myMessage {
+    color: #2699FB;
+    margin-left:auto;
+    margin-bottom:0rem;
+    margin-top:0.5rem;
+}
+.otherMessage{
+    margin-right:auto;
+}
+.inputMessage-div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: white;
+    border: 2px solid #80C6FF;
+    border-radius: 4px;
+    color: #80C6FF;
+}
+    .inputMessage-div:focus-within {
+        outline: none;
+        border-color: #2699FB;
+        box-shadow: 0 0 5px rgba(0, 102, 204, 0.5);
+    }
+
+    .inputMessage-div textarea {
+        border: none;
+    }
+
+        .inputMessage-div textarea:focus {
+            outline: none;
+            border-color: transparent;
+            box-shadow:none;
+        }
+.inputMessage-div img{
+    max-height:50%;
+    max-width:50%;
+    margin-left:1rem;
+    margin-right:1rem;
+    cursor:pointer;
+}
+
+.inputMessage-div ::deep textarea {
+    width:100%;
+}

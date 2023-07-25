@@ -39,7 +39,7 @@
     }
     [JSInvokable]
     public void ToggleDropdownVisibility(bool visibility)
-    {
+   {
         isVisible = visibility;
         OnVisibilityChange.InvokeAsync(isVisible);
         this.StateHasChanged();

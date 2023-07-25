@@ -1,0 +1,65 @@
+﻿
+<div class="chatElement-div @(chat.Id == selectedChatId? "selected" : "to-Select")" @onclick="OnChatSelect">
+    <div class="participants-div">
+        <h5>
+            @participantString
+        </h5>
+    </div>
+    <div class="messages-div">
+        <span style="font-weight:600">@lastMessageAuthor:</span> @lastMessage
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public ChatPreviewDTO chat { get; set; }
+
+    [CascadingParameter]
+    public UserMessagesView mainPage { get; set; }
+
+    [CascadingParameter(Name = "selectedChatId")]
+    public int selectedChatId { get; set; }
+
+    [CascadingParameter(Name = "myId")]
+    public string myId { get; set; }
+
+    public string participantString { get; set; } = "";
+
+    public string lastMessage { get; set; } = "";
+    public string lastMessageAuthor { get; set; } = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var sb = new System.Text.StringBuilder();
+        for(int i = 0; i < chat.participants.Count; i++)
+        {
+            var participant = chat.participants[i];
+            if (!string.Equals(myId, participant.Id.ToString()))
+            {
+                sb.Append(participant.Name);
+                if (i+1 < chat.participants.Count)
+                {
+                    if (!string.Equals(chat.participants[i + 1].Id.ToString(), myId))
+                    {
+                        sb.Append(", ");
+                    }
+                    else if (i + 2 < chat.participants.Count)
+                    {
+                        sb.Append(", ");
+                    }
+                } 
+            }
+        }
+        participantString = sb.ToString();
+    }
+    protected override void OnParametersSet()
+    {
+        lastMessage = chat.messages.Last().content;
+        lastMessageAuthor = chat.messages.Last().userName;
+    }
+
+    private async Task OnChatSelect()
+    {
+        mainPage.SelectChat(chat);
+    }
+}

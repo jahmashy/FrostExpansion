@@ -1,0 +1,66 @@
+﻿@inject IStringLocalizer<Resource> localizer
+<div class="search-div">
+    <InputText class="@(isValid? "" : "invalid")" @bind-Value=userInput @onfocus="() => {if(!String.IsNullOrWhiteSpace(userInput)){ isVisible = true;}}" @onblur="() => {isVisible = false;}" @oninput="Search" placeholder="@placeholder" />
+    <div style="visibility: @(isVisible? "visible" : "collapse");position:relative">
+        <ul>
+            @if (selectionList.Count > 0)
+            {
+                @foreach (var selectOption in selectionList)
+                {
+                    <li @onmousedown="() => HandleSelect(selectOption)">
+                        <span>@selectOption</span>
+                    </li>
+                }
+            }
+            else
+            {
+                <li style="text-align:center;cursor:default">
+                    <span>@localizer["NoResults"]</span>
+                </li>
+            }
+
+        </ul>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public List<string> selectionList { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnSelect { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnInput { get; set; }
+
+    [Parameter]
+    public string placeholder { get; set; }
+
+    [Parameter]
+    public bool isValid { get; set; } = true;
+
+    public string userInput { get; set; } = "";
+
+    private bool isVisible = false;
+
+    public async Task Search(ChangeEventArgs e)
+    {
+        userInput = e.Value.ToString();
+        if (!String.IsNullOrWhiteSpace(userInput))
+        {
+            isVisible = true;
+        }
+        else
+        {
+            isVisible = false;
+        }
+        await OnInput.InvokeAsync(userInput);
+    }
+    public async Task HandleSelect(string selectOption)
+    {
+        userInput = selectOption;
+        await OnSelect.InvokeAsync(selectOption);
+        this.StateHasChanged();
+        
+    }
+}

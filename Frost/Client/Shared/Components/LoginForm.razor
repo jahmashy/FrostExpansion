@@ -1,0 +1,49 @@
+﻿@using Frost.Client.Authentication;
+@inject IStringLocalizer<Resource> localizer
+@inject ILocalStorageService localStorage
+@inject NavigationManager navManager
+@inject AuthenticationStateProvider authStateProvider
+<div class="form-div">
+    <h3>
+        @localizer["Log_in"]
+    </h3>
+    <div class="form-box">
+        <EditForm Model="loginModel" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <div class="validation-message" style="content-visibility: @(LoginSuccess? "hidden" : "visible")">@localizer["InvalidCredentials"]</div>
+            <label>@localizer["Email"]</label>
+            <ValidationMessage For="@(() => loginModel.email)" />
+            <InputText @bind-Value=loginModel.email placeholder="@localizer["EmailPlaceholder"]"></InputText>
+            <label>@localizer["Password"]</label>
+            <ValidationMessage For="@(() => loginModel.password)" />
+            <InputText type="password" @bind-Value=loginModel.password placeholder="@localizer["PasswordPlaceholder"]"></InputText>
+            <button>@localizer["LogIn"]</button>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    public bool isUserLoggedIn { get; set; }
+    public LoginModel loginModel = new();
+    public bool LoginSuccess { get; set; } = true;
+    private async Task HandleValidSubmit()
+    {
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var response = await httpClient.PostAsJsonAsync<LoginModel>("https://localhost:44350/api/auth/login", loginModel);
+            if (response.IsSuccessStatusCode)
+            {
+                LoginResult result = await response.Content.ReadFromJsonAsync<LoginResult>();
+                var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+                await customAuthStateProvider.UpdateAuthenticationState(result);
+                navManager.NavigateTo("/", forceLoad: true);
+
+            }
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                LoginSuccess = false;
+            }
+        }
+    }
+}

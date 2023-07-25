@@ -1,0 +1,78 @@
+﻿@inject IJSRuntime JS
+
+<div class="chatBox-div">
+    <div id="@elementToScrollId" class="messages-div">
+        @foreach (var message in messages)
+        {
+            <div class="message-div @(string.Equals(myId,message.user_Id.ToString())? "myMessage" : "otherMessage")">
+                @if (!string.Equals(myId, message.user_Id.ToString()))
+                {
+                    <span style="font-weight: 600;">@message.userName</span>
+                }
+                <div class="message-box">
+                    @message.content
+                </div>
+            </div>
+        }
+    </div>
+    <div class="inputMessage-div">
+        <textarea id="messageInput" rows="2"
+                  @bind="messageContent"
+                  @oninput="(e) => HandleInput(e.Value.ToString())"
+                  @onkeypress="@((e) => HandleSend(e))">
+        </textarea>
+        <img @onclick="HandleSend" src="/images/Icons/ForwardArrowBlue.png" />
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public List<Message> messages { get; set; } = new();
+
+    [Parameter]
+    public string elementToScrollId { get; set; }
+
+    [CascadingParameter(Name="myId")]
+    public string myId { get; set; }
+
+    [CascadingParameter]
+    public UserMessagesView mainPage { get; set; }
+
+    public string messageContent { get; set; } = "";
+
+
+
+    private async void HandleSend(KeyboardEventArgs e)
+    {
+        if (string.Equals(e.Key, "Enter") && !e.ShiftKey && !string.IsNullOrEmpty(messageContent))
+        {
+            await mainPage.SendMessage(messageContent);
+            messageContent = string.Empty;
+        }
+
+    }
+    private async void HandleSend()
+    {
+        if (!string.IsNullOrEmpty(messageContent))
+        {
+            await mainPage.SendMessage(messageContent);
+            messageContent = string.Empty;
+        }
+    }
+    private async void HandleInput(string newValue)
+    {
+        if (string.IsNullOrWhiteSpace(messageContent) && newValue.EndsWith('\n'))
+        {
+            await JS.InvokeVoidAsync("SetValue", "messageInput", string.Empty);
+        }
+        else if (messageContent.EndsWith('\n') && newValue.EndsWith('\n'))
+        {
+            await JS.InvokeVoidAsync("SetValue", "messageInput", messageContent);
+        }
+        else
+        {
+            messageContent = newValue;
+        }
+    }
+}

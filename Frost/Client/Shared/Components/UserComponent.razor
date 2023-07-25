@@ -1,0 +1,91 @@
+﻿@inject IStringLocalizer<Resource> localizer
+@inject ILocalStorageService localStorage
+@inject NavigationManager navManager
+@inject IJSRuntime JS
+@inject AuthenticationStateProvider authStateProvider
+<div class="user-div" id="@listId">
+    <div class="login-div" @onclick="handleUserClick">
+        <span>
+            <img src="/images/Profile.png" />
+            <a>
+                <AuthorizeView>
+                    <Authorized>
+                        @context.User.Identity.Name
+                    </Authorized>
+                    <NotAuthorized>
+                        @localizer["LogIn"]
+                    </NotAuthorized>
+                </AuthorizeView>
+            </a>
+        </span>
+    </div>
+    <div class="user-dropdownlist" style="visibility: @(isDropdownVisible? "visible" : "collapse")">
+        <ul>
+            <li @onclick="@(() => {navManager.NavigateTo("/account/offers/youroffers"); isDropdownVisible = false;} )">
+                <a>@localizer["Offers"]</a>
+            </li>
+            <li @onclick="@(() => {navManager.NavigateTo("/account/messages");isDropdownVisible = false;} )">
+                <a>@localizer["Messages"]</a>
+            </li>
+            <li @onclick="@(() => {navManager.NavigateTo("/account/settings/accountsettings");isDropdownVisible = false;} )">
+                <a>@localizer["Settings"]</a>
+            </li>
+            <li @onclick="handleLogOutClick">
+                <a style="font-weight:700">@localizer["LogOut"]</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+@code {
+    private LoginResult user = new();
+    [CascadingParameter]
+    private Task<AuthenticationState> authState { get; set; }
+    public bool isDropdownVisible { get; set; } = false;
+    private DotNetObjectReference<UserComponent> objRef;
+    public string listId { get; set; } = "userDropdownList";
+    protected override void OnInitialized()
+    {
+        objRef = DotNetObjectReference.Create(this);
+
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("addDocumentClickListener", objRef, listId);
+        }
+    }
+    [JSInvokable]
+    public void ToggleDropdownVisibility(bool visibility)
+    {
+        isDropdownVisible = visibility;
+        this.StateHasChanged();
+    }
+    public void Dispose()
+    {
+        objRef?.Dispose();
+    }
+    private async void handleUserClick()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            navManager.NavigateTo("/login");
+        }
+        else
+        {
+            isDropdownVisible = !isDropdownVisible;
+            this.StateHasChanged();
+        }
+    }
+    private async Task handleLogOutClick()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        await customAuthStateProvider.UpdateAuthenticationState(null);
+        isDropdownVisible = false;
+        navManager.NavigateTo("/");
+    }
+}

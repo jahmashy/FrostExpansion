@@ -1,0 +1,47 @@
+﻿.list-Wrapper {
+    display:inline-block;
+    justify-content:space-between;
+    margin-left:auto;
+}
+ul{
+    max-height:200px;
+    overflow-y:auto;
+    overflow-x:clip;
+    padding:0;
+    margin:0;
+}
+li{
+    padding:0;
+}
+.listElement-div {
+    display: flex;
+    flex-direction: row;
+    align-items:center;
+    margin-bottom:1rem;
+    border: solid 1px #BCE0FD;
+}
+.listElement-div img{
+    cursor:pointer;
+}
+.listElement-div p{
+    margin:0;
+    margin-inline:10px;
+}
+.listElement-div p + img{
+    margin-left:auto;
+    margin-right:10px;
+
+}
+.top-div{
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    margin-bottom:1rem;
+}
+.top-div p{
+    margin:0;
+}
+.top-div img{
+    margin-left:1rem;
+    cursor:pointer;
+}

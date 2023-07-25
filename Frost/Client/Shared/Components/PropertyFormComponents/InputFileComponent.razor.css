@@ -1,0 +1,55 @@
+﻿label {
+    color: #2699FB;
+    font-weight: 600;
+}
+.image-component-wrapper{
+    display:flex;
+    flex-direction:row;
+    
+}
+.image-slider {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    height: 200px;
+    width: 200px;
+    overflow: hidden;
+    background-color: #f1f9ff;
+}
+
+.slide-div img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.cancel-button {
+    position: absolute;
+    width: 12%;
+    top: 17%;
+    left: 5%;
+    cursor: pointer;
+}
+
+.preview-image-div {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    max-width: 200px;
+    position: relative;
+}
+button{
+    width:100%;
+}
+.slick-next {
+    right: 5%;
+}
+
+.slick-prev {
+    left: 5%;
+    z-index: 1
+}
+.imageErrors{
+    margin:1rem;
+    margin-top:2rem;
+}
+

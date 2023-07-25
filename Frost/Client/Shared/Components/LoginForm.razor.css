@@ -1,0 +1,5 @@
+﻿::deep input:focus {
+    outline: none;
+    border-color: #2699FB;
+    box-shadow: 0 0 5px rgba(0, 102, 204, 0.5);
+}

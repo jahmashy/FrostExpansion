@@ -1,0 +1,54 @@
+﻿@using Frost.Shared.Models;
+@inject IStringLocalizer<Resource> localizer
+@inject IJSRuntime JS
+@inject NavigationManager NavManager
+<div class="propertyListElement-div">
+    <div class="image-slider">
+        @foreach (var url in propertyOffer.propertyImagesUrls)
+        {
+            <div class="slide">
+                <img src="@url"/>
+            </div>
+        }
+    </div>
+    <div class="propertyContent-div">
+        <h3 @onclick="RedirectOnClick">@propertyOffer.Title</h3>
+        <span>@propertyOffer.Location.cityName, @propertyOffer.Location.districtName</span>
+        <p><span>@propertyOffer.Price zł / mc </span>@propertyOffer.Surface m²</p>
+        <p class="description">@propertyOffer.Description</p>
+        <div class="bottomContent">
+            <span><img src="images/Icons/Tick.png" style="visibility: @(propertyOffer.RoommatesAllowed ? "visible" : "hidden")" />@(propertyOffer.RoommatesAllowed ? localizer["Roommates"] : "")</span>
+            @if (userOffers)
+            {
+                <button>@localizer["SaveTemplate"]</button>
+                <button>@localizer["Edit"]</button>
+                <button class="button-delete">@localizer["Delete"]</button>
+            }
+            else
+            {
+                <button>@localizer["SendMessage"]</button>
+                <img class="addFavourite-button" />
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public PropertyDetailsDTO? propertyOffer { get; set; } = new();
+    [Parameter]
+    public bool userOffers { get; set; }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("import", "/js/InitializeSlickCarousel.js");
+            await JS.InvokeVoidAsync("initializeSlickCarousel");
+        }
+    }
+    private void RedirectOnClick()
+    {
+        string id = propertyOffer.OfferId.ToString();
+        NavManager.NavigateTo($"/propertydetails/{id}", forceLoad: true);
+    }
+}

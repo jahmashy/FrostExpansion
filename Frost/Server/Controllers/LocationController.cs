@@ -13,11 +13,18 @@ namespace Frost.Server.Controllers
         public LocationController(IGooglePlacesApiService googlePlacesApi) {
             this.googlePlacesApi = googlePlacesApi;
         }
-        [HttpGet]
-        public async Task<IActionResult> GetLocations(string? userInput)
+        [HttpGet("cities")]
+        public async Task<IActionResult> GetCities(string? userInput)
         {
-            var locations = await googlePlacesApi.GetLocationsAsync(userInput);
-            return Ok(locations);
+            var cities = await googlePlacesApi.GetCitiesAsync(userInput);
+            return Ok(cities);
         }
+        [HttpGet("districts")]
+        public async Task<IActionResult> GetDistricts(string? userInput, string city)
+        {
+            var districts = await googlePlacesApi.GetDistrictsAsync(userInput, city);
+            return Ok(districts);
+        }
+
     }
 }

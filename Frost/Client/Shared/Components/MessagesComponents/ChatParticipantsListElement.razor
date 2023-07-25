@@ -1,0 +1,32 @@
+﻿<div class="participant-div">
+    <div class="upper-section">
+        @if (string.IsNullOrEmpty(participant.ProfileImgUrl))
+        {
+            <img src="/images/Icons/ProfileImg.png">
+        }
+        else
+        {
+            <img src="@participant.ProfileImgUrl">
+        }
+        <div class="info-div">
+            <h4>@participant.Name</h4>
+            <h5>@participant.City</h5>
+        </div>
+    </div>
+    @if (!string.IsNullOrEmpty(participant.Description))
+    {
+        <div class="description-div">
+            <p>
+                @participant.Description
+            </p>
+        </div>
+    }
+
+</div>
+
+
+@code {
+    [Parameter]
+    public UserDto participant { get; set; } = new();
+
+}

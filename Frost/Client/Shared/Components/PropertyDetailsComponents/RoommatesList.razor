@@ -1,0 +1,27 @@
+﻿@inject IStringLocalizer<Resource> localizer
+<div class="list-Wrapper">
+    <div class="top-div">
+        <p>@localizer["RoommateSearch"]</p>
+        <img src="/images/Icons/Plus.png" />
+    </div>
+    
+    <ul>
+        @foreach (var user in roommatesList)
+        {
+            <li>
+                <div class="listElement-div">
+                    <img src="@(string.IsNullOrEmpty(user.ProfileImgUrl)? "/images/Icons/ProfileImgList.png" : user.ProfileImgUrl)" />
+                    <p>@user.Name</p>
+                    <img src="/images/Icons/Message.png" />
+                </div>
+            </li>
+
+        }
+    </ul>
+</div>
+
+
+@code {
+    [Parameter]
+    public List<UserDto> roommatesList { get; set; }
+}

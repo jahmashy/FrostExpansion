@@ -1,0 +1,63 @@
+﻿@inject IStringLocalizer<Resource> localizer
+@inject ILocalStorageService localStorage
+@inject NavigationManager navManager
+
+<div class="form-div">
+    <h3>
+        @localizer["Registration"]
+    </h3>
+    <div class="form-box">
+        <EditForm Model="regModel" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <div class="validation-message" style="content-visibility: @(userAlreadyExists? "visible" : "hidden")">@localizer["UserAlreadyExists"]</div>
+            <label>@localizer["Email"]</label>
+            <ValidationMessage For="@(() => regModel.email)" />
+            <InputText @bind-Value=regModel.email placeholder="@localizer["EmailPlaceholder"]"></InputText>
+
+            <label>@localizer["Name"]</label>
+            <ValidationMessage For="@(() => regModel.name)" />
+            <InputText @bind-Value=regModel.name placeholder="@localizer["NamePlaceholder"]"></InputText>
+
+            <label>@localizer["TelNumber"]</label>
+            <ValidationMessage For="@(() => regModel.telNumber)" />
+            <InputText @bind-Value=regModel.telNumber placeholder="@localizer["TelNumberPlaceholder"]"></InputText>
+
+            <label>@localizer["Password"]</label>
+            <ValidationMessage For="@(() => regModel.password)" />
+            <InputText type="password" @bind-Value=regModel.password placeholder="@localizer["PasswordPlaceholder"]"></InputText>
+
+            <label>@localizer["ConfirmPassword"]</label>
+            <ValidationMessage For="@(() => regModel.confirmPassword)" />
+            <InputText type="password" @bind-Value=regModel.confirmPassword placeholder="@localizer["ConfirmPasswordPlaceholder"]"></InputText>
+
+            <button>@localizer["Register"]</button>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    public bool isUserLoggedIn { get; set; }
+    private bool userAlreadyExists = false;
+    private RegistrationModel regModel = new();
+    private async Task HandleValidSubmit()
+    {
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var response = await httpClient.PostAsJsonAsync<RegistrationModel>("https://localhost:44350/api/auth/register", regModel);
+            if (response.IsSuccessStatusCode)
+            {
+                LoginResult result = await response.Content.ReadFromJsonAsync<LoginResult>();
+                await localStorage.SetItemAsync<LoginResult>("user", result);
+                isUserLoggedIn = true;
+                userAlreadyExists = false;
+                navManager.NavigateTo("/", forceLoad: true);
+
+            }
+            if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
+            {
+                userAlreadyExists = true;
+            }
+        }
+    }
+}

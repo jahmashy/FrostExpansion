@@ -1,8 +1,8 @@
 ﻿.search-div {
     display: flex;
     flex-direction: column;
-    width: 180px;
 }
+
     .search-div:focus-within {
         outline: none;
         border-color: #2699FB;
@@ -14,14 +14,15 @@
     border-color: #2699FB;
     box-shadow: 0 0 5px rgba(0, 102, 204, 0.5);
 }
+
 ::deep input::placeholder {
     font-weight: 200;
     color: #80C6FF;
 }
 
 ul {
-    width: 180px;
-    z-index: 1;
+    width: 100%;
+    z-index: 100;
     position: absolute;
     background-color: #fff;
     outline: none;
@@ -45,6 +46,7 @@ li {
     li:hover {
         background-color: aliceblue;
     }
+
 span {
     padding-inline-start: 16px;
 }

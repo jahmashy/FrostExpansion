@@ -1,0 +1,31 @@
+﻿@using System.Security.Claims;
+@inject AuthenticationStateProvider authStateProvider
+
+
+<div class="participantsList-div">
+    <ul>
+        @foreach(var participant in participants)
+        {
+            @if (!string.Equals(participant.Id.ToString(), myId))
+            {
+                <li><ChatParticipantsListElement participant="participant"></ChatParticipantsListElement></li> 
+            }
+
+        }
+    </ul>
+</div>
+
+@code {
+    [Parameter]
+    public List<UserDto> participants { get; set; }
+
+    public string myId { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+        myId = authState.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).First().Value;
+        
+    }
+
+}

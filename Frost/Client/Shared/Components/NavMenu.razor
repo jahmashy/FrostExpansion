@@ -5,7 +5,7 @@
 @inject NavigationManager NavManager
 
 <div class="nav-div">
-    <div class="logo-div" @onfocus= "@(()=>Console.WriteLine("foc"))">
+    <div class="logo-div" @onclick="@(()=> NavManager.NavigateTo("/"))">
         <img class="logo" src="/images/logo.png" alt="Frost logo">
         <h1>Frost</h1>
     </div>
@@ -26,23 +26,21 @@
         </ul>
     </nav>
     <div class="user-div">
-        <button class="action-button" @onclick="ChangeCulture">@localizer["Language"]</button>
-        <div class="login-div">
-            <img src="/images/Profile.png" />
-            <a>@localizer["LogIn"]</a>
-        </div>
-        <button class="action-button">@localizer["AddOffer"]</button>
+        <button class="nav-button" @onclick="ChangeCulture">@localizer["Language"]</button>
+        <UserComponent></UserComponent>
+        <button class="nav-button" @onclick="@(()=>NavManager.NavigateTo("/addoffer"))">@localizer["AddOffer"]</button>
     </div>
 </div>
 @code {
     List<string> listValues = new List<string> { "Flats","Houses","Plots","Establishments","Garages","Rooms" };
+
+    
+
     [Parameter]
     public bool buyDropdownListVisibility { get; set; } 
 
     [Parameter]
     public bool sellDropdownListVisibility { get; set; } 
-
-
     CultureInfo cultureEn = new CultureInfo("en-US");
     CultureInfo culturePl = new CultureInfo("pl-PL");
     CultureInfo Culture

@@ -35,5 +35,6 @@ namespace Frost.Shared.Models
         public MarketType marketType { get; set; }
 
         public bool roommates { get; set; }
+        public UserDto user { get; set; }
     }
 }

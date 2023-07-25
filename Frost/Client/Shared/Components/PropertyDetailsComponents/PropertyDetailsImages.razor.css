@@ -1,0 +1,28 @@
+﻿.images-wrapper{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.slider-for {
+    overflow: hidden;
+    height: 460px;
+    width: 920px;
+}
+.slider-nav{
+    width:920px;
+}
+.main-slide {
+    height: 480px;
+    width: 970px;
+}
+.side-slide {
+    height: 110px;
+    overflow: hidden;
+    padding-inline: 10px;
+}
+img{
+    height:100%;
+    width:100%;
+    object-fit:cover;
+}

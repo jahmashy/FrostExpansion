@@ -1,0 +1,90 @@
+﻿@inject IStringLocalizer<Resource> localizer
+@inject NavigationManager navManager
+@inject IJSRuntime JS
+@using Newtonsoft.Json;
+
+@page "/propertydetails/{propertyOfferId}"
+
+<div class="propertyDetails-wrapper">
+    <div class="main-section">
+        <PropertyDetailsImages propertyImagesUrls="propertyImagesUrls"></PropertyDetailsImages>
+        <h3>@localizer["Description"]</h3>
+        <p>@propertyOffer.Description</p>
+    </div>
+    <div class="info-section">
+        <p>@localizer["Advertiser"]</p>
+        <div class="userInfo-div">
+            <img class="profileImg" src="@(string.IsNullOrEmpty(user.ProfileImgUrl)? "/images/Icons/ProfileImg.png" : user.ProfileImgUrl)" />
+            <h4>@user.Name</h4>
+            <div class="contact-info">
+                <span>@localizer["TelNumber"]: @user.TelNumber</span>
+                <span>@localizer["Email"]: @user.Email</span>
+            </div>
+        </div>
+        <div class="buttons-div">
+            <button>@localizer["SendMessage"]</button>
+            <span>
+                <button><img src="/images/Icons/Heart_white.png" />@localizer["FollowOffer"]</button>
+            </span>
+        </div>
+        <div class="text-break"></div>
+        <h3>
+            @propertyOffer.Title
+        </h3>
+        <div class="properties-section">
+            <ul>
+                <li>@localizer["SurfaceArea"]: <p>@propertyOffer.Surface m²</p></li>
+                <li>@localizer["RoomsNumber"]: <p>@propertyOffer.RoomsNumber</p></li>
+                <li>@localizer["Floor"]: <p>@propertyOffer.Floor</p></li>
+                <li>@localizer["Market"]: <p>@localizer[propertyOffer.marketType.ToString()]</p></li>
+                <li>@localizer["ConstructionYear"]: <p>@propertyOffer.ConstructionYear</p></li>
+                <li>@localizer["Price"]: <p>@propertyOffer.Price zł</p></li>
+            </ul>
+            @if (propertyOffer.RoommatesAllowed)
+            {
+                <RoommatesList roommatesList="propertyOffer.RoommatesList"></RoommatesList>
+            }
+        </div>
+    </div>
+
+
+
+
+</div>
+@code {
+    
+    [Parameter]
+    public string propertyOfferId { get; set; }
+    public PropertyDetailsDTO propertyOffer { get; set; } = new();
+    public List<string> propertyImagesUrls { get; set; } = new();
+    public UserDto user { get; set; } = new();
+    
+    protected override async Task OnInitializedAsync(){ 
+        await InitializePropertyDetailsAsync(propertyOfferId);
+    }
+    private async Task InitializePropertyDetailsAsync(string id)
+    {
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var response = await httpClient.GetAsync($"https://localhost:44350/api/property/details?offerId={id}");
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                var data = JsonConvert.DeserializeObject<PropertyDetailsDTO>(result);
+                propertyOffer = data;
+                propertyImagesUrls = propertyOffer.propertyImagesUrls;
+                user = propertyOffer.User;
+
+            }else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                navManager.NavigateTo("/NotFound");
+            }
+            else
+            {
+                navManager.NavigateTo("/");
+            }
+        }
+    }
+
+
+}

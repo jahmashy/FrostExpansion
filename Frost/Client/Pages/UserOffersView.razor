@@ -1,0 +1,50 @@
+﻿@page "/account/offers/youroffers"
+@using Newtonsoft.Json;
+@using System.Security.Claims;
+@layout UserAccountLayout
+@inject AuthenticationStateProvider authStateProvider
+<PropertyList propertyList="yourOffers" userOffers="true"></PropertyList>
+
+@code {
+    [CascadingParameter]
+    public UserAccountLayout layout { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authState { get; set; }
+
+    public List<PropertyDetailsDTO> yourOffers = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        layout.isOfferMenuVisible = true;
+        layout.ChangeHeader("YourOffers");
+        yourOffers = await InitializeYourOffersAsync();
+    }
+    private async Task<List<PropertyDetailsDTO>> InitializeYourOffersAsync()
+    {
+
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+            var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+            var email = authState.User.Claims.Where(c => c.Type == ClaimTypes.Email).First().Value;
+            var token = await customAuthStateProvider.GetToken();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            string apiString = $"https://localhost:44350/api/property/userproperties/{email}";
+            var response = await httpClient.GetAsync(apiString);
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                var properties = JsonConvert.DeserializeObject<List<PropertyDetailsDTO>>(result);
+                return properties;
+            }
+            
+            else
+            {
+                return new();
+            }
+
+        }
+    }
+
+}

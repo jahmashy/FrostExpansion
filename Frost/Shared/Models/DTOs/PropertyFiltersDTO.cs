@@ -13,7 +13,7 @@ namespace Frost.Shared.Models.DTOs
     {
         public PropertyType propertyType { get; set; }
         public OfferType transactionType { get; set; }
-        public string? localization { get; set; }
+        public Location location { get; set; }
         public int? minPrice { get; set; }
         public int? maxPrice { get; set; }
         public double? minSurface { get; set; }
@@ -28,10 +28,10 @@ namespace Frost.Shared.Models.DTOs
         public Roommates roommates { get; set; }
 
         [Range(1,53)]
-        public int? floor { get; set; }
-        public int? minConstructionYear { get; set; }
+        public int  ? floor { get; set; }
+        public int minConstructionYear { get; set; }
 
-        public int? maxConstructionYear { get; set; }
+        public int maxConstructionYear { get; set; }
         public MarketType _MarketType { get; set; }
 
     }

@@ -10,9 +10,9 @@ namespace Frost.Server.Controllers
     {
         private IPropertyImageService propertyImageService;
 
-        public PropertyImagesController(IPropertyImageService propertyImageService)
+        public PropertyImagesController()
         {
-            this.propertyImageService = propertyImageService;
+            
         }
         [HttpGet("{property_id}/{imageName}")]
         public IActionResult Get(int property_id, string imageName)

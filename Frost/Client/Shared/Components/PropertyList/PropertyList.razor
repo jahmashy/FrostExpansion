@@ -1,0 +1,17 @@
+﻿@using Frost.Shared.Models;
+<ul>
+    @foreach (var propertyOffer in propertyList)
+    {
+        <li>
+            <PropertyListElement propertyOffer="propertyOffer" userOffers="userOffers"></PropertyListElement>
+        </li>
+    }
+</ul>
+
+@code {
+    [Parameter]
+    public List<PropertyDetailsDTO>? propertyList { get; set; }
+
+    [Parameter]
+    public bool userOffers { get; set; } = false;
+}

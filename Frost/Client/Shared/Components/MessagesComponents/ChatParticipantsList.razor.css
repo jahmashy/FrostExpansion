@@ -1,0 +1,19 @@
+﻿.participantsList-div {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background-color: #F1F9FF;
+    align-content: center;
+    overflow-y: auto;
+    width: 25%;
+    max-height: 100%;
+}
+    .participantsList-div ul {
+        margin:2rem;
+        max-height:100%;
+        position:absolute;
+        display: flex;
+        flex-direction: column;
+        padding: 0px;
+        gap: 1.5rem;
+    }
