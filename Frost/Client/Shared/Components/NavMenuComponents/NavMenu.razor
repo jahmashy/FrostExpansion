@@ -14,7 +14,6 @@
             <li>
                 <a>@localizer["Roommates"]</a>
             </li>
-
             <li>
                 <a style="background:@(buyDropdownListVisibility? "#89AFCF" : "")" @onclick="@(()=> buyDropdownListVisibility = !buyDropdownListVisibility)">@localizer["Buy"]</a>
                 <NavMenuComponentList id="buyDropdownList" values="listValues" isVisible="buyDropdownListVisibility" OnVisibilityChange="@((bool e)=> buyDropdownListVisibility = e)"></NavMenuComponentList>
@@ -30,17 +29,21 @@
         <UserComponent></UserComponent>
         <button class="nav-button" @onclick="@(()=>NavManager.NavigateTo("/addoffer"))">@localizer["AddOffer"]</button>
     </div>
+    <div class="mobileMenuButton" @onclick="(()=> ChangeMobileMenuVisibility(!mobileMenuVisibility))">
+        <img src="/images/Icons/Menu.png"/>
+    </div>
 </div>
+<MobileMenu listValues="listValues" OnMobileMenuVisChange="ChangeMobileMenuVisibility" mobileMenuVisibility="mobileMenuVisibility" OnCultureChange="ChangeCulture"></MobileMenu>
 @code {
+    [Parameter]
+    public EventCallback<bool> OnMobileMenuVisChange { get; set; }
+
     List<string> listValues = new List<string> { "Flats","Houses","Plots","Establishments","Garages","Rooms" };
 
-    
-
-    [Parameter]
     public bool buyDropdownListVisibility { get; set; } 
+    public bool sellDropdownListVisibility { get; set; }
+    public bool mobileMenuVisibility { get; set; } = false;
 
-    [Parameter]
-    public bool sellDropdownListVisibility { get; set; } 
     CultureInfo cultureEn = new CultureInfo("en-US");
     CultureInfo culturePl = new CultureInfo("pl-PL");
     CultureInfo Culture
@@ -48,8 +51,8 @@
         get => CultureInfo.CurrentCulture;
         set
         {
-                localStorage.SetItemAsync<string>("culture", value.Name);
-                NavManager.NavigateTo(NavManager.Uri, forceLoad: true);
+            localStorage.SetItemAsync<string>("culture", value.Name);
+            NavManager.NavigateTo(NavManager.Uri, forceLoad: true);
         }
     }
     public void ChangeCulture()
@@ -63,5 +66,10 @@
             Culture = cultureEn;
         }
 
+    }
+    public async void ChangeMobileMenuVisibility(bool visibility)
+    {
+        mobileMenuVisibility = visibility;
+        await OnMobileMenuVisChange.InvokeAsync(mobileMenuVisibility);
     }
 }

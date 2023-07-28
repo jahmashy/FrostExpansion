@@ -104,6 +104,15 @@ namespace Frost.Client.Authentication
             
             return result;
         }
+        public async Task<bool> HasSessionExpired()
+        {
+            var session = await _localStorageService.ReadEncryptedItemAsync<LoginResult>("UserSession");
+            if (session == null)
+                return true;
+            if (DateTime.Compare(session.jwtExpDate, DateTime.UtcNow) < 0)
+                return true;
+            return false;
+        }
         private async Task<LoginResult?> RefreshJwtAsync(string jwtToken, string refreshToken)
         {
             using (HttpClient httpClient = new HttpClient())

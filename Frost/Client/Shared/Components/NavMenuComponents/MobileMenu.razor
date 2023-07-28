@@ -1,0 +1,92 @@
+﻿@inject IStringLocalizer<Resource> localizer
+@inject NavigationManager navManager
+@inject AuthenticationStateProvider authStateProvider
+<div class="mobileMenu @(mobileMenuVisibility? "mobileMenuIn" : "mobileMenuOut")">
+    <nav>
+        <a>@localizer["Roommates"]</a>
+        <div>
+            <a @onclick="@(()=> buyDropdownListVisibility = !buyDropdownListVisibility)">@localizer["Buy"]</a>
+            <ul style="display:@(buyDropdownListVisibility? "flex" : "none")">
+                @foreach(var value in listValues)
+                {
+                    <li>@localizer[value]</li>
+                }
+            </ul>
+        </div>
+       <div>
+            <a @onclick="@(()=> sellDropdownListVisibility = !sellDropdownListVisibility)">@localizer["Rent"]</a>
+            <ul style="display:@(sellDropdownListVisibility? "flex" : "none")">
+                @foreach (var value in listValues)
+                {
+                    <li>@localizer[value]</li>
+                }
+            </ul>
+       </div>
+    </nav>
+    <div class="break"></div>
+    <div>
+        <div class="login-div" @onclick="handleUserClick">
+            <span>
+                <img src="/images/Profile.png" />
+                <a>
+                    <AuthorizeView>
+                        <Authorized>
+                            @context.User.Identity.Name
+                        </Authorized>
+                        <NotAuthorized>
+                            @localizer["LogIn"]
+                        </NotAuthorized>
+                    </AuthorizeView>
+                </a>
+            </span>
+        </div>
+        <AuthorizeView>
+            <Authorized>
+                <div class="login-div" @onclick="handleLogOutClick">
+                    @localizer["LogOut"]
+                </div>
+            </Authorized>
+        </AuthorizeView>
+    </div>
+    <button class="nav-button" @onclick="@(()=>navManager.NavigateTo("/addoffer"))">@localizer["AddOffer"]</button>
+    <button class="nav-button" @onclick="@(async () => await OnCultureChange.InvokeAsync())">@localizer["Language"]</button>
+</div>
+
+@code {
+    [Parameter]
+    public bool mobileMenuVisibility { get; set; } = false;
+
+    [Parameter]
+    public List<string> listValues { get; set; } = new();
+
+    [Parameter]
+    public EventCallback OnCultureChange { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnMobileMenuVisChange { get; set; }
+
+    public bool buyDropdownListVisibility { get; set; } = false;
+    public bool sellDropdownListVisibility { get; set; } = false;
+    private async void handleUserClick()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        await OnMobileMenuVisChange.InvokeAsync(false);
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            navManager.NavigateTo("/login");
+        }
+        else
+        {
+            navManager.NavigateTo("/account/settings");
+        }
+        
+    }
+    private async Task handleLogOutClick()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        await customAuthStateProvider.UpdateAuthenticationState(null);
+        await OnMobileMenuVisChange.InvokeAsync(false);
+        navManager.NavigateTo("/");
+    }
+}

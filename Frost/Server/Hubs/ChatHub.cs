@@ -32,7 +32,7 @@ namespace Frost.Server.Hubs
                 await base.OnDisconnectedAsync(new Exception("Chat ID is required"));
                 return;
             }
-            bool validationSuccess = await chatDbService.IsUserChatAsync(int.Parse(chatId), int.Parse(Context.UserIdentifier));
+            bool validationSuccess = await chatDbService.IsUserChatAsync(int.Parse(Context.UserIdentifier), int.Parse(chatId));
             if (!validationSuccess)
             {
                 await base.OnDisconnectedAsync(new Exception("User does not participate in this chat"));

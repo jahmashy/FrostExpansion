@@ -42,7 +42,9 @@ ul {
 .nav-div .logo-div img {
     height: 100%;
 }
-
+.mobileMenuButton {
+    display: none;
+}
 .user-div {
     display: flex;
     flex-direction: row;
@@ -50,18 +52,7 @@ ul {
     align-items: center;
     height: 100%;
     margin-left: auto;
-    margin-right: 130px;
-}
-.nav-button {
-    text-decoration: none;
-    font-weight: 600;
-    color: #2699FB;
-    background-color: white;
-    padding: 10px;
-    cursor: pointer;
-    border: 2px solid white;
-    border-radius: 6px;
-    text-wrap:nowrap;
+    margin-right: 3rem;
 }
 
 
@@ -80,3 +71,35 @@ li a {
     li a:hover{
         background: #89AFCF;     
     }
+
+
+@media screen and (max-width:1100px) {
+    .nav-div {
+        display: flex;
+        position:fixed;
+        z-index:9999;
+        flex-direction: row;
+        height: 70px;
+        width:100%;
+        background: #6B9BC3;
+        align-items: center;
+        border-bottom: 1px solid #6B9BC3;
+        box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.5);
+    }
+    .nav-div nav{
+        display:none;
+    }
+    .nav-div .user-div {
+        display: none;
+    }
+    .mobileMenuButton {
+        display: block;
+        margin-left: auto;
+        margin-right: 2rem;
+        cursor: pointer;
+    }
+    .mobileMenuButton img {
+        width: 80%;
+        height: 80%;
+    }
+}

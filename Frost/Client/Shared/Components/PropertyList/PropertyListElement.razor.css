@@ -26,8 +26,6 @@
     min-height: 100%;
     object-fit:cover;
 }
-
-
 .propertyContent-div {
     width:100%;
     display: flex;
@@ -56,8 +54,12 @@
     .bottomContent span img{
         margin-right:0.5rem;
     }
-.description{
-    height:72px;
-    overflow:clip;
-    margin-left:1rem;
+.description {
+    height: 72px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: 1rem;
 }

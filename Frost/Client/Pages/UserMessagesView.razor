@@ -14,7 +14,7 @@
             <CascadingValue Value="selectedChat.Id" Name="selectedChatId">
                 <CascadingValue Value="myId" Name="myId">
                     <ChatList chatList="userChats"></ChatList>
-                    <ChatBox elementToScrollId="@elementToScrollId" messages="selectedChat.messages"></ChatBox>
+                    <ChatBox OnMessageContentChange="ChangeMessageContent" messageContent="@newMessagesToSent[selectedChat.Id]" elementToScrollId="@elementToScrollId" messages="selectedChat.messages"></ChatBox>
                     <ChatParticipantsList participants="selectedChat.participants"></ChatParticipantsList>
                 </CascadingValue>
             </CascadingValue>
@@ -34,6 +34,7 @@ else
     public List<ChatPreviewDTO> userChats { get; set; } = new();
 
     public ChatPreviewDTO selectedChat { get; set; } = new();
+    public Dictionary<int, string> newMessagesToSent { get; set; } = new();
 
     public string myId { get; set; }
 
@@ -44,6 +45,9 @@ else
 
     private string hubUrl;
     private HubConnection hubConnection;
+    private bool IsConnected =>
+        hubConnection?.State == HubConnectionState.Connected;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -54,6 +58,10 @@ else
         layout.ChangeHeader("YourMessages");
         userChats = await InitializeChats();
         selectedChat = userChats.FirstOrDefault();
+        foreach(var chat in userChats)
+        {
+            newMessagesToSent.Add(chat.Id,"");
+        }
         string token = await customAuthStateProvider.GetToken();
 
         await EstablishChatConnection(token);
@@ -97,38 +105,74 @@ else
                 options.AccessTokenProvider = () => Task.FromResult(token);
             })
         .Build();
-
-        hubConnection.On<Message>("ReceiveMessage", ReceiveMessage);
+        hubConnection.ServerTimeout = TimeSpan.FromSeconds(30);
+        hubConnection.HandshakeTimeout = TimeSpan.FromSeconds(15);
+        hubConnection.KeepAliveInterval = TimeSpan.FromSeconds(15);
+        hubConnection.On<Message>("ReceiveMessage", ReceiveMessageAsync);
+        hubConnection.Closed += (exception) =>
+        {
+            return RefreshConnectionAsync(exception);
+        };
 
         await hubConnection.StartAsync();
     }
-    public async Task SendMessage(string message)
+    public async Task SendMessageAsync(string message)
     {
-        if (user.Identity is not null && user.Identity.IsAuthenticated)
+        if(await customAuthStateProvider.HasSessionExpired())
         {
-            await hubConnection.SendAsync("SendMessage", selectedChat.Id.ToString(), message);
+            authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+            user = authState.User;
+            string token = await customAuthStateProvider.GetToken();
         }
-        else
+        if(user.Identity is null || !user.Identity.IsAuthenticated)
         {
-            await hubConnection.StopAsync();
-            await hubConnection.DisposeAsync();
+            HandleDisconnect();
             await customAuthStateProvider.UpdateAuthenticationState(null);
-        }   
+            return;
+        }
+        if(IsConnected)
+            await hubConnection.SendAsync("SendMessage", selectedChat.Id.ToString(), message);
     }
-    public async void ReceiveMessage(Message newMessage)
+    public async void ReceiveMessageAsync(Message newMessage)
     {
-        if (user.Identity is not null && user.Identity.IsAuthenticated)
+        authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+        user = authState.User;
+        if (user.Identity is null || !user.Identity.IsAuthenticated)
+        {
+            HandleDisconnect();
+            await customAuthStateProvider.UpdateAuthenticationState(null);
+            return;
+        }
+        if (IsConnected)
         {
             userChats.Where(c => c.Id == newMessage.chatroom_Id).First().messages.Add(newMessage);
             this.StateHasChanged();
             if (newMessage.chatroom_Id == selectedChat.Id)
                 await JS.InvokeVoidAsync("ScrollToBottom", elementToScrollId);
         }
-        else
+    }
+    public void ChangeMessageContent(string newMessage)
+    {
+        newMessagesToSent[selectedChat.Id] = newMessage;
+    }
+    private async void HandleDisconnect()
+    {
+        await hubConnection.StopAsync();
+        await hubConnection.DisposeAsync();
+    }
+    private async Task RefreshConnectionAsync(Exception e)
+    {
+        HandleDisconnect();
+        if(e is HttpRequestException)
         {
-            await hubConnection.StopAsync();
-            await hubConnection.DisposeAsync();
-            await customAuthStateProvider.UpdateAuthenticationState(null);
+            if (((HttpRequestException)e).StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+                user = authState.User;
+                string token = await customAuthStateProvider.GetToken();
+                await EstablishChatConnection(token);
+            }
         }
+        return;
     }
 }

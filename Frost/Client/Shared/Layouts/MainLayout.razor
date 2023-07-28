@@ -2,12 +2,20 @@
 
 <div class="page">
     <div>
-        <NavMenu/>
+        <NavMenu OnMobileMenuVisChange="ChangeMenuVisibility"/>
     </div>
 
-    <main>
+    <main class="@(mobileMenuVisibility? "mobileMenuIn" : "mobileMenuOut")">
         <article class="content">
             @Body
         </article>
     </main>
 </div>
+@code{
+    public bool mobileMenuVisibility { get; set; } = false;
+
+    public void ChangeMenuVisibility(bool visibility)
+    {
+        mobileMenuVisibility = visibility;
+    }
+}

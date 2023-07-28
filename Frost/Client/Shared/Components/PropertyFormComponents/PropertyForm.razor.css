@@ -56,10 +56,6 @@ label {
     align-items:center;
 
 }
-
-::deep input +span{
-    margin-right:1rem;
-}
 ::deep select{
     width:100%;
 }

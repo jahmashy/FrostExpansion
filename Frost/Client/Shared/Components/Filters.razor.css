@@ -76,13 +76,7 @@
 .input-div {
     height: 50px;
     width: 180px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    background-color: white;
-    border: 2px solid #80C6FF;
-    border-radius: 4px;
-    color: #80C6FF;
+
 }
 
     .input-div:focus-within {
@@ -91,16 +85,6 @@
         box-shadow: 0 0 5px rgba(0, 102, 204, 0.5);
     }
 
-    .input-div ::deep input[type=number] {
-        height: 45px;
-        width: 150px;
-        border: none;
-    }
-
-        .input-div ::deep input[type=number]:focus {
-            outline: none;
-            border-color: transparent;
-        }
 .advanced-filters-div {
     position: relative;
 }

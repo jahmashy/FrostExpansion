@@ -39,7 +39,11 @@
     [CascadingParameter]
     public UserMessagesView mainPage { get; set; }
 
-    public string messageContent { get; set; } = "";
+    [Parameter]
+    public string messageContent { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnMessageContentChange { get; set; }
 
 
 
@@ -47,8 +51,8 @@
     {
         if (string.Equals(e.Key, "Enter") && !e.ShiftKey && !string.IsNullOrEmpty(messageContent))
         {
-            await mainPage.SendMessage(messageContent);
-            messageContent = string.Empty;
+            await mainPage.SendMessageAsync(messageContent);
+            await OnMessageContentChange.InvokeAsync(string.Empty);
         }
 
     }
@@ -56,8 +60,8 @@
     {
         if (!string.IsNullOrEmpty(messageContent))
         {
-            await mainPage.SendMessage(messageContent);
-            messageContent = string.Empty;
+            await mainPage.SendMessageAsync(messageContent);
+            await OnMessageContentChange.InvokeAsync(string.Empty);
         }
     }
     private async void HandleInput(string newValue)
@@ -65,14 +69,16 @@
         if (string.IsNullOrWhiteSpace(messageContent) && newValue.EndsWith('\n'))
         {
             await JS.InvokeVoidAsync("SetValue", "messageInput", string.Empty);
+            await OnMessageContentChange.InvokeAsync(string.Empty);
         }
         else if (messageContent.EndsWith('\n') && newValue.EndsWith('\n'))
         {
             await JS.InvokeVoidAsync("SetValue", "messageInput", messageContent);
+            await OnMessageContentChange.InvokeAsync(messageContent);
         }
         else
         {
-            messageContent = newValue;
+            await OnMessageContentChange.InvokeAsync(newValue);
         }
     }
 }

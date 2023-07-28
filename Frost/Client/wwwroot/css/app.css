@@ -42,6 +42,7 @@ a{
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    color: #80C6FF;
 }
 .input-div span {
     color: #80C6FF;
@@ -71,6 +72,17 @@ button {
     cursor: pointer;
     border: 2px solid red;
     border-radius: 6px;
+}
+.nav-button {
+    text-decoration: none;
+    font-weight: 600;
+    color: #2699FB;
+    background-color: white;
+    padding: 10px;
+    cursor: pointer;
+    border: 2px solid white;
+    border-radius: 6px;
+    text-wrap: nowrap;
 }
 .form-div {
     display: flex;
