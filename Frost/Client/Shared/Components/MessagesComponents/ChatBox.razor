@@ -45,6 +45,8 @@
     [Parameter]
     public EventCallback<string> OnMessageContentChange { get; set; }
 
+    public int maxMessageLength { get; set; } = 4096;
+
 
 
     private async void HandleSend(KeyboardEventArgs e)
@@ -71,7 +73,7 @@
             await JS.InvokeVoidAsync("SetValue", "messageInput", string.Empty);
             await OnMessageContentChange.InvokeAsync(string.Empty);
         }
-        else if (messageContent.EndsWith('\n') && newValue.EndsWith('\n'))
+        else if ((messageContent.EndsWith('\n') && newValue.EndsWith('\n')) || newValue.Length > maxMessageLength)
         {
             await JS.InvokeVoidAsync("SetValue", "messageInput", messageContent);
             await OnMessageContentChange.InvokeAsync(messageContent);

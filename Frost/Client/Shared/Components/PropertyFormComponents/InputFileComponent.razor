@@ -23,11 +23,11 @@
         {
             <img @onclick="RemoveFile" class="cancel-button" src="/images/Icons/Cancel-X.png" />
         }
-        <InputFile style="display:none" @ref="inputFile" OnChange="LoadFiles" multiple accept=".png,.jpg,.jpeg,.webp"></InputFile>
+        @foreach (var id in identifiers)
+        {
+            <InputFile @ref="inputFilesComponents[id]" style="display:none" OnChange="LoadFiles" multiple accept=".png,.jpg,.jpeg,.webp"></InputFile>
+        }
         <button type="button" @onclick="InvokeInputFile">@localizer["AddImage"]</button>
-    </div>
-    <div>
-
     </div>
 </div>
 
@@ -43,10 +43,17 @@
     public int minRequiredFiles = 5;
     public int maxAllowedFiles = 15;
 
-
-    private InputFile inputFile = new();
+    private List<int> identifiers = new();
+    private int latestInputComponentID = 0;
     string[] allowExtensions = { ".jpg", ".png", ".jpeg", ".webp" };
     private Dictionary<IBrowserFile, string> ImageDataUrlDict = new();
+    private Dictionary<int, InputFile> inputFilesComponents = new();
+
+    protected override void OnInitialized()
+    {
+        identifiers.Add(latestInputComponentID);
+        inputFilesComponents.Add(latestInputComponentID, new InputFile());
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -56,17 +63,18 @@
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
         errors.Clear();
-        foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+        if (selectedFiles.Count >= maxAllowedFiles)
+        {
+            await AddError.InvokeAsync(localizer["TooManyFilesError"]);
+            return;
+        }
+        foreach (var file in e.GetMultipleFiles(maxAllowedFiles).ToList())
         {
 
             if (file.Size > maxFileSize)
             {
                 await AddError.InvokeAsync(file.Name + " " + localizer["FileTooBigError"]);
-            }else if (selectedFiles.Count >= maxAllowedFiles)
-            {
-                await AddError.InvokeAsync(localizer["TooManyFilesError"]);
-            }
-            else
+            }else
             {
                 var extension = Path.GetExtension(file.Name);
                 if (allowExtensions.Contains(extension.ToLower()))
@@ -86,7 +94,6 @@
                     this.StateHasChanged();
                     if (selectedFiles.Count > 1)
                         await JS.InvokeVoidAsync("initializeSlickCarousel");
-
                 }
                 else
                 {
@@ -96,6 +103,9 @@
             }
 
         }
+        inputFilesComponents.Add(++latestInputComponentID, new InputFile());
+        identifiers.Add(latestInputComponentID);
+        this.StateHasChanged();
 
     }
     private async Task RemoveFile()
@@ -111,8 +121,6 @@
         this.StateHasChanged();
         if (selectedFiles.Count > 1)
             await JS.InvokeVoidAsync("initializeSlickCarousel");
-
-
     }
 
     private async Task<string> getDataUrlFromFIle(IBrowserFile file)
@@ -129,7 +137,6 @@
     }
     private async Task InvokeInputFile()
     {
-        await JS.InvokeVoidAsync("inputFileInterop.invokeInputFile", inputFile.Element);
+        await JS.InvokeVoidAsync("inputFileInterop.invokeInputFile", inputFilesComponents[latestInputComponentID].Element);
     }
-
 }

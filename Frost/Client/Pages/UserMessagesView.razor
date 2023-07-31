@@ -135,8 +135,12 @@ else
     }
     public async void ReceiveMessageAsync(Message newMessage)
     {
-        authState = await customAuthStateProvider.GetAuthenticationStateAsync();
-        user = authState.User;
+        if (await customAuthStateProvider.HasSessionExpired())
+        {
+            authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+            user = authState.User;
+            string token = await customAuthStateProvider.GetToken();
+        }
         if (user.Identity is null || !user.Identity.IsAuthenticated)
         {
             HandleDisconnect();

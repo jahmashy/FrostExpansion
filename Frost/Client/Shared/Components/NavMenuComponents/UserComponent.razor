@@ -5,19 +5,21 @@
 @inject AuthenticationStateProvider authStateProvider
 <div class="user-div" id="@listId">
     <div class="login-div" @onclick="handleUserClick">
-        <span>
+        <div>
             <img src="/images/Profile.png" />
-            <a>
-                <AuthorizeView>
-                    <Authorized>
-                        @context.User.Identity.Name
-                    </Authorized>
-                    <NotAuthorized>
-                        @localizer["LogIn"]
-                    </NotAuthorized>
-                </AuthorizeView>
-            </a>
-        </span>
+        </div>
+        <AuthorizeView>
+            <Authorized>
+                <a>
+                    @context.User.Identity.Name
+                </a>
+            </Authorized>
+            <NotAuthorized>
+                <a>
+                    @localizer["LogIn"]
+                </a>
+            </NotAuthorized>
+        </AuthorizeView>
     </div>
     <div class="user-dropdownlist" style="visibility: @(isDropdownVisible? "visible" : "collapse")">
         <ul>
