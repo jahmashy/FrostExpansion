@@ -31,7 +31,7 @@
     {
         using (HttpClient httpClient = new HttpClient())
         {
-            var response = await httpClient.PostAsJsonAsync<LoginModel>("https://localhost:44350/api/auth/login", loginModel);
+            var response = await httpClient.PostAsJsonAsync<LoginModel>($"{navManager.BaseUri}api/auth/login", loginModel);
             if (response.IsSuccessStatusCode)
             {
                 LoginResult result = await response.Content.ReadFromJsonAsync<LoginResult>();

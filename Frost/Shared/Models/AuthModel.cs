@@ -18,6 +18,8 @@ namespace Frost.Shared.Models
         public int Id { get; set; }
         public string name { get; set; }
         public string email { get; set; }
+        public string Role { get; set; }
+        public int telNumber { get; set; }
         public string jwt { get; set; }
         public DateTime jwtExpDate { get; set; }
         public string jwtRefresh { get; set; }
@@ -45,6 +47,25 @@ namespace Frost.Shared.Models
 
         [Required(ErrorMessageResourceName = "TelNumberRequiredError", ErrorMessageResourceType = typeof(Resources.Errors))]
         [DataType(DataType.PhoneNumber)]
-        public string telNumber { get; set; }
+        [Range(111111111,999999999, ErrorMessageResourceName = "TelNumberIsInvalidError", ErrorMessageResourceType = typeof(Resources.Errors))]
+        public int? telNumber { get; set; }
+    }
+    public class ChangeLoginDetailsModel
+    {
+        [Required(ErrorMessageResourceName = "EmailRequiredError", ErrorMessageResourceType = typeof(Resources.Errors))]
+        [EmailAddress(ErrorMessageResourceName = "EmailValidError", ErrorMessageResourceType = typeof(Resources.Errors))]
+        public string email { get; set; }
+        [DataType(DataType.Password)]
+        public string? password { get; set; }
+        [Required(ErrorMessageResourceName = "TelNumberRequiredError", ErrorMessageResourceType = typeof(Resources.Errors))]
+        [DataType(DataType.PhoneNumber)]
+        [Range(111111111, 999999999, ErrorMessageResourceName = "TelNumberIsInvalidError", ErrorMessageResourceType = typeof(Resources.Errors))]
+        public int? telNumber { get; set; }
+        [DataType(DataType.Password)]
+        public string? newPassword { get; set; }
+
+        [DataType(DataType.Password)]
+        [Compare("newPassword", ErrorMessageResourceName = "PasswordsDoNotMatchError", ErrorMessageResourceType = typeof(Resources.Errors))]
+        public string? confirmNewPassword { get; set; }
     }
 }

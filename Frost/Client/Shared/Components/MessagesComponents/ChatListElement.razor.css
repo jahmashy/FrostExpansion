@@ -18,11 +18,20 @@
     .to-Select:hover {
         background: #e4f3fe;
     }
+.participants-div {
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+}
 .participants-div h5{
     white-space:nowrap;
     overflow:hidden;
     text-overflow: ellipsis;
+
 }
+    .participants-div span:last-child {
+        color: #2699FB;
+    }
 .messages-div {
     display: -webkit-box;
     -webkit-line-clamp: 3;

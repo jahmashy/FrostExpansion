@@ -29,7 +29,7 @@
             <li @onclick="@(() => {navManager.NavigateTo("/account/messages");isDropdownVisible = false;} )">
                 <a>@localizer["Messages"]</a>
             </li>
-            <li @onclick="@(() => {navManager.NavigateTo("/account/settings/accountsettings");isDropdownVisible = false;} )">
+            <li @onclick="@(() => {navManager.NavigateTo("/account/settings/login");isDropdownVisible = false;} )">
                 <a>@localizer["Settings"]</a>
             </li>
             <li @onclick="handleLogOutClick">

@@ -24,14 +24,14 @@ namespace Frost.Shared.Models.Forms
         public double? Price { get; set; }
 
         [Required(ErrorMessageResourceName = "FieldRequiredError", ErrorMessageResourceType = typeof(Resources.Errors))]
-        [Range(1, double.MaxValue, ErrorMessageResourceName = "SurfaceRangeError", ErrorMessageResourceType = typeof(Resources.Errors))]
-        public double? Surface { get; set; }
+        [Range(1, float.MaxValue, ErrorMessageResourceName = "SurfaceRangeError", ErrorMessageResourceType = typeof(Resources.Errors))]
+        public float? Surface { get; set; }
 
         [Required(ErrorMessageResourceName = "FieldRequiredError", ErrorMessageResourceType = typeof(Resources.Errors))]
-        public PropertyType PropertyType { get; set; }
+        public PropertyTypeEnum propertyType { get; set; }
 
         [Required(ErrorMessageResourceName = "FieldRequiredError", ErrorMessageResourceType = typeof(Resources.Errors))]
-        [Range(1, 100, ErrorMessageResourceName = "RoomsNumberRangeError", ErrorMessageResourceType = typeof(Resources.Errors))]
+        [Range(1, 20, ErrorMessageResourceName = "RoomsNumberRangeError", ErrorMessageResourceType = typeof(Resources.Errors))]
         public int? RoomsNumber { get; set; }
 
         [Required(ErrorMessageResourceName = "FieldRequiredError", ErrorMessageResourceType = typeof(Resources.Errors))]
@@ -39,17 +39,17 @@ namespace Frost.Shared.Models.Forms
         public int? ConstructionYear { get; set; }
 
         [Required(ErrorMessageResourceName = "FieldRequiredError", ErrorMessageResourceType = typeof(Resources.Errors))]
-        [Range(1, 100, ErrorMessageResourceName = "FloorRangeError", ErrorMessageResourceType = typeof(Resources.Errors))]
+        [Range(1, 40, ErrorMessageResourceName = "FloorRangeError", ErrorMessageResourceType = typeof(Resources.Errors))]
         public int? Floor { get; set; }
 
         [Required(ErrorMessageResourceName = "FieldRequiredError", ErrorMessageResourceType = typeof(Resources.Errors))]
-        public Location Location { get; set; }
+        public Location location { get; set; }
 
         [Required(ErrorMessageResourceName = "FieldRequiredError", ErrorMessageResourceType = typeof(Resources.Errors))]
-        public OfferType offerType { get; set; }
+        public OfferTypeEnum offerType { get; set; }
 
         [Required(ErrorMessageResourceName = "FieldRequiredError", ErrorMessageResourceType = typeof(Resources.Errors))]
-        public MarketType marketType { get; set; }
+        public MarketTypeEnum marketType { get; set; }
 
         [Required(ErrorMessageResourceName = "FieldRequiredError", ErrorMessageResourceType = typeof(Resources.Errors))]
         public bool RoommatesAllowed { get; set; } = false;

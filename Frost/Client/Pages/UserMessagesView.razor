@@ -13,9 +13,9 @@
         <CascadingValue Value="this">
             <CascadingValue Value="selectedChat.Id" Name="selectedChatId">
                 <CascadingValue Value="myId" Name="myId">
-                    <ChatList chatList="userChats"></ChatList>
-                    <ChatBox OnMessageContentChange="ChangeMessageContent" messageContent="@newMessagesToSent[selectedChat.Id]" elementToScrollId="@elementToScrollId" messages="selectedChat.messages"></ChatBox>
-                    <ChatParticipantsList participants="selectedChat.participants"></ChatParticipantsList>
+                    <ChatList chatToBeCreated="chatToBeCreated" chatList="userChats"></ChatList>
+                    <ChatBox OnInvitationClick="JoinToChat" OnMessageContentChange="ChangeMessageContent" messageContent="@newMessagesToSent[selectedChat.Id]" elementToScrollId="@elementToScrollId" messages="selectedChat.messages"></ChatBox>
+                    <ChatParticipantsList LeaveChat="LeaveChat" isGroupchat="selectedChat.isGroupChat" CreateChatInvitation="CreateChatInvitation" CreateGroupChat="CreateGroupChat" participants="selectedChat.participants"></ChatParticipantsList>
                 </CascadingValue>
             </CascadingValue>
         </CascadingValue>
@@ -28,6 +28,20 @@ else
 @code {
     [CascadingParameter]
     public UserAccountLayout layout { get; set; }
+
+    [CascadingParameter]
+    public PopUpComponent popup { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public bool createChat { get; set; } = false;
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "userId")]
+    public int newUserToChat_ID { get; set; }
+    private bool newChatInitialized = false;
+
+    public ChatPreviewDTO chatToBeCreated;
 
     public string elementToScrollId { get; set; } = "mes-div";
 
@@ -49,24 +63,61 @@ else
         hubConnection?.State == HubConnectionState.Connected;
 
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
-        authState = await customAuthStateProvider.GetAuthenticationStateAsync();
-        user = authState.User;
-        myId = user.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).First().Value;
-        layout.ChangeHeader("YourMessages");
-        userChats = await InitializeChats();
-        selectedChat = userChats.FirstOrDefault();
-        foreach(var chat in userChats)
+        if (firstRender)
         {
-            newMessagesToSent.Add(chat.Id,"");
+            customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+            authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+            user = authState.User;
+            myId = user.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).First().Value;
+            layout.ChangeHeader("YourMessages");
+            userChats = await InitializeChats();
+            selectedChat = userChats.FirstOrDefault();
+            newMessagesToSent = new();
+            foreach (var chat in userChats)
+            {
+                newMessagesToSent.Add(chat.Id, "");
+            }
+            string token = await customAuthStateProvider.GetToken();
+
+            await EstablishChatConnection(token);
+            this.StateHasChanged();
+
+            newChatInitialized = true;
+            bool chatAlreadyExists = userChats.Where(c => c.participants.Where(u => u.userId == newUserToChat_ID).Any() && c.isGroupChat == false).Any();
+            if (chatAlreadyExists)
+            {
+                selectedChat = userChats.Where(c => c.participants.Where(u => u.userId == newUserToChat_ID).Any() && c.isGroupChat == false).First();
+                this.StateHasChanged();
+            }
+            if (createChat && chatToBeCreated is null && !chatAlreadyExists)
+            {
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    string apiString = $"{navManager.BaseUri}api/user/{newUserToChat_ID}";
+                    var response = await httpClient.GetAsync(apiString);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var result = await response.Content.ReadAsStringAsync();
+                        var user = JsonConvert.DeserializeObject<UserDTO>(result);
+                        chatToBeCreated = new ChatPreviewDTO
+                            {
+                                Id = 0,
+                                messages = new(),
+                                participants = new List<UserDTO>() { user },
+                                isGroupChat = false
+                            };
+                        if (!newMessagesToSent.ContainsKey(0))
+                            newMessagesToSent.Add(chatToBeCreated.Id, "");
+                        userChats.Insert(0, chatToBeCreated);
+                        selectedChat = chatToBeCreated;
+                        this.StateHasChanged();
+                    }
+                }
+            }
         }
-        string token = await customAuthStateProvider.GetToken();
-
-        await EstablishChatConnection(token);
     }
-
     private async Task<List<ChatPreviewDTO>> InitializeChats()
     {
         using (HttpClient httpClient = new HttpClient())
@@ -76,7 +127,7 @@ else
             var token = await customAuthStateProvider.GetToken();
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
             var myId = authState.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
-            string apiString = $"https://localhost:44350/api/chat/userChats/{myId}";
+            string apiString = $"{navManager.BaseUri}api/chat/userChats/{myId}";
             var response = await httpClient.GetAsync(apiString);
             if (response.IsSuccessStatusCode)
             {
@@ -98,7 +149,7 @@ else
     }
     private async Task EstablishChatConnection(string token)
     {
-        hubUrl = "https://localhost:44350/chat";
+        hubUrl = $"{navManager.BaseUri}chat";
         hubConnection = new HubConnectionBuilder().WithUrl(hubUrl,
             options =>
             {
@@ -108,7 +159,10 @@ else
         hubConnection.ServerTimeout = TimeSpan.FromSeconds(30);
         hubConnection.HandshakeTimeout = TimeSpan.FromSeconds(15);
         hubConnection.KeepAliveInterval = TimeSpan.FromSeconds(15);
-        hubConnection.On<Message>("ReceiveMessage", ReceiveMessageAsync);
+        hubConnection.On<MessageModel>("ReceiveMessage", ReceiveMessageAsync);
+        hubConnection.On<int>("ConnectToNewChat",ConnectToNewChat);
+        hubConnection.On("NotifyAboutJoin", OnNewUserJoin);
+        hubConnection.On("NotifyAboutLeave", OnUserLeave);
         hubConnection.Closed += (exception) =>
         {
             return RefreshConnectionAsync(exception);
@@ -126,14 +180,74 @@ else
         }
         if(user.Identity is null || !user.Identity.IsAuthenticated)
         {
-            HandleDisconnect();
+            await HandleDisconnect();
             await customAuthStateProvider.UpdateAuthenticationState(null);
             return;
         }
-        if(IsConnected)
-            await hubConnection.SendAsync("SendMessage", selectedChat.Id.ToString(), message);
+        using (HttpClient httpClient = new HttpClient())
+        {
+            string myId = authState.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            int? targetUserId = selectedChat.participants?.FirstOrDefault(p => p.userId != int.Parse(myId))?.userId;
+            var response = await httpClient.GetAsync($"{navManager.BaseUri}api/user/CommunicationStatus?userId={myId}&targetuserid={targetUserId}");
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                bool isCommunicationBlocked = JsonConvert.DeserializeObject<bool>(result);
+                if (!selectedChat.isGroupChat && isCommunicationBlocked == true)
+                {
+                    popup.InvokePopUp(localizer["CommunicationIsBlocked"]);
+                }
+            }
+        }
+
+        if(selectedChat.Id != 0)
+        {
+            if (IsConnected)
+                await hubConnection.SendAsync("SendMessage", selectedChat.Id.ToString(), message);
+        }
+        else
+        {
+            using (HttpClient httpClient = new HttpClient())
+            {
+                authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+                user = authState.User;
+                string token = await customAuthStateProvider.GetToken();
+                httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+                string myId = authState.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+                if(string.IsNullOrEmpty(myId))
+                {
+                    navManager.NavigateTo("/login");
+                }
+                string apiString = $"{navManager.BaseUri}api/chat/privatechat";
+                CreateChatModel newchat = new()
+                {
+                    user_id = int.Parse(myId),
+                    targetUser_id = selectedChat.participants.Select(p=>p.userId).First(),
+                    firstMessage = message
+                };
+                var response = await httpClient.PostAsJsonAsync<CreateChatModel>(apiString,newchat);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadAsStringAsync();
+                    var createdChat = JsonConvert.DeserializeObject<ChatPreviewDTO>(result);
+                    userChats.Remove(chatToBeCreated);
+                    userChats = await InitializeChats();
+                    selectedChat = userChats.FirstOrDefault();
+                    newMessagesToSent = new();
+                    foreach (var chat in userChats)
+                    {
+                        newMessagesToSent.Add(chat.Id, "");
+                    }
+                    await hubConnection.SendAsync("AddClientToGroupAsync", createdChat.Id.ToString());
+                    await hubConnection.SendAsync("NotifyUserAboutNewChat", newUserToChat_ID, createdChat.Id);
+                    this.StateHasChanged();
+                }
+            }
+        }
+
     }
-    public async void ReceiveMessageAsync(Message newMessage)
+    public async void ReceiveMessageAsync(MessageModel newMessage)
     {
         if (await customAuthStateProvider.HasSessionExpired())
         {
@@ -143,15 +257,18 @@ else
         }
         if (user.Identity is null || !user.Identity.IsAuthenticated)
         {
-            HandleDisconnect();
+            await HandleDisconnect();
             await customAuthStateProvider.UpdateAuthenticationState(null);
             return;
         }
         if (IsConnected)
         {
-            userChats.Where(c => c.Id == newMessage.chatroom_Id).First().messages.Add(newMessage);
+            var chat = userChats.Where(c => c.Id == newMessage.chat_Id).First();
+            chat.messages.Add(newMessage);
+            userChats.Remove(chat);
+            userChats.Insert(0, chat);
             this.StateHasChanged();
-            if (newMessage.chatroom_Id == selectedChat.Id)
+            if (newMessage.chat_Id == selectedChat.Id)
                 await JS.InvokeVoidAsync("ScrollToBottom", elementToScrollId);
         }
     }
@@ -159,14 +276,14 @@ else
     {
         newMessagesToSent[selectedChat.Id] = newMessage;
     }
-    private async void HandleDisconnect()
+    private async Task HandleDisconnect()
     {
         await hubConnection.StopAsync();
         await hubConnection.DisposeAsync();
     }
     private async Task RefreshConnectionAsync(Exception e)
     {
-        HandleDisconnect();
+        await HandleDisconnect();
         if(e is HttpRequestException)
         {
             if (((HttpRequestException)e).StatusCode == System.Net.HttpStatusCode.Unauthorized)
@@ -178,5 +295,171 @@ else
             }
         }
         return;
+    }
+    private async Task ConnectToNewChat(int newChatID)
+    {
+        userChats = await InitializeChats();
+        selectedChat = userChats.FirstOrDefault();
+        newMessagesToSent = new();
+        foreach (var chat in userChats)
+        {
+            newMessagesToSent.Add(chat.Id, "");
+        }
+        this.StateHasChanged();
+        await hubConnection.SendAsync("AddClientToGroupAsync", newChatID.ToString());
+    }
+    private async Task CreateGroupChat()
+    {
+        using (HttpClient httpClient = new HttpClient())
+        {
+            authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+            user = authState.User;
+            string token = await customAuthStateProvider.GetToken();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            string myId = authState.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            if (string.IsNullOrEmpty(myId))
+            {
+                navManager.NavigateTo("/login");
+            }
+            string apiString = $"{navManager.BaseUri}api/chat/groupchat";
+            var response = await httpClient.PostAsJsonAsync<int>(apiString, int.Parse(myId));
+            var test = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                var createdChat = JsonConvert.DeserializeObject<ChatPreviewDTO>(result);
+                userChats.Insert(0, createdChat);
+                newMessagesToSent.Add(createdChat.Id, "");
+                await hubConnection.SendAsync("AddClientToGroupAsync", createdChat.Id.ToString());
+                selectedChat = createdChat;
+                this.StateHasChanged();
+            }
+        }
+    }
+    private async Task CreateChatInvitation()
+    {
+        using (HttpClient httpClient = new HttpClient())
+        {
+            authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+            user = authState.User;
+            string token = await customAuthStateProvider.GetToken();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            string myId = authState.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            if (string.IsNullOrEmpty(myId))
+            {
+                navManager.NavigateTo("/login");
+            }
+            string apiString = $"{navManager.BaseUri}api/chat/invitation";
+            var response = await httpClient.PostAsJsonAsync<int>(apiString, selectedChat.Id);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                var sb = new System.Text.StringBuilder();
+                sb.Append(navManager.BaseUri);
+                sb.Append("api/chat/invitation/");
+                sb.Append(result);
+                Console.WriteLine(sb.ToString());
+                await JS.InvokeVoidAsync("import", "/js/CopyToClipboard.js");
+                await JS.InvokeVoidAsync("CopyToClipboard",sb.ToString());
+                this.StateHasChanged();
+            }
+        }
+    }
+    public async Task JoinToChat(string invitation)
+    {
+        using (HttpClient httpClient = new HttpClient())
+        {
+            authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+            user = authState.User;
+            string token = await customAuthStateProvider.GetToken();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            string myId = authState.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            if (string.IsNullOrEmpty(myId))
+            {
+                navManager.NavigateTo("/login");
+            }
+            var response = await httpClient.PatchAsync(invitation,null);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                int joinedChatID = int.Parse(result);
+                await ConnectToNewChat(int.Parse(result));
+                userChats = await InitializeChats();
+                selectedChat = userChats.FirstOrDefault();
+                newMessagesToSent = new();
+                foreach (var chat in userChats)
+                {
+                    newMessagesToSent.Add(chat.Id, "");
+                }
+                await hubConnection.SendAsync("AddClientToGroupAsync", joinedChatID.ToString());
+                await hubConnection.SendAsync("NotifyUsersAboutJoining", joinedChatID.ToString());
+            }else if(response.StatusCode == System.Net.HttpStatusCode.Conflict)
+            {
+                popup.InvokePopUp(localizer["UserIsAlreadyInChat"]);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.Gone)
+            {
+                popup.InvokePopUp(localizer["InvitationHasExpired"]);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                popup.InvokePopUp(localizer["InvitationIsNotValid"]);
+            }
+        }
+    }
+    public async Task OnNewUserJoin()
+    {
+        userChats = await InitializeChats();
+        selectedChat = userChats.FirstOrDefault();
+        newMessagesToSent = new();
+        foreach (var chat in userChats)
+        {
+            newMessagesToSent.Add(chat.Id, "");
+        }
+        this.StateHasChanged();
+    }
+    public async Task LeaveChat()
+    {
+        using (HttpClient httpClient = new HttpClient())
+        {
+            authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+            user = authState.User;
+            string token = await customAuthStateProvider.GetToken();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            string? myId = authState.User.Claims?.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            if (myId is null)
+            {
+                navManager.NavigateTo("/login");
+                return;
+            }
+            string apiString = $"{navManager.BaseUri}api/chat/{selectedChat.Id}/{myId}";
+            var response = await httpClient.DeleteAsync(apiString);
+            if (response.IsSuccessStatusCode)
+            {
+                await hubConnection.SendAsync("RemoveClientFromGroupAsync", selectedChat.Id);
+                await hubConnection.SendAsync("NotifyUsersAboutLeaving", selectedChat.Id);
+                userChats = await InitializeChats();
+                selectedChat = userChats.FirstOrDefault();
+                newMessagesToSent = new();
+                foreach (var chat in userChats)
+                {
+                    newMessagesToSent.Add(chat.Id, "");
+                }
+                this.StateHasChanged();
+            }
+        }
+    }
+    public async Task OnUserLeave()
+    {
+        userChats = await InitializeChats();
+        selectedChat = userChats.FirstOrDefault();
+        newMessagesToSent = new();
+        foreach (var chat in userChats)
+        {
+            newMessagesToSent.Add(chat.Id, "");
+        }
+        this.StateHasChanged();
     }
 }

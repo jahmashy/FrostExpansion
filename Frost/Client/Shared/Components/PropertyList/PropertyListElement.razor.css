@@ -3,7 +3,7 @@
     flex-direction:row;
     max-width:1000px;
     height:270px;
-    
+    overflow:hidden;
 }
 .propertyListElement-div h3{
     cursor:pointer;
@@ -62,4 +62,18 @@
     overflow: hidden;
     text-overflow: ellipsis;
     margin-left: 1rem;
+}
+.topContent-div{
+    display:flex;
+    flex-direction:row;
+    justify-content:space-between;
+}
+    .topContent-div span {
+        color: #2699FB;
+    }
+.Count img{
+    width:25px;
+}
+.Count{
+    margin-left:1rem;
 }

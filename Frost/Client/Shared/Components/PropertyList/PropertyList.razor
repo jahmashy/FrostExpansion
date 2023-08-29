@@ -3,7 +3,7 @@
     @foreach (var propertyOffer in propertyList)
     {
         <li>
-            <PropertyListElement propertyOffer="propertyOffer" userOffers="userOffers"></PropertyListElement>
+            <PropertyListElement @ref="Ref" propertyOffer="propertyOffer" userFollowedOffers="isUserFollowedOffers" userTemplates="isUserTemplates" userOffers="isUserOffers"></PropertyListElement>
         </li>
     }
 </ul>
@@ -12,6 +12,20 @@
     [Parameter]
     public List<PropertyDetailsDTO>? propertyList { get; set; }
 
+    public List<PropertyListElement> propertyListElements = new();
+    public PropertyListElement Ref { set => propertyListElements.Add(value); }
+
     [Parameter]
-    public bool userOffers { get; set; } = false;
+    public bool isUserOffers { get; set; } = false;
+    [Parameter]
+    public bool isUserTemplates { get; set; } = false;
+    [Parameter]
+    public bool isUserFollowedOffers { get; set; } = false;
+    public void OnSort()
+    {
+        foreach(PropertyListElement reference in propertyListElements){
+            reference.OnSort();
+        }
+    }
+
 }

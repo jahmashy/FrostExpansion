@@ -1,7 +1,10 @@
 ﻿@using Frost.Shared.Models;
+@using System.Security.Claims;
+@using Newtonsoft.Json;
 @inject IStringLocalizer<Resource> localizer
 @inject IJSRuntime JS
-@inject NavigationManager NavManager
+@inject NavigationManager navManager
+@inject AuthenticationStateProvider authStateProvider
 <div class="propertyListElement-div">
     <div class="image-slider">
         @foreach (var url in propertyOffer.propertyImagesUrls)
@@ -12,21 +15,43 @@
         }
     </div>
     <div class="propertyContent-div">
-        <h3 @onclick="RedirectOnClick">@propertyOffer.Title</h3>
-        <span>@propertyOffer.Location.cityName, @propertyOffer.Location.districtName</span>
+        <div class="topContent-div">
+            <h3 @onclick="RedirectOnClick">@propertyOffer.Title</h3>
+            @if(userOffers == true)
+            {
+                <span>
+                    <span>@localizer["YourOfferExpiresIn"]: </span>
+                    <span>@propertyOffer.ExpirationDate.Subtract(DateTime.UtcNow).Days</span>
+                    <span>@localizer["Days"]</span>
+                </span>
+            }
+        </div>
+        <span>@(propertyOffer.location?.cityName + (string.IsNullOrEmpty(propertyOffer.location?.districtName) ? "" : (", " + propertyOffer.location.districtName)))</span>
         <p><span>@propertyOffer.Price zł / mc </span>@propertyOffer.Surface m²</p>
         <p class="description">@propertyOffer.Description</p>
         <div class="bottomContent">
             <span><img src="images/Icons/Tick.png" style="visibility: @(propertyOffer.RoommatesAllowed ? "visible" : "hidden")" />@(propertyOffer.RoommatesAllowed ? localizer["Roommates"] : "")</span>
             @if (userOffers)
             {
-                <button>@localizer["SaveTemplate"]</button>
-                <button>@localizer["Edit"]</button>
-                <button class="button-delete">@localizer["Delete"]</button>
+                <span style="margin-left:auto" class="Count"><img src="/images/Icons/Web.png" />@viewCount</span>
+                <span class="Count"><img src="/images/Icons/Heart_Blue.png" />@followCount</span>
+                <button @onclick="SaveTemplate">@localizer["SaveTemplate"]</button>
+                <button @onclick="@(()=> EditOffer(propertyOffer.OfferId))">@localizer["Edit"]</button>
+                <button class="button-delete" @onclick="HandleDeleteOfferClick">@localizer["Delete"]</button>
+            }
+            else if(userTemplates)
+            {
+                <button @onclick="PublishTemplate">@localizer["Republish"]</button>
+                <button @onclick="@(()=> EditTemplate(propertyOffer.OfferId))">@localizer["Edit"]</button>
+                <button class="button-delete" @onclick="DeleteTemplate">@localizer["Delete"]</button>
+            }
+            else if (userFollowedOffers)
+            {
+                <button @onclick="HandleUnFollowClick">@localizer["UnfollowOffer"]</button>
             }
             else
             {
-                <button>@localizer["SendMessage"]</button>
+                <button @onclick="HandleSendMessage">@localizer["SendMessage"]</button>
                 <img class="addFavourite-button" />
             }
         </div>
@@ -37,7 +62,15 @@
     [Parameter]
     public PropertyDetailsDTO? propertyOffer { get; set; } = new();
     [Parameter]
-    public bool userOffers { get; set; }
+    public bool userOffers { get; set; } = false;
+    [Parameter]
+    public bool userTemplates { get; set; } = false;
+    [Parameter]
+    public bool userFollowedOffers { get; set; } = false;
+    [CascadingParameter]
+    public PopUpComponent popup { get; set; }
+    private int viewCount;
+    private int followCount;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -46,9 +79,214 @@
             await JS.InvokeVoidAsync("initializeSlickCarousel");
         }
     }
+    protected override async Task OnParametersSetAsync()
+    {
+        if (userOffers)
+        {
+            using (HttpClient httpClient = new HttpClient())
+            {
+                string apiString = $"{navManager.BaseUri}api/property/{propertyOffer.OfferId}/viewcount";
+                var response = await httpClient.GetAsync(apiString);
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadAsStringAsync();
+                    viewCount = JsonConvert.DeserializeObject<int>(result);
+                }
+                apiString = $"{navManager.BaseUri}api/property/{propertyOffer.OfferId}/followcount";
+                response = await httpClient.GetAsync(apiString);
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadAsStringAsync();
+                    followCount = JsonConvert.DeserializeObject<int>(result);
+                }
+
+            }
+        }
+    }
     private void RedirectOnClick()
     {
-        string id = propertyOffer.OfferId.ToString();
-        NavManager.NavigateTo($"/propertydetails/{id}", forceLoad: true);
+        if (!userTemplates)
+        {
+            string id = propertyOffer.OfferId.ToString();
+            navManager.NavigateTo($"/propertydetails/{id}", forceLoad: true);
+        }
+    }
+    private async void HandleDeleteOfferClick()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+        string? myId = authState.User.Claims?.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+        if (string.IsNullOrEmpty(myId))
+        {
+            navManager.NavigateTo("/login");
+            return;
+        }
+
+        popup.InvokeConfirmPopUp(DeleteOffer,localizer["ConfirmDelete"]);
+    }
+    public async void DeleteOffer()
+    {
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+            var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+            string? myId = authState.User.Claims?.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            if (myId is null)
+            {
+                navManager.NavigateTo("/login");
+            }
+            var token = await customAuthStateProvider.GetToken();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            string apiString = $"{navManager.BaseUri}api/property/{propertyOffer.OfferId}";
+            var response = await httpClient.DeleteAsync(apiString);
+            navManager.NavigateTo(navManager.Uri,forceLoad:true);
+        }
+    }
+    private async void EditOffer(int offerId)
+    {
+        navManager.NavigateTo($"/editOffer/{offerId}");
+    }
+    private async void EditTemplate(int offerId)
+    {
+        navManager.NavigateTo($"/editOffer/{offerId}?editTemplate=true");
+    }
+    private async void HandleSendMessage()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+        string? myId = authState.User.Claims?.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+        if(myId is null)
+        {
+            navManager.NavigateTo("/login");
+            return;
+        }
+
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var response = await httpClient.GetAsync($"{navManager.BaseUri}api/user/CommunicationStatus?userId={myId}&targetuserid={propertyOffer.user.userId}");
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                bool isCommunicationBlocked = JsonConvert.DeserializeObject<bool>(result);
+                if (!isCommunicationBlocked)
+                {
+                    navManager.NavigateTo($"/account/messages?createChat=true&userId={propertyOffer.user.userId}");
+                }
+                else
+                {
+                    popup.InvokePopUp(localizer["CommunicationIsBlocked"]);
+                }
+
+            }
+        }
+    }
+    private async void SaveTemplate()
+    {
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+            var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+            var token = await customAuthStateProvider.GetToken();
+            string? myId = authState.User.Claims?.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            if(myId is null)
+            {
+                navManager.NavigateTo("/login");
+            }
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            string apiString = $"{navManager.BaseUri}api/template/";
+            UserOfferModel model = new UserOfferModel()
+                {
+                    offerId = propertyOffer.OfferId,
+                    userId = int.Parse(myId)
+                };
+            var response = await httpClient.PostAsJsonAsync<UserOfferModel>(apiString,model);
+            if (response.IsSuccessStatusCode)
+            {
+                popup.InvokePopUp(localizer["TemplateSaved"]);
+            }
+        }
+    }
+    private async void DeleteTemplate()
+    {
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+            var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+            var token = await customAuthStateProvider.GetToken();
+            string? myId = authState.User.Claims?.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            if (myId is null)
+            {
+                navManager.NavigateTo("/login");
+            }
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            string apiString = $"{navManager.BaseUri}api/template/{propertyOffer.OfferId}/{myId}";
+            var response = await httpClient.DeleteAsync(apiString);
+            if (response.IsSuccessStatusCode)
+            {
+                navManager.NavigateTo(navManager.Uri, forceLoad: true);
+            }
+        }
+    }
+    private async Task HandleUnFollowClick()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+        string token = await customAuthStateProvider.GetToken();
+        string? myId = authState.User.Claims?.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+        if (string.IsNullOrEmpty(myId))
+        {
+            navManager.NavigateTo("/login");
+            return;
+        }
+
+        using (HttpClient httpClient = new HttpClient())
+        {
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            string apiString = $"{navManager.BaseUri}api/property/UnFollowOffer";
+            UserOfferModel model = new UserOfferModel
+                {
+                    userId = int.Parse(myId),
+                    offerId = propertyOffer.OfferId
+                };
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync<UserOfferModel>(apiString, model);;
+            if (response.IsSuccessStatusCode)
+            {
+                navManager.NavigateTo(navManager.Uri,forceLoad:true);
+            }
+        }
+    }
+    private async void PublishTemplate()
+    {
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+            var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+            var token = await customAuthStateProvider.GetToken();
+            string? myId = authState.User.Claims?.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            if (myId is null)
+            {
+                navManager.NavigateTo("/login");
+            }
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            string apiString = $"{navManager.BaseUri}api/template/{propertyOffer.OfferId}";
+            UserOfferModel model = new UserOfferModel()
+                {
+                    offerId = propertyOffer.OfferId,
+                    userId = int.Parse(myId)
+                };
+            var response = await httpClient.PostAsJsonAsync<UserOfferModel>(apiString,model);
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                var property = JsonConvert.DeserializeObject<PropertyDetailsDTO>(result);
+                navManager.NavigateTo($"/propertydetails/{property.OfferId}");
+            }
+        }
+    }
+    public async void OnSort()
+    {
+        await JS.InvokeVoidAsync("import", "/js/InitializeSlickCarousel.js");
+        await JS.InvokeVoidAsync("unslick");
+        await JS.InvokeVoidAsync("initializeSlickCarousel");
     }
 }

@@ -5,8 +5,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
-    gap:15rem;
+    justify-content: space-evenly;
 }
 .offers-div{
     display:flex;
@@ -24,9 +23,10 @@
     display:flex;
     gap:2rem;
     position:absolute;
+    text-wrap:nowrap;
 }
 h2,h3 {
-    cursor:pointer;
+    cursor:default;
     color: #2699FB;
     text-wrap: nowrap;
 }
@@ -39,4 +39,5 @@ h2,h3 {
     color:white;
     background-color: #2699FB;
 }
+span{color:inherit}
 

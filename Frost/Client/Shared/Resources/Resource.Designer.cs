@@ -88,6 +88,15 @@ namespace Frost.Client.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dodaj użytkowników do czatu.
+        /// </summary>
+        public static string AddUsersToChat {
+            get {
+                return ResourceManager.GetString("AddUsersToChat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Filtry zaawansowane.
         /// </summary>
         public static string AdvancedFilters {
@@ -151,6 +160,24 @@ namespace Frost.Client.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Czy na pewno chcesz usunąć konto?.
+        /// </summary>
+        public static string AreYouSureDeleteAcc {
+            get {
+                return ResourceManager.GetString("AreYouSureDeleteAcc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zablokuj komunikację.
+        /// </summary>
+        public static string BlockCommunication {
+            get {
+                return ResourceManager.GetString("BlockCommunication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rodzaj zabudowy.
         /// </summary>
         public static string BuildingType {
@@ -169,11 +196,128 @@ namespace Frost.Client.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Anuluj.
+        /// </summary>
+        public static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anuluj zastępowanie zdjęć.
+        /// </summary>
+        public static string CancelReplacingPhotos {
+            get {
+                return ResourceManager.GetString("CancelReplacingPhotos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zmień miasto.
+        /// </summary>
+        public static string ChangeCity {
+            get {
+                return ResourceManager.GetString("ChangeCity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zmień opis.
+        /// </summary>
+        public static string ChangeDescription {
+            get {
+                return ResourceManager.GetString("ChangeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zmień email.
+        /// </summary>
+        public static string ChangeEmail {
+            get {
+                return ResourceManager.GetString("ChangeEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zmień imię.
+        /// </summary>
+        public static string ChangeName {
+            get {
+                return ResourceManager.GetString("ChangeName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zmień narodowość.
+        /// </summary>
+        public static string ChangeNationality {
+            get {
+                return ResourceManager.GetString("ChangeNationality", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zmień hasło.
+        /// </summary>
+        public static string ChangePassword {
+            get {
+                return ResourceManager.GetString("ChangePassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zmień numer.
+        /// </summary>
+        public static string ChangeTelNumber {
+            get {
+                return ResourceManager.GetString("ChangeTelNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Miasto.
         /// </summary>
         public static string City {
             get {
                 return ResourceManager.GetString("City", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kliknij aby zastąpić istniejące zdjęcia.
+        /// </summary>
+        public static string ClickToReplacePhotos {
+            get {
+                return ResourceManager.GetString("ClickToReplacePhotos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Komunikacja jest zablokowana..
+        /// </summary>
+        public static string CommunicationIsBlocked {
+            get {
+                return ResourceManager.GetString("CommunicationIsBlocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Na pewno chcesz usunąć ofertę?.
+        /// </summary>
+        public static string ConfirmDelete {
+            get {
+                return ResourceManager.GetString("ConfirmDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Potwierdź nowe hasło.
+        /// </summary>
+        public static string ConfirmNewPassword {
+            get {
+                return ResourceManager.GetString("ConfirmNewPassword", resourceCulture);
             }
         }
         
@@ -196,11 +340,38 @@ namespace Frost.Client.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Typ zabudowy.
+        /// </summary>
+        public static string ConstructionType {
+            get {
+                return ResourceManager.GetString("ConstructionType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rok budowy.
         /// </summary>
         public static string ConstructionYear {
             get {
                 return ResourceManager.GetString("ConstructionYear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skopiowano do schowka.
+        /// </summary>
+        public static string CopiedToClipboard {
+            get {
+                return ResourceManager.GetString("CopiedToClipboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skopiuj zaproszenie do czatu.
+        /// </summary>
+        public static string CopyChatInvitation {
+            get {
+                return ResourceManager.GetString("CopyChatInvitation", resourceCulture);
             }
         }
         
@@ -214,11 +385,92 @@ namespace Frost.Client.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Stwórz czat grupowy.
+        /// </summary>
+        public static string CreateGroupChat {
+            get {
+                return ResourceManager.GetString("CreateGroupChat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data: Najnowsze.
+        /// </summary>
+        public static string Date_Latest {
+            get {
+                return ResourceManager.GetString("Date:Latest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data: Najstarsze.
+        /// </summary>
+        public static string Date_Oldest {
+            get {
+                return ResourceManager.GetString("Date:Oldest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to dni.
+        /// </summary>
+        public static string Days {
+            get {
+                return ResourceManager.GetString("Days", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Usuń.
         /// </summary>
         public static string Delete {
             get {
                 return ResourceManager.GetString("Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usuń konto.
+        /// </summary>
+        public static string DeleteAccount {
+            get {
+                return ResourceManager.GetString("DeleteAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usuń zdjęcie.
+        /// </summary>
+        public static string DeleteImage {
+            get {
+                return ResourceManager.GetString("DeleteImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usuń ofertę.
+        /// </summary>
+        public static string DeleteOffer {
+            get {
+                return ResourceManager.GetString("DeleteOffer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usuń zapisane filtry.
+        /// </summary>
+        public static string DeleteSavedFilters {
+            get {
+                return ResourceManager.GetString("DeleteSavedFilters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usuń konto użytkownika.
+        /// </summary>
+        public static string DeleteUser {
+            get {
+                return ResourceManager.GetString("DeleteUser", resourceCulture);
             }
         }
         
@@ -241,6 +493,15 @@ namespace Frost.Client.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Proszę wybrać dzielnicę z listy.
+        /// </summary>
+        public static string DistrictNotChosenError {
+            get {
+                return ResourceManager.GetString("DistrictNotChosenError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Od.
         /// </summary>
         public static string Earliest {
@@ -255,6 +516,24 @@ namespace Frost.Client.Shared.Resources {
         public static string Edit {
             get {
                 return ResourceManager.GetString("Edit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edytuj ogłoszenie.
+        /// </summary>
+        public static string EditOffer {
+            get {
+                return ResourceManager.GetString("EditOffer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edytuj szablon.
+        /// </summary>
+        public static string EditTemplate {
+            get {
+                return ResourceManager.GetString("EditTemplate", resourceCulture);
             }
         }
         
@@ -282,6 +561,24 @@ namespace Frost.Client.Shared.Resources {
         public static string EmailRequiredError {
             get {
                 return ResourceManager.GetString("EmailRequiredError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wprowadź aktualne hasło.
+        /// </summary>
+        public static string EnterCurrentPassword {
+            get {
+                return ResourceManager.GetString("EnterCurrentPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wprowadź nowe hasło.
+        /// </summary>
+        public static string EnterNewPassword {
+            get {
+                return ResourceManager.GetString("EnterNewPassword", resourceCulture);
             }
         }
         
@@ -349,6 +646,15 @@ namespace Frost.Client.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Obserwowane oferty.
+        /// </summary>
+        public static string FollowedOffers {
+            get {
+                return ResourceManager.GetString("FollowedOffers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Obserwuj ofertę.
         /// </summary>
         public static string FollowOffer {
@@ -372,6 +678,15 @@ namespace Frost.Client.Shared.Resources {
         public static string Garages {
             get {
                 return ResourceManager.GetString("Garages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Czat grupowy.
+        /// </summary>
+        public static string GroupChat {
+            get {
+                return ResourceManager.GetString("GroupChat", resourceCulture);
             }
         }
         
@@ -403,6 +718,15 @@ namespace Frost.Client.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Zdjęcie powinno spełniać następujące wymagania:.
+        /// </summary>
+        public static string ImageRequirements {
+            get {
+                return ResourceManager.GetString("ImageRequirements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Zdjęcia.
         /// </summary>
         public static string Images {
@@ -412,7 +736,7 @@ namespace Frost.Client.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Należy dodać minimum 5 zdjęć ale nie więcej niż 15..
+        ///   Looks up a localized string similar to Należy dodać minimum 6 zdjęć ale nie więcej niż 15..
         /// </summary>
         public static string ImagesAmountRequirement {
             get {
@@ -475,6 +799,33 @@ namespace Frost.Client.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nieprawidłowe hasło.
+        /// </summary>
+        public static string InvalidPassword {
+            get {
+                return ResourceManager.GetString("InvalidPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zaproszenie wygasło.
+        /// </summary>
+        public static string InvitationHasExpired {
+            get {
+                return ResourceManager.GetString("InvitationHasExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zaproszenie jest niepoprawne lub zostało już wykorzystane.
+        /// </summary>
+        public static string InvitationIsNotValid {
+            get {
+                return ResourceManager.GetString("InvitationIsNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dołącz jako pierwszy!.
         /// </summary>
         public static string JoinFirst {
@@ -498,6 +849,15 @@ namespace Frost.Client.Shared.Resources {
         public static string Latest {
             get {
                 return ResourceManager.GetString("Latest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Opuść czat grupowy.
+        /// </summary>
+        public static string LeaveGroupChat {
+            get {
+                return ResourceManager.GetString("LeaveGroupChat", resourceCulture);
             }
         }
         
@@ -552,6 +912,15 @@ namespace Frost.Client.Shared.Resources {
         public static string LoginDetails {
             get {
                 return ResourceManager.GetString("LoginDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Szczegóły logowania.
+        /// </summary>
+        public static string LoginDetailsUser {
+            get {
+                return ResourceManager.GetString("LoginDetailsUser", resourceCulture);
             }
         }
         
@@ -646,6 +1015,24 @@ namespace Frost.Client.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Narodowość.
+        /// </summary>
+        public static string Nationality {
+            get {
+                return ResourceManager.GetString("Nationality", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nowy czat grupowy.
+        /// </summary>
+        public static string NewGroupChat {
+            get {
+                return ResourceManager.GetString("NewGroupChat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nowe ogłoszenie.
         /// </summary>
         public static string NewOffer {
@@ -664,11 +1051,47 @@ namespace Frost.Client.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Brak.
+        /// </summary>
+        public static string None {
+            get {
+                return ResourceManager.GetString("None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nie znaleziono ogłoszenia.
+        /// </summary>
+        public static string NoOfferFound {
+            get {
+                return ResourceManager.GetString("NoOfferFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brak ofert do wyświetlenia.
+        /// </summary>
+        public static string NoOffers {
+            get {
+                return ResourceManager.GetString("NoOffers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Brak wyników.
         /// </summary>
         public static string NoResults {
             get {
                 return ResourceManager.GetString("NoResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brak szablonów.
+        /// </summary>
+        public static string NoTemplates {
+            get {
+                return ResourceManager.GetString("NoTemplates", resourceCulture);
             }
         }
         
@@ -696,6 +1119,51 @@ namespace Frost.Client.Shared.Resources {
         public static string Notifications {
             get {
                 return ResourceManager.GetString("Notifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chce otrzymywać powiadomienia Email w razie zmiany szczegółów konta.
+        /// </summary>
+        public static string NotifyAboutChangedLoginDetails {
+            get {
+                return ResourceManager.GetString("NotifyAboutChangedLoginDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chce otrzymywać powiadomienia Email o moich wygasających ogłoszeniach.
+        /// </summary>
+        public static string NotifyAboutExpiringOffers {
+            get {
+                return ResourceManager.GetString("NotifyAboutExpiringOffers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chce otrzymywać powiadomienia Email o nowych wiadomościach.
+        /// </summary>
+        public static string NotifyAboutNewMessages {
+            get {
+                return ResourceManager.GetString("NotifyAboutNewMessages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chce otrzymywać powiadomienia Email o nowych ofertach.
+        /// </summary>
+        public static string NotifyAboutNewOffers {
+            get {
+                return ResourceManager.GetString("NotifyAboutNewOffers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Szczegóły ogłoszenia.
+        /// </summary>
+        public static string OfferDetails {
+            get {
+                return ResourceManager.GetString("OfferDetails", resourceCulture);
             }
         }
         
@@ -736,6 +1204,15 @@ namespace Frost.Client.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Zdjęcie.
+        /// </summary>
+        public static string Picture {
+            get {
+                return ResourceManager.GetString("Picture", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Działka.
         /// </summary>
         public static string Plot {
@@ -759,6 +1236,24 @@ namespace Frost.Client.Shared.Resources {
         public static string Price {
             get {
                 return ResourceManager.GetString("Price", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cena: Największa.
+        /// </summary>
+        public static string Price_Highest {
+            get {
+                return ResourceManager.GetString("Price:Highest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cena: Najmniejsza.
+        /// </summary>
+        public static string Price_Lowest {
+            get {
+                return ResourceManager.GetString("Price:Lowest", resourceCulture);
             }
         }
         
@@ -813,6 +1308,15 @@ namespace Frost.Client.Shared.Resources {
         public static string Rent {
             get {
                 return ResourceManager.GetString("Rent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Opublikuj.
+        /// </summary>
+        public static string Republish {
+            get {
+                return ResourceManager.GetString("Republish", resourceCulture);
             }
         }
         
@@ -880,6 +1384,42 @@ namespace Frost.Client.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Zapisz zmiany.
+        /// </summary>
+        public static string SaveChanges {
+            get {
+                return ResourceManager.GetString("SaveChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zapisano zmiany.
+        /// </summary>
+        public static string SavedChanges {
+            get {
+                return ResourceManager.GetString("SavedChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zapisano filtry.
+        /// </summary>
+        public static string SavedFilters {
+            get {
+                return ResourceManager.GetString("SavedFilters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zapisz filtry.
+        /// </summary>
+        public static string SaveFilters {
+            get {
+                return ResourceManager.GetString("SaveFilters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Zapisz szablon.
         /// </summary>
         public static string SaveTemplate {
@@ -898,11 +1438,29 @@ namespace Frost.Client.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Wyniki wyszukiwania.
+        /// </summary>
+        public static string SearchResult {
+            get {
+                return ResourceManager.GetString("SearchResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Wtórny.
         /// </summary>
         public static string Secondary {
             get {
                 return ResourceManager.GetString("Secondary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sprzedaż.
+        /// </summary>
+        public static string Sell {
+            get {
+                return ResourceManager.GetString("Sell", resourceCulture);
             }
         }
         
@@ -921,6 +1479,33 @@ namespace Frost.Client.Shared.Resources {
         public static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sortuj po.
+        /// </summary>
+        public static string SortBy {
+            get {
+                return ResourceManager.GetString("SortBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Powierzchnia: Największa.
+        /// </summary>
+        public static string Surface_Highest {
+            get {
+                return ResourceManager.GetString("Surface:Highest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Powierzchnia: Najmniejsza.
+        /// </summary>
+        public static string Surface_Lowest {
+            get {
+                return ResourceManager.GetString("Surface:Lowest", resourceCulture);
             }
         }
         
@@ -952,11 +1537,29 @@ namespace Frost.Client.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Usunięto szablon.
+        /// </summary>
+        public static string TemplateDeleted {
+            get {
+                return ResourceManager.GetString("TemplateDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Szablony.
         /// </summary>
         public static string Templates {
             get {
                 return ResourceManager.GetString("Templates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zapisano szablon.
+        /// </summary>
+        public static string TemplateSaved {
+            get {
+                return ResourceManager.GetString("TemplateSaved", resourceCulture);
             }
         }
         
@@ -979,11 +1582,92 @@ namespace Frost.Client.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dodałeś zbyt dużo plików!.
+        /// </summary>
+        public static string TooManyFilesError {
+            get {
+                return ResourceManager.GetString("TooManyFilesError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Odblokuj komunikację.
+        /// </summary>
+        public static string UnblockCommunication {
+            get {
+                return ResourceManager.GetString("UnblockCommunication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Odobserwuj ofertę.
+        /// </summary>
+        public static string UnfollowOffer {
+            get {
+                return ResourceManager.GetString("UnfollowOffer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Użytkownik z podanym adresem email już istnieje.
         /// </summary>
         public static string UserAlreadyExists {
             get {
                 return ResourceManager.GetString("UserAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usunięto użytkownika.
+        /// </summary>
+        public static string UserDeleted {
+            get {
+                return ResourceManager.GetString("UserDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Należysz już do tego czatu.
+        /// </summary>
+        public static string UserIsAlreadyInChat {
+            get {
+                return ResourceManager.GetString("UserIsAlreadyInChat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nie znaleziono użytkownika.
+        /// </summary>
+        public static string UserNotFound {
+            get {
+                return ResourceManager.GetString("UserNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profil użytkownika.
+        /// </summary>
+        public static string UserProfile {
+            get {
+                return ResourceManager.GetString("UserProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tak.
+        /// </summary>
+        public static string Yes {
+            get {
+                return ResourceManager.GetString("Yes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twoje szczegóły.
+        /// </summary>
+        public static string YourDetails {
+            get {
+                return ResourceManager.GetString("YourDetails", resourceCulture);
             }
         }
         
@@ -997,11 +1681,29 @@ namespace Frost.Client.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Twoje ogłoszenie wygaśnie za.
+        /// </summary>
+        public static string YourOfferExpiresIn {
+            get {
+                return ResourceManager.GetString("YourOfferExpiresIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Twoje ogłoszenia.
         /// </summary>
         public static string YourOffers {
             get {
                 return ResourceManager.GetString("YourOffers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twoje szablony.
+        /// </summary>
+        public static string YourTemplates {
+            get {
+                return ResourceManager.GetString("YourTemplates", resourceCulture);
             }
         }
     }

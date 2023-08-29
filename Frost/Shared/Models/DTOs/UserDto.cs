@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Frost.Shared.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,14 +7,16 @@ using System.Threading.Tasks;
 
 namespace Frost.Shared.Models.DTOs
 {
-    public class UserDto
+    public class UserDTO
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public string Description { get; set; }
-        public string City { get; set; }
-        public string TelNumber { get; set; }
-        public string ProfileImgUrl { get; set; }
+        public int userId { get; set; }
+        public string name { get; set; }
+        public string email { get; set; }
+        public string? description { get; set; }
+        public string? city { get; set; }
+        public string? cityPlaceId { get; set; }
+        public Nationality? nationality { get; set; }
+        public string telNumber { get; set; }
+        public string? profileImgUrl { get; set; }
     }
 }

@@ -11,6 +11,14 @@ main {
     flex-direction:column;
     flex: 1;
 }
+.PopUpIn {
+    transition: ease 0.2s;
+    filter: brightness(50%);
+}
+
+.PopUpOut {
+    transition: ease 0.2s;
+}
 .mobileMenuIn {
     transition: ease 0.2s;
 }

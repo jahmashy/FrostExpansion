@@ -11,16 +11,16 @@
     </div>
     <nav>
         <ul>
-            <li>
+            <li @onclick="@(()=> NavManager.NavigateTo("/property/search/Flat/Rent?allowRoommates=true&pageNumber=1",forceLoad:true))">
                 <a>@localizer["Roommates"]</a>
             </li>
             <li>
                 <a style="background:@(buyDropdownListVisibility? "#89AFCF" : "")" @onclick="@(()=> buyDropdownListVisibility = !buyDropdownListVisibility)">@localizer["Buy"]</a>
-                <NavMenuComponentList id="buyDropdownList" values="listValues" isVisible="buyDropdownListVisibility" OnVisibilityChange="@((bool e)=> buyDropdownListVisibility = e)"></NavMenuComponentList>
+                <NavMenuComponentList id="buyDropdownList" offerType="sell" values="listValues" isVisible="buyDropdownListVisibility" OnVisibilityChange="@((bool e)=> buyDropdownListVisibility = e)"></NavMenuComponentList>
             </li>
             <li>
                 <a style="background:@(sellDropdownListVisibility? "#89AFCF" : "")" @onclick="@(()=> sellDropdownListVisibility = !sellDropdownListVisibility)">@localizer["Rent"]</a>
-                <NavMenuComponentList id="rentDropdownList" values="listValues" isVisible="sellDropdownListVisibility" OnVisibilityChange="@((bool e)=> sellDropdownListVisibility = e)"></NavMenuComponentList>
+                <NavMenuComponentList id="rentDropdownList" offerType="Rent" values="listValues" isVisible="sellDropdownListVisibility" OnVisibilityChange="@((bool e)=> sellDropdownListVisibility = e)"></NavMenuComponentList>
             </li>
         </ul>
     </nav>

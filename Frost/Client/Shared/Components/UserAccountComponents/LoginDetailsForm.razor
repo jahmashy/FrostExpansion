@@ -1,0 +1,142 @@
+﻿@using System.Security.Claims;
+@inject IStringLocalizer<Resource> localizer
+@inject NavigationManager navManager
+@inject AuthenticationStateProvider authStateProvider
+
+<div class="loginDetails-div">
+    <EditForm OnValidSubmit="HandleValidSubmit" EditContext="editContext">
+        <DataAnnotationsValidator/>
+        <div>
+            <label>@localizer["Email"]</label>
+            <InputText class="@(isEmailDisabled? "disabled" : "")" @bind-Value="model.email" disabled="@(isEmailDisabled)"></InputText>
+            <ValidationMessage For="@(() => model.email)" />
+            <button type="button" @onclick="@(()=>{isEmailDisabled = !isEmailDisabled;})">@localizer["ChangeEmail"]</button>
+        </div>
+        <div>
+            <label>@localizer["TelNumber"]</label>
+            <InputNumber @bind-Value="model.telNumber" disabled="@(isTelDisabled)"></InputNumber>
+            <ValidationMessage For="@(() => model.telNumber)" />
+            <button type="button" @onclick="@(()=>{isTelDisabled = !isTelDisabled;})">@localizer["ChangeTelNumber"]</button>
+        </div>
+        <div>
+            <label>@localizer["EnterCurrentPassword"]</label>
+            <InputText type="password" @bind-Value="model.password"></InputText>
+            <ValidationMessage For="@(() => model.password)" />
+        </div>
+        <div>
+            <label>@localizer["EnterNewPassword"]</label>
+            <InputText type="password" @bind-Value="model.newPassword" disabled="@(isPassDisabled)"></InputText>
+            <ValidationMessage For="@(() => model.newPassword)" />
+        </div>
+        <div>
+            <label>@localizer["ConfirmNewPassword"]</label>
+            <InputText type="password" @bind-Value="model.confirmNewPassword" disabled="@(isPassDisabled)"></InputText>
+            <ValidationMessage For="@(() => model.confirmNewPassword)" />
+            <button type="button" @onclick="@(()=>{isPassDisabled = !isPassDisabled;})">@localizer["ChangePassword"]</button>
+        </div>
+        <button style="margin-top:auto" type="submit">@localizer["SaveChanges"]</button>
+        <button @onclick="HandleDeleteClick" class="button-delete" type="button">@localizer["DeleteAccount"]</button>
+    </EditForm>
+</div>
+@code {
+    [Parameter]
+    public ChangeLoginDetailsModel model { get; set; } = new();
+    [CascadingParameter]
+    public PopUpComponent popup { get; set; }
+
+    public bool isEmailDisabled { get; set; } = true;
+    public bool isTelDisabled { get; set; } = true;
+    public bool isPassDisabled { get; set; } = true;
+
+    private EditContext? editContext;
+    private ValidationMessageStore? messageStore;
+    protected override void OnInitialized()
+    {
+        editContext = new(model);
+    }
+    protected override void OnParametersSet()
+    {
+        editContext = new(model);
+        messageStore = new(editContext);
+    }
+    public async void HandleValidSubmit()
+    {
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+            var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+            var email = authState.User.Claims.Where(c => c.Type == ClaimTypes.Email).First().Value;
+            var token = await customAuthStateProvider.GetToken();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            string url = $"{navManager.BaseUri}api/auth/update";
+            var response = await httpClient.PutAsJsonAsync<ChangeLoginDetailsModel>(url, model);
+            if (response.IsSuccessStatusCode)
+            {
+                LoginResult result = await response.Content.ReadFromJsonAsync<LoginResult>();
+                await customAuthStateProvider.UpdateAuthenticationState(result);
+                navManager.NavigateTo(navManager.Uri, forceLoad: true);
+            }
+            if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
+            {
+                messageStore?.Add(() => model.email, localizer["UserAlreadyExists"]);
+                this.StateHasChanged();
+                messageStore?.Clear();
+            }
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                messageStore?.Add(() => model.password, localizer["InvalidPassword"]);
+                this.StateHasChanged();
+                messageStore?.Clear();
+            }
+        }
+    }
+    public async void HandleDeleteClick()
+    {
+        if (string.IsNullOrEmpty(model.password))
+        {
+            messageStore?.Add(() => model.password, localizer["InvalidPassword"]);
+            this.StateHasChanged();
+            return;
+        }
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+            var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+            var claimsEmail = authState.User.Claims.Where(c => c.Type == ClaimTypes.Email).First().Value;
+            var token = await customAuthStateProvider.GetToken();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            string url = $"{navManager.BaseUri}api/auth/login";
+            var response = await httpClient.PostAsJsonAsync<LoginModel>(url, new LoginModel {email = claimsEmail,password = model.password  });
+            if (response.IsSuccessStatusCode)
+            {
+                popup.InvokeConfirmPopUp(Delete, localizer["AreYouSureDeleteAcc"]);
+
+            }
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                messageStore?.Add(() => model.password, localizer["InvalidPassword"]);
+                this.StateHasChanged();
+                messageStore?.Clear();
+            }
+        }
+    }
+    public async void Delete()
+    {
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+            var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+            var myId = authState.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).First().Value;
+            var token = await customAuthStateProvider.GetToken();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            string url = $"{navManager.BaseUri}api/user/{myId}";
+            var response = await httpClient.DeleteAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                await customAuthStateProvider.UpdateAuthenticationState(null);
+                navManager.NavigateTo(navManager.Uri, forceLoad: true);
+
+            }
+        }
+    }
+}

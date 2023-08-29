@@ -10,7 +10,8 @@ namespace Frost.Shared.Models.DTOs
     public class ChatPreviewDTO
     {
         public int Id { get; set; }
-        public List<UserDto> participants { get; set; }
-        public List<Message> messages { get; set; }
+        public bool isGroupChat { get; set; }
+        public List<UserDTO> participants { get; set; }
+        public List<MessageModel> messages { get; set; }
     }
 }

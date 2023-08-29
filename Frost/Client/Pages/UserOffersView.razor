@@ -3,7 +3,17 @@
 @using System.Security.Claims;
 @layout UserAccountLayout
 @inject AuthenticationStateProvider authStateProvider
-<PropertyList propertyList="yourOffers" userOffers="true"></PropertyList>
+@inject IStringLocalizer<Resource> localizer
+@inject NavigationManager navManager
+@if (yourOffers.Count() > 0)
+{
+    <div style="margin-top:1rem;">
+        <PropertyList propertyList="yourOffers" isUserOffers="true"></PropertyList>
+    </div>
+}else{
+    <h1 style="margin-top:1rem;">@localizer["NoOffers"]</h1>
+}
+
 
 @code {
     [CascadingParameter]
@@ -16,7 +26,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        layout.isOfferMenuVisible = true;
         layout.ChangeHeader("YourOffers");
         yourOffers = await InitializeYourOffersAsync();
     }
@@ -30,7 +39,7 @@
             var email = authState.User.Claims.Where(c => c.Type == ClaimTypes.Email).First().Value;
             var token = await customAuthStateProvider.GetToken();
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-            string apiString = $"https://localhost:44350/api/property/userproperties/{email}";
+            string apiString = $"{navManager.BaseUri}api/property/userproperties/{email}";
             var response = await httpClient.GetAsync(apiString);
             if (response.IsSuccessStatusCode)
             {

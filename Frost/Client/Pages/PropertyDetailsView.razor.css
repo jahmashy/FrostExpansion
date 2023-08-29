@@ -1,7 +1,10 @@
-﻿.main-section {
+﻿h1{
+    margin-top:2rem;
+    margin-bottom:2rem;
+}
+.main-section {
     display: flex;
     flex-direction: column;
-    height: 480px;
     width: 970px;
 }
 .main-section h3{
@@ -15,7 +18,8 @@
 .propertyDetails-wrapper{
     display:flex;
     max-width:100%;
-    padding-top:64px;
+    height:100%;
+    padding-bottom:1rem;
 }
 .info-section{
     padding-inline:40px;
@@ -24,10 +28,13 @@
     .info-section h3 {
         padding: 15px;
         background-color: #F1F9FF;
-        margin-bottom: 3rem;
     }
 h4 {
     color: #2699FB
+}
+h3 + h4:last-of-type {
+    margin-left:15px;
+    margin-bottom:3rem;
 }
 .info-section > p {
     font-style: italic;
@@ -36,7 +43,6 @@ h4 {
     display:flex;
     flex-direction:row;
     align-items:center;
-    justify-content:space-between;
     gap:15px;
 }
 .contact-info{
@@ -83,4 +89,12 @@ li p{
     display:flex;
     flex-direction:row;
     gap:3rem;
+}
+.profileImg{
+    height:80px;
+    width:80px;
+}
+.percentageDiff {
+    font-weight: 600;
+    padding-left:0.5rem;
 }

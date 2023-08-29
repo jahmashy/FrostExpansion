@@ -1,21 +1,28 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="page">
+    <CascadingValue Value="popUpWindow">
     <div>
         <NavMenu OnMobileMenuVisChange="ChangeMenuVisibility"/>
     </div>
-
-    <main class="@(mobileMenuVisibility? "mobileMenuIn" : "mobileMenuOut")">
+        <PopUpComponent PopUpVisibility="popUpVisibility" OnVisibilityChange="ChangePopUpVisibility" @ref="popUpWindow"></PopUpComponent>
+        <main class="@(mobileMenuVisibility? "mobileMenuIn" : "mobileMenuOut") @(popUpVisibility? "PopUpIn" : "PopUpOut")">
         <article class="content">
             @Body
         </article>
     </main>
+    </CascadingValue>
 </div>
 @code{
     public bool mobileMenuVisibility { get; set; } = false;
-
+    public bool popUpVisibility { get; set; } = false;
+    PopUpComponent popUpWindow = new();
     public void ChangeMenuVisibility(bool visibility)
     {
         mobileMenuVisibility = visibility;
+    }
+    public void ChangePopUpVisibility(bool visibility)
+    {
+        popUpVisibility = visibility;
     }
 }

@@ -1,35 +1,30 @@
 ﻿@using Frost.Shared.Models.Enums;
+@using System.Security.Claims;
 @inject IStringLocalizer<Resource> localizer
-
+@inject NavigationManager navManager
+@inject AuthenticationStateProvider authStateProvider
 <div class="advanced-filters-box" style="visibility: @(areAdvancedFiltersVisible? "visible" : "collapse")">
     <EditForm Model="propertyFilters">
         <div class="advanced-filters-elements-div">
             <h3>@localizer["RoomsNumber"]</h3>
-            <InputNumber @bind-Value="propertyFilters.roomsNumber" placeholder="@localizer["AnyF"]"></InputNumber>
+            <div class="inline-input-div">
+                <InputNumber @bind-Value="propertyFilters.minRoomsNumber" placeholder="@localizer["min"]"></InputNumber>
+                <span>-</span>
+                <InputNumber @bind-Value="propertyFilters.maxRoomsNumber" placeholder="@localizer["max"]"></InputNumber>
+            </div>
             <h3>@localizer["MeterPrice"]</h3>
             <div class="inline-input-div">
                 <InputNumber @bind-Value="propertyFilters.minMeterPrice" placeholder="@localizer["Min"]"></InputNumber>
                 <span>-</span>
                 <InputNumber @bind-Value="propertyFilters.maxMeterPrice" placeholder="@localizer["Max"]"></InputNumber>
             </div>
-            <h3>@localizer["BuildingType"]</h3>
-            <InputSelect @bind-Value="propertyFilters.buildingType">
-                @foreach (var cType in Enum.GetValues(typeof(ConstructionType)))
-                {
-                    if (cType.ToString() == "Any")
-                    {
-                        <option value="@cType">@localizer["AnyM"]</option>
-                    }
-                    else
-                    {
-                        <option value="@cType">@localizer[cType.ToString()]</option>
-                    }
-                    
-                }
-            </InputSelect>
+            @if (deleteButtonVisible)
+            {
+                <button @onclick="HandleDeleteClick" class="button-delete">@localizer["DeleteSavedFilters"]</button>
+            }
             <h3>@localizer["Roommates"]</h3>
             <InputSelect @bind-Value="propertyFilters.roommates">
-                @foreach (var rmType in Enum.GetValues(typeof(Roommates)))
+                @foreach (var rmType in Enum.GetValues(typeof(RoommatesEnum)))
                 {
                     <option value="@rmType">@localizer[rmType.ToString()]</option>
                 }
@@ -37,7 +32,11 @@
         </div>
         <div class="advanced-filters-elements-div">
             <h3>@localizer["Floor"]</h3>
-            <InputNumber @bind-Value="propertyFilters.floor" placeholder="@localizer["AnyI"]"></InputNumber>
+            <div class="inline-input-div">
+                <InputNumber @bind-Value="propertyFilters.minFloor" placeholder="@localizer["min"]"></InputNumber>
+                <span>-</span>
+                <InputNumber @bind-Value="propertyFilters.maxFloor" placeholder="@localizer["max"]"></InputNumber>
+            </div>
             <h3>@localizer["ConstructionYear"]</h3>
             <div class ="inline-input-div">
                 <InputNumber @bind-Value="propertyFilters.minConstructionYear" placeholder="@localizer["Earliest"]"></InputNumber>
@@ -45,8 +44,8 @@
                 <InputNumber @bind-Value="propertyFilters.maxConstructionYear" placeholder="@localizer["Latest"]"></InputNumber>
             </div>
             <h3>@localizer["Market"]</h3>
-            <InputSelect @bind-Value="propertyFilters._MarketType">
-                @foreach (var mType in Enum.GetValues(typeof(MarketType)))
+            <InputSelect @bind-Value="propertyFilters.marketType">
+                @foreach (var mType in Enum.GetValues(typeof(MarketTypeEnum)))
                 {
                     if (mType.ToString() == "Any")
                     {
@@ -58,6 +57,7 @@
                     } 
                 }
             </InputSelect>
+
         </div>
     </EditForm>
 
@@ -68,4 +68,30 @@
 
     [Parameter]
     public bool areAdvancedFiltersVisible { get; set; }
+
+    [Parameter]
+    public bool deleteButtonVisible { get; set; }
+    private async void HandleDeleteClick()
+    {
+        using (HttpClient httpClient = new HttpClient())
+        {
+            CustomAuthenticationStateProvider customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+            var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            string? myId = authState.User.Claims?.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            if (myId is null)
+            {
+                navManager.NavigateTo("/login");
+                return;
+            }
+            var token = await customAuthStateProvider.GetToken();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            string apiString = $"{navManager.BaseUri}api/filters/{myId}";
+            var response = await httpClient.DeleteAsync(apiString);
+            if (response.IsSuccessStatusCode)
+            {
+                navManager.NavigateTo(navManager.BaseUri,forceLoad:true);
+            }
+        }
+    }
 }

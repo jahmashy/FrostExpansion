@@ -1,0 +1,191 @@
+﻿@using System.Security.Claims;
+@using Newtonsoft.Json;
+@inject IStringLocalizer<Resource> localizer
+@inject IStringLocalizer<Nationalities> nationalityLocalizer
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navManager
+
+<div class="userProfile-div">
+    <h1>@localizer["UserProfile"]</h1>
+    <img src="@(string.IsNullOrEmpty(userProfile.profileImgUrl)? "/images/Icons/initialPhoto.png" : userProfile.profileImgUrl)" />
+    <h3>@userProfile.name</h3>
+    <div class="personalInfo-div">
+        <span><label>@localizer["Nationality"]:</label> @nationalityLocalizer[userProfile.nationality.ToString()]</span>
+        <span><label>@localizer["City"]:</label> @(string.IsNullOrEmpty(userProfile.city)? localizer["None"] : userProfile.city)</span>
+    </div>
+    <div class="description-div">
+        <span>
+            <label>@localizer["Description"]:</label>
+        </span>
+        @if(!string.IsNullOrEmpty(userProfile.description))
+        {
+            <span class="description-box">@userProfile.description</span>
+        }
+        else
+        {
+            <span>@localizer["None"]</span>
+        }
+    </div>
+    <div class="contact-div">
+        <span>
+            <label>@localizer["Email"]: </label>
+            <span>@userProfile.email</span>
+        </span>
+       <span>
+           <label>@localizer["TelNumber"]: </label>
+           <span>@userProfile.telNumber</span>
+       </span>
+    </div>
+    <div class="buttons-div">
+        @if (showBtns)
+        {
+            <button @onclick="HandleSendMessage">@localizer["SendMessage"]</button>
+            @if (showBlockUserBtn)
+            {
+                <button @onclick="HandleBlock" class="button-delete">@(isUserBlocked? @localizer["UnblockCommunication"] : @localizer["BlockCommunication"])</button>
+            }
+        }
+        @if (role == "Admin")
+        {
+            <button @onclick="HandleDeleteUser" class="button-delete">@localizer["DeleteUser"]</button>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public UserDTO userProfile { get; set; } = new();
+    [CascadingParameter]
+    public PopUpComponent popup { get; set; }
+
+    string role;
+
+    public bool showBtns;
+    public bool showBlockUserBtn;
+    public bool isUserBlocked;
+    protected override async Task OnParametersSetAsync()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+        var id = authState.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+        role = authState.User.Claims.Where(c => c.Type == ClaimTypes.Role).FirstOrDefault()?.Value;
+
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var response = await httpClient.GetAsync($"{navManager.BaseUri}api/user/UserBlockStatus?userId={id}&targetuserid={userProfile.userId}");
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                isUserBlocked = JsonConvert.DeserializeObject<bool>(result);
+            }
+        }
+
+        if (userProfile.userId.ToString() == id)
+        {
+            showBtns = false;
+        }
+        else
+        {
+            showBtns = true;
+        }
+
+        if(string.IsNullOrEmpty(id))
+        {
+            showBlockUserBtn = false;
+        }
+        else
+        {
+            showBlockUserBtn = true;
+        }
+    }
+    private async void HandleBlock()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+        var myId = authState.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+
+        if (myId is null)
+        {
+            navManager.NavigateTo("/login");
+            return;
+        }
+
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var token = await customAuthStateProvider.GetToken();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            var dataObj = new BlockUserModel
+            {
+                    userId = int.Parse(myId),
+                targetUserId = userProfile.userId
+            };
+            HttpResponseMessage response;
+            if (!isUserBlocked)
+            {
+                response = await httpClient.PutAsJsonAsync<BlockUserModel>($"{navManager.BaseUri}api/user/BlockUser", dataObj);
+            }
+            else
+            {
+                response = await httpClient.PutAsJsonAsync<BlockUserModel>($"{navManager.BaseUri}api/user/UnblockUser", dataObj);
+            }
+            if (response.IsSuccessStatusCode)
+            {
+                var statusResponse = await httpClient.GetAsync($"{navManager.BaseUri}api/user/UserBlockStatus?userId={myId}&targetuserid={userProfile.userId}");
+                var result = await statusResponse.Content.ReadAsStringAsync();
+                isUserBlocked = JsonConvert.DeserializeObject<bool>(result);
+                this.StateHasChanged();
+            }
+        }
+    }
+    private async void HandleSendMessage()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+        var myId = authState.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+
+        if (myId is null)
+        {
+            navManager.NavigateTo("/login");
+            return;
+        }
+
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var response = await httpClient.GetAsync($"{navManager.BaseUri}api/user/CommunicationStatus?userId={myId}&targetuserid={userProfile.userId}");
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                bool isCommunicationBlocked = JsonConvert.DeserializeObject<bool>(result);
+                if (!isCommunicationBlocked)
+                {
+                    navManager.NavigateTo($"/account/messages?createChat=true&userId={userProfile.userId}");
+                }
+                else
+                {
+                    popup.InvokePopUp(localizer["CommunicationIsBlocked"]);
+                }
+
+            }
+        }
+    }
+    private async void HandleDeleteUser()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+        string? myId = authState.User.Claims?.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+        if (myId is null)
+        {
+            navManager.NavigateTo("/login");
+        }
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var token = await customAuthStateProvider.GetToken();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            var response = await httpClient.DeleteAsync($"{navManager.BaseUri}api/user/{userProfile.userId}");
+            if (response.IsSuccessStatusCode)
+            {
+                popup.InvokePopUp(localizer["UserDeleted"]);
+            }
+        }
+    }
+}

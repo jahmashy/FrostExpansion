@@ -2,11 +2,12 @@
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Linq;
 @inject IStringLocalizer<Resource> localizer
-<InputSearchComponent isValid="isValid" OnSelect="LocationChanged" OnInput="Search" selectionList="citiesNames" placeholder="@localizer["City"]"></InputSearchComponent>
+@inject NavigationManager navManager
+<InputSearchComponent userInput="@userInput" isValid="isValid" OnSelect="LocationChanged" OnInput="Search" selectionList="citiesNames" placeholder="@localizer["City"]" isDisabled="@isDisabled"></InputSearchComponent>
 
 
 @code {
-
+    [Parameter]
     public string userInput { get; set; }
 
     [Parameter]
@@ -18,12 +19,15 @@
     [Parameter]
     public bool isValid { get; set; } = true;
 
+    [Parameter]
+    public bool isDisabled { get; set; } = false;
+
     private List<Location> predictionList = new();
     public List<string> citiesNames = new();
 
     public async Task getPredictedLocationsAsync(string input)
     {
-        string apiString = $"https://localhost:44350/api/location/cities?userinput={input}";
+        string apiString = $"{navManager.BaseUri}api/location/cities?userinput={input}";
         using (HttpClient httpClient = new HttpClient())
         {
             var response = await httpClient.GetAsync(apiString);

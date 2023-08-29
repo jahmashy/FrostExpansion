@@ -1,23 +1,63 @@
 ﻿@using System.Security.Claims;
 @inject AuthenticationStateProvider authStateProvider
-
-
-<div class="participantsList-div">
-    <ul>
-        @foreach(var participant in participants)
-        {
-            @if (!string.Equals(participant.Id.ToString(), myId))
+@inject IStringLocalizer<Resource> localizer
+<div class="wrapper">
+    @if (isGroupchat)
+    {
+        <div class="leaveChat-div">
+            <div @onclick="@(async()=> await LeaveChat.InvokeAsync())" class="button-div">
+                <img src="/images/Icons/Leave.png" />
+                <h5>@localizer["LeaveGroupChat"]</h5>
+            </div>
+        </div>
+    }
+    <div class="participantsList-div">
+        <ul>
+            @foreach (var participant in participants)
             {
-                <li><ChatParticipantsListElement participant="participant"></ChatParticipantsListElement></li> 
-            }
+                @if (!string.Equals(participant.userId.ToString(), myId))
+                {
+                    <li><ChatParticipantsListElement participant="participant"></ChatParticipantsListElement></li>
+                }
 
-        }
-    </ul>
+            }
+        </ul>
+    </div>
+    <div class="addUsers-div">
+        <div class="alert-div @(copied? "copiedIn" : "copiedOut")">
+            <span>@localizer["CopiedToClipboard"]</span>
+        </div>
+        <div @onclick="HandleClick" class="button-div">
+            <img src="/images/Icons/Add.png" />
+            @if (isGroupchat)
+            {
+                <h5>@localizer["CopyChatInvitation"]</h5>
+            }else{
+                <h5>@localizer["CreateGroupChat"]</h5>
+            }
+        </div>
+    </div>
 </div>
+
+
 
 @code {
     [Parameter]
-    public List<UserDto> participants { get; set; }
+    public List<UserDTO> participants { get; set; }
+
+    [Parameter]
+    public bool isGroupchat { get; set; }
+
+    [Parameter]
+    public EventCallback CreateGroupChat { get; set; }
+
+    [Parameter]
+    public EventCallback CreateChatInvitation { get; set; }
+
+    [Parameter]
+    public EventCallback LeaveChat { get; set; }
+
+    private bool copied;
 
     public string myId { get; set; }
     protected override async Task OnInitializedAsync()
@@ -25,7 +65,23 @@
         var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
         var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
         myId = authState.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).First().Value;
-        
+
+    }
+    private async void HandleClick()
+    {
+        if (!isGroupchat)
+        {
+            CreateGroupChat.InvokeAsync();
+        }
+        else
+        {
+            CreateChatInvitation.InvokeAsync();
+            copied = true;
+            await Task.Delay(500);
+            copied = false;
+            this.StateHasChanged();
+        }
+
     }
 
 }

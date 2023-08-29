@@ -1,0 +1,61 @@
+﻿@page "/account/offers/followedOffers"
+@using Newtonsoft.Json;
+@using System.Security.Claims;
+@layout UserAccountLayout
+@inject AuthenticationStateProvider authStateProvider
+@inject IStringLocalizer<Resource> localizer
+@inject NavigationManager navManager
+@if (followedOffers.Count() > 0)
+{
+    <div style="margin-top:1rem;">
+        <PropertyList isUserFollowedOffers="true" propertyList="followedOffers"></PropertyList>
+    </div>
+}
+else
+{
+    <h1 style="margin-top:1rem;">@localizer["NoOffers"]</h1>
+}
+
+
+@code {
+    [CascadingParameter]
+    public UserAccountLayout layout { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authState { get; set; }
+
+    public List<PropertyDetailsDTO> followedOffers = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        layout.ChangeHeader("FollowedOffers");
+        followedOffers = await InitializeYourOffersAsync();
+    }
+    private async Task<List<PropertyDetailsDTO>> InitializeYourOffersAsync()
+    {
+
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+            var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+            var myId = authState.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).First().Value;
+            var token = await customAuthStateProvider.GetToken();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            string apiString = $"{navManager.BaseUri}api/property/followedoffers/{myId}";
+            var response = await httpClient.GetAsync(apiString);
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                var properties = JsonConvert.DeserializeObject<List<PropertyDetailsDTO>>(result);
+                return properties;
+            }
+
+            else
+            {
+                return new();
+            }
+
+        }
+    }
+
+}

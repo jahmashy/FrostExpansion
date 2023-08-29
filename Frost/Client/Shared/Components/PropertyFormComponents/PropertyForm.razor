@@ -6,6 +6,7 @@
 @using Frost.Shared.Models.Forms;
 @inject IStringLocalizer<Resource> localizer
 @inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navManager
 
 <div class="offerForm-div">
     <EditForm EditContext="editContext" OnSubmit="HandleSubmitAsync">
@@ -42,12 +43,11 @@
                     <ValidationMessage For="@(() => propertyForm.Surface)" />
                 </div>
             </div>
-
             <div>
                 <label>@localizer["Location"]</label>
-                <LocationSearch isValid="isLocationValid" OnUserInput="OnCitySearchInput" OnLocationChange="ChooseCity"></LocationSearch>
+                <LocationSearch userInput="@propertyForm.location.cityName" isValid="isCityValid" OnUserInput="OnCitySearchInput" OnLocationChange="ChooseCity"></LocationSearch>
                 <div class="errorMsg-div">
-                    @foreach (var error in locationErrors)
+                    @foreach (var error in CityErrors)
                     {
                         <div class="validation-message">@error</div>
                     }
@@ -56,29 +56,32 @@
             <div>
                 <label>@localizer["District"]</label>
 
-                <SublocalitySearch selectedCity="@propertyForm.Location.cityName" OnLocationChange="ChooseDistrict" OnUserInput="OnDistrictSearchInput"></SublocalitySearch>
+                <SublocalitySearch userInput="@propertyForm.location.districtName" isValid="isDistrictValid" selectedCity="@propertyForm.location.cityName" OnLocationChange="ChooseDistrict" OnUserInput="OnDistrictSearchInput"></SublocalitySearch>
                 <div class="errorMsg-div">
-                    <div class="validation-message"></div>
+                    @foreach (var error in DistrictErrors)
+                    {
+                        <div class="validation-message">@error</div>
+                    }
                 </div>
             </div>
             <div>
                 <label>@localizer["PropertyType"]</label>
                 <div class="input-div">
-                    <InputSelect @bind-Value="propertyForm.PropertyType">
-                        @foreach (var pType in Enum.GetValues(typeof(PropertyType)))
+                    <InputSelect @bind-Value="propertyForm.propertyType">
+                        @foreach (var pType in Enum.GetValues(typeof(PropertyTypeEnum)))
                         {
                             <option value="@pType">@localizer[pType.ToString()]</option>
                         }
                     </InputSelect>
                 </div>
                 <div class="errorMsg-div">
-                    <ValidationMessage For="@(() => propertyForm.PropertyType)" />
+                    <ValidationMessage For="@(() => propertyForm.propertyType)" />
                 </div>
             </div>
             <div>
                 <label>@localizer["OfferType"]</label>
                 <InputSelect @bind-Value="propertyForm.offerType">
-                    @foreach (var pType in Enum.GetValues(typeof(OfferType)))
+                    @foreach (var pType in Enum.GetValues(typeof(OfferTypeEnum)))
                     {
                         <option value="@pType">@localizer[pType.ToString()]</option>
                     }
@@ -91,7 +94,7 @@
                 <label>@localizer["Market"]</label>
 
                 <InputSelect @bind-Value="propertyForm.marketType">
-                    @foreach (var pType in Enum.GetValues(typeof(MarketType)))
+                    @foreach (var pType in Enum.GetValues(typeof(MarketTypeEnum)))
                     {
                         <option value="@pType">@localizer[pType.ToString()]</option>
                     }
@@ -131,7 +134,22 @@
                 </div>
             </div>
         </div>
-        <div class="img-section">
+        @if (editForm)
+        {
+            <div class="changeImg-div" @onclick = "@(()=> isImageSectionVisible = !isImageSectionVisible)">
+                @if (!isImageSectionVisible)
+                {
+                    <img src="/images/Icons/Plus.png" />
+                    <a>@localizer["ClickToReplacePhotos"]</a>
+                }
+                else
+                {
+                    <img src="/images/Icons/Minus.png" />
+                    <a>@localizer["CancelReplacingPhotos"]</a>
+                }
+            </div>
+        }
+        <div style="display:@(isImageSectionVisible? "block" : "none")">
             <div style="display:flex;flex-direction:row;">
                 <InputFileComponent AddError="AddImgError" selectedFiles="selectedFiles" errors="imageErrors"></InputFileComponent>
                 <div class="requirements-div">
@@ -150,7 +168,7 @@
                 </div>
             </div>
         </div>
-        @if (propertyForm.offerType.Equals(OfferType.Rent))
+        @if (propertyForm.offerType.Equals(OfferTypeEnum.Rent))
         {
             <div class="checkbox-div">
                 <InputCheckbox @bind-Value=propertyForm.RoommatesAllowed></InputCheckbox>
@@ -165,7 +183,7 @@
             </div>
         </div>
         <div>
-            <button type="submit" style="grid-area:button">@localizer["AddOffer"]</button>
+            <button type="submit" style="grid-area:button">@(editForm? @localizer["SaveChanges"] : @localizer["AddOffer"])</button>
         </div> 
     </EditForm>
 </div>
@@ -175,55 +193,101 @@
 
 @code {
     [Parameter]
-    public bool editForm { get; set; }
+    public bool editForm { get; set; } = false;
+    [Parameter]
+    public bool editTemplate { get; set; } = false;
+    [Parameter]
+    public string offerId { get; set; }
+    [Parameter]
+    public PropertyFormModel propertyForm { get; set; }
 
     public long maxFileSize = 1024 * 1024 * 5;
-    public int minRequiredFiles = 5;
-    public PropertyFormModel propertyForm { get; set; } = new();
+    public int minRequiredFiles = 6;
+    public int maxRequiredFiles = 15;
+
     public List<IBrowserFile> selectedFiles = new();
+
     public List<string> imageErrors { get; set; } = new();
 
-    public List<string> locationErrors { get; set; } = new();
-    public bool isLocationValid = true;
-
+    public List<string> CityErrors { get; set; } = new();
+    public bool isCityValid = true;
     public string cityUserInput { get; set; } = "";
+
+    public List<string> DistrictErrors { get; set; } = new();
+    public bool isDistrictValid = true;
     public string districtUserInput { get; set; } = "";
 
     private EditContext editContext;
+    public bool isImageSectionVisible { get; set; } = true;
 
     protected override void OnInitialized()
     {
-        propertyForm.Location = new();
+        if(propertyForm is null)
+            propertyForm = new();
         editContext = new EditContext(propertyForm);
-        base.OnInitialized();
-    }
+        if (editForm)
+            isImageSectionVisible = false;
+        if(propertyForm.location is null)
+            propertyForm.location = new();
 
+    }
+    protected override void OnParametersSet()
+    {
+        if (editForm)
+        {
+            cityUserInput = propertyForm.location.cityName;
+            districtUserInput = propertyForm.location.districtName;
+            editContext = new EditContext(propertyForm);
+        }
+
+    }
     public bool addPropertySuccess { get; set; } = false;
     private async Task HandleSubmitAsync()
     {
-        locationErrors.Clear();
-        isLocationValid = true;
+        CityErrors.Clear();
+        isCityValid = true;
+
+        DistrictErrors.Clear();
+        isDistrictValid = true;
 
         imageErrors.Clear();
         bool isFormValid = editContext.Validate();
-        if (selectedFiles.Count < minRequiredFiles)
+        bool handleImages = !editForm || (editForm && isImageSectionVisible);
+        if (handleImages)
         {
-            imageErrors.Clear();
-            imageErrors.Add(localizer["NotEnoughFilesError"] + $" {minRequiredFiles} " + localizer["NotEnoughFilesError_files"]);
-            isFormValid = false;
+            if (selectedFiles.Count < minRequiredFiles)
+            {
+                imageErrors.Clear();
+                imageErrors.Add(localizer["NotEnoughFilesError"] + $" {minRequiredFiles} " + localizer["NotEnoughFilesError_files"]);
+                isFormValid = false;
+            }
+            if (selectedFiles.Count > maxRequiredFiles)
+            {
+                imageErrors.Clear();
+                imageErrors.Add(localizer["TooManyFilesError"]);
+                isFormValid = false;
+            }
         }
-        if (String.IsNullOrWhiteSpace(propertyForm.Location.cityPlaceId) || !cityUserInput.Equals(propertyForm.Location.cityName))
+        if (String.IsNullOrWhiteSpace(propertyForm.location.cityPlaceId) || !cityUserInput.Equals(propertyForm.location.cityName))
         {
-            locationErrors.Clear();
-            locationErrors.Add(localizer["LocationNotChosenError"]);
+            CityErrors.Clear();
+            CityErrors.Add(localizer["LocationNotChosenError"]);
             isFormValid = false;
-            isLocationValid = false;
+            isCityValid = false;
+        }
+        if (!String.IsNullOrWhiteSpace(propertyForm.location.districtPlaceId) && !districtUserInput.Equals(propertyForm.location.districtName))
+        {
+            DistrictErrors.Clear();
+            DistrictErrors.Add(localizer["DistrictNotChosenError"]);
+            isFormValid = false;
+            isDistrictValid = false;
         }
         if (isFormValid)
         {
             using (MultipartFormDataContent content = new())
             {
-                PrepareFiles(content);
+                if (handleImages)
+                    PrepareFiles(content);
                 var stringPayload = JsonConvert.SerializeObject(propertyForm);
                 var httpContent = new StringContent(stringPayload, Encoding.UTF8, "application/json");
                 content.Add(
@@ -236,7 +300,32 @@
                     var email = authState.User.Claims.Where(c => c.Type == ClaimTypes.Email).First().Value;
                     var token = await customAuthStateProvider.GetToken();
                     httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-                    var result = await httpClient.PostAsync("https://localhost:44350/api/property", content);
+                    if (!editForm)
+                    {
+                        var response = await httpClient.PostAsync($"{navManager.BaseUri}api/property", content);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var result = await response.Content.ReadAsStringAsync();
+                            int propertyId = JsonConvert.DeserializeObject<int>(result);
+                            navManager.NavigateTo($"/propertydetails/{propertyId}");
+                        }
+                    }
+                    else
+                    {
+                        var response = await httpClient.PutAsync($"{navManager.BaseUri}api/property/{offerId}", content);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            if (editTemplate)
+                            {
+                                navManager.NavigateTo("/account/offers/yourtemplates");
+                            }
+                            else
+                            {
+                                navManager.NavigateTo($"/propertydetails/{offerId}");
+                            }
+                        }
+                    }
+
                 }
             }
         }
@@ -261,11 +350,15 @@
     }
     public void ChooseCity(Location predictedLocation)
     {
-        propertyForm.Location.cityName = predictedLocation.cityName;
-        propertyForm.Location.cityPlaceId = predictedLocation.cityPlaceId;
-
+        propertyForm.location.cityName = predictedLocation.cityName;
+        propertyForm.location.cityPlaceId = predictedLocation.cityPlaceId;
         cityUserInput = predictedLocation.cityName;
+        CityErrors.Clear();
+        isCityValid = true;
 
+        propertyForm.location.districtName = "";
+        propertyForm.location.districtPlaceId = "";
+        districtUserInput = "";
     }
     public void OnCitySearchInput(string userInput)
     {
@@ -273,9 +366,10 @@
     }
     public void ChooseDistrict(Location predictedLocation)
     {
-        propertyForm.Location.districtName = predictedLocation.districtName;
-        propertyForm.Location.districtPlaceId = predictedLocation.districtPlaceId;
-
+        propertyForm.location.districtName = predictedLocation.districtName;
+        propertyForm.location.districtPlaceId = predictedLocation.districtPlaceId;
+        isDistrictValid = true;
+        DistrictErrors.Clear();
         districtUserInput = predictedLocation.districtName;
     }
     public void OnDistrictSearchInput(string userInput)

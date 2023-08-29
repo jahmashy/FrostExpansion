@@ -1,0 +1,49 @@
+﻿@inject IStringLocalizer<Resource> localizer
+<div class="@(PopUpVisibility? "wrapperIn" : "wrapperOut")">
+    <div class="PopUp @(PopUpVisibility? "PopUpIn" : "PopUpOut")">
+        <p>@popUpMessage</p>
+        @if (isConfirmPopup)
+        {
+            <span>
+                <button @onclick="@(()=>{action.Invoke(); HandleClick();})">@localizer["Yes"]</button>
+                <button class="button-delete" @onclick="HandleClick">@localizer["Cancel"]</button>
+            </span>
+        }
+        else
+        {
+            <button @onclick="HandleClick">Ok</button>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<bool> OnVisibilityChange { get; set; }
+
+    public string popUpMessage { get; set; }
+
+    [Parameter]
+    public bool PopUpVisibility { get; set; }
+
+    public Action action { get; set; }
+    public bool isConfirmPopup { get; set; } = false;
+
+    public async void HandleClick()
+    {
+        await OnVisibilityChange.InvokeAsync(false);
+        isConfirmPopup = false;
+    }
+    public async void InvokePopUp(string message)
+    {
+        popUpMessage = message;
+        await OnVisibilityChange.InvokeAsync(true);
+    }
+    public async void InvokeConfirmPopUp(Action action,string message)
+    {
+        this.action = action;
+        isConfirmPopup = true;
+        popUpMessage = message;
+        await OnVisibilityChange.InvokeAsync(true);
+    }
+}
+

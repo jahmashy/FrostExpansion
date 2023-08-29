@@ -141,6 +141,9 @@
   <data name="NameRequiredError" xml:space="preserve">
     <value>Imię jest wymagane</value>
   </data>
+  <data name="NationalityRequiredError" xml:space="preserve">
+    <value>Narodowość jest wymagana</value>
+  </data>
   <data name="PasswordRequiredError" xml:space="preserve">
     <value>Hasło jest wymagane</value>
   </data>
@@ -156,8 +159,14 @@
   <data name="SurfaceRangeError" xml:space="preserve">
     <value>Powierzchnia nie mieści się w zakresie.</value>
   </data>
+  <data name="TelNumberIsInvalidError" xml:space="preserve">
+    <value>Numer telefonu jest nieprawidłowy</value>
+  </data>
   <data name="TelNumberRequiredError" xml:space="preserve">
     <value>Numer telefonu jest wymagany</value>
+  </data>
+  <data name="UserDescriptionTooLongError" xml:space="preserve">
+    <value>Opis jest zbyt długi</value>
   </data>
   <data name="YearRangeError" xml:space="preserve">
     <value>Rok nie mieści się w zakresie.</value>

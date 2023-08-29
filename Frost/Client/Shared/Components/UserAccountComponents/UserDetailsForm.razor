@@ -1,0 +1,255 @@
+﻿@using Frost.Shared.Models.Enums;
+@using Newtonsoft.Json;
+@using System.Text;
+@using System.Net.Http.Headers;
+@using System.Security.Claims;
+@inject IStringLocalizer<Resource> localizer
+@inject IStringLocalizer<Nationalities> nationalityLocalizer
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navManager
+@inject IJSRuntime JS
+<div class ="userDetails-div">
+    <EditForm EditContext="editContext" OnSubmit="HandleSubmitAsync">
+        <DataAnnotationsValidator/>
+            <div style="display:flex;flex-direction:row;">
+                <div>
+                    <label>@localizer["Picture"]</label>
+                    <div>
+                    <img src="@(deletePicture? "/images/Icons/initialPhoto.png" : (profilePic is not null? profilePicDataURL : (!string.IsNullOrEmpty(profilePicURL)? profilePicURL : "/images/Icons/initialPhoto.png")))" />
+                    <div class="img-buttons">
+                        <button type="button" @onclick="InvokeInputFile">@localizer["AddImage"]</button>
+                        @if (!string.IsNullOrEmpty(profilePicURL) || profilePic is not null)
+                        {
+                            <button type="button" @onclick="@(()=>deletePicture = !deletePicture)" class="button-delete">@(deletePicture ? localizer["Cancel"] : localizer["DeleteImage"])</button>
+                        }
+                    </div>
+                    </div>
+                    <InputFile @ref="inputFile" OnChange="LoadFiles" style="display:none" accept=".png,.jpg,.jpeg,.webp"></InputFile>
+                </div>
+                <div class="requirements-div">
+                    <p>@localizer["ImagesRequirements"]</p>
+                    <ul>
+                        <li>@localizer["ImagesSizeRequirement"]</li>
+                        <li>@localizer["ImagesExtensionRequirement"]</li>
+                    </ul>
+                    <div class="errorMsg-div">
+                        @foreach (var error in imageErrors)
+                        {
+                            <div class="validation-message imageErrors">@error</div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div>
+                <label>@localizer["Name"]</label>
+                <InputText @bind-Value="detailsForm.name" disabled="@(isNameDisabled)"></InputText>
+                <ValidationMessage For="@(()=>detailsForm.name)"></ValidationMessage>
+            <button type="button" @onclick="@(()=>isNameDisabled = !isNameDisabled)">@localizer["ChangeName"]</button>
+            </div>
+            <div>
+                <label>@localizer["City"]</label>
+                <LocationSearch isValid="isLocationValid" userInput="@detailsForm.cityName" OnUserInput="OnCitySearchInput" OnLocationChange="ChooseCity" isDisabled="@isCityDisabled"></LocationSearch>
+            <div style="min-height:0;" class="errorMsg-div">
+                @foreach (var error in CityErrors)
+                {
+                    <div class="validation-message">@error</div>
+                }
+            </div>
+                <button type="button" @onclick="@(()=>isCityDisabled = !isCityDisabled)">@localizer["ChangeCity"]</button>
+            </div>
+            <div>
+                <label>@localizer["Nationality"]</label>
+                <InputSelect @bind-Value="detailsForm.nationality" disabled="@(isNationalityDisabled)">
+                    @foreach (var nationality in Enum.GetValues(typeof(Nationality)))
+                    {
+                        <option value="@nationality">@nationalityLocalizer[nationality.ToString()]</option>
+                    }
+                </InputSelect>
+                <button type="button" @onclick="@(()=>isNationalityDisabled = !isNationalityDisabled)">@localizer["ChangeNationality"]</button>
+            </div>
+            <div>
+                <label>@localizer["Description"]</label>
+                <InputTextArea @bind-Value="detailsForm.description" disabled="@(isDescriptionDisabled)"></InputTextArea>
+                <ValidationMessage For="@(()=>detailsForm.description)"></ValidationMessage>
+                <button type="button" @onclick="@(()=>isDescriptionDisabled = !isDescriptionDisabled)">@localizer["ChangeDescription"]</button>
+            </div>
+            <button type="submit">@localizer["SaveChanges"]</button>
+    </EditForm>
+</div>
+@code {
+
+    private EditContext editContext;
+
+    [Parameter]
+    public UserDetailsFormModel detailsForm { get; set; } = new();
+
+    [Parameter]
+    public List<string> imageErrors { get; set; } = new();
+
+    [Parameter]
+    public string profilePicURL { get; set; }
+    public string profilePicDataURL;
+
+    InputFile inputFile = new();
+    public IBrowserFile profilePic;
+    string[] allowExtensions = { ".jpg", ".png", ".jpeg", ".webp" };
+    public long maxFileSize = 1024 * 1024 * 5;
+    public int MaxAllowedFiles = 1;
+
+    public bool deletePicture = false;
+
+    public bool isNameDisabled = true;
+    public bool isDescriptionDisabled = true;
+    public bool isNationalityDisabled = true;
+    public bool isCityDisabled = true;
+
+    public List<string> CityErrors { get; set; } = new();
+    public bool isLocationValid { get; set; } = true;
+    public string cityUserInput { get; set; } = "";
+
+    protected override void OnInitialized()
+    {
+        detailsForm = new();
+        editContext = new EditContext(detailsForm);
+    }
+    protected override void OnParametersSet()
+    {
+        if (detailsForm is not null)
+        {
+            editContext = new EditContext(detailsForm);
+            cityUserInput = detailsForm.cityName;
+        }
+
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JS.InvokeVoidAsync("import", "/js/InvokeInput.js");
+    }
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        imageErrors.Clear();
+        foreach (var file in e.GetMultipleFiles(MaxAllowedFiles).ToList())
+        {
+
+            if (file.Size > maxFileSize)
+            {
+                imageErrors.Add(file.Name + " " + localizer["FileTooBigError"]);
+                profilePic = null;
+            }
+            else
+            {
+                var extension = Path.GetExtension(file.Name);
+                if (allowExtensions.Contains(extension.ToLower()))
+                {
+                    profilePic = file;
+                    profilePicDataURL = await GetDataUrlFromFile(file);
+                    deletePicture = false;
+                }
+                else
+                {
+                    imageErrors.Add(file.Name + " " + localizer["InvalidExtensionError"]);
+                    profilePic = null;
+                }
+            }
+
+        }
+        this.StateHasChanged();
+
+    }
+    private void PrepareFile(MultipartFormDataContent content)
+    {
+        string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), ".webp");
+        var fileContent = new StreamContent(profilePic.OpenReadStream(maxFileSize));
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue(profilePic.ContentType);
+        content.Add(
+            content: fileContent,
+            name: "\"profilePicture\"",
+            fileName: newFileName);
+    }
+    private async Task HandleSubmitAsync()
+    {
+        CityErrors.Clear();
+        isLocationValid = true;
+
+        imageErrors.Clear();
+        bool isFormValid = editContext.Validate();
+
+        if (!cityUserInput.Equals(detailsForm.cityName) && !string.IsNullOrEmpty(cityUserInput))
+        {
+            CityErrors.Clear();
+            CityErrors.Add(localizer["LocationNotChosenError"]);
+            isFormValid = false;
+            isLocationValid = false;
+        }
+        if (string.IsNullOrEmpty(cityUserInput))
+        {
+            detailsForm.cityName = "";
+            detailsForm.cityPlaceId = "";
+        }
+
+        if (isFormValid)
+        {
+            using (MultipartFormDataContent content = new())
+            {
+                if(profilePic is not null && !deletePicture)
+                    PrepareFile(content);
+                var stringPayload = JsonConvert.SerializeObject(detailsForm);
+                var httpContent = new StringContent(stringPayload, Encoding.UTF8, "application/json");
+                content.Add(
+                    content: httpContent,
+                    name: "userDetails");
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+                    var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+                    if(authState.User.Claims is not null){
+                        var token = await customAuthStateProvider.GetToken();
+                        var id = authState.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).First().Value;
+                        httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+                        if (deletePicture)
+                            await httpClient.DeleteAsync($"{navManager.BaseUri}api/userImage/{id}");
+                        var result = await httpClient.PutAsync($"{navManager.BaseUri}api/user/{id}", content);
+                        navManager.NavigateTo(navManager.Uri, forceLoad: true);
+                    }
+                    else
+                    {
+                        navManager.NavigateTo(navManager.Uri);
+                    }
+
+                }
+            }
+        }
+        else
+        {
+            return;
+        }
+    }
+    private async Task InvokeInputFile()
+    {
+        await JS.InvokeVoidAsync("inputFileInterop.invokeInputFile", inputFile.Element);
+    }
+    public void OnCitySearchInput(string userInput)
+    {
+        cityUserInput = userInput;
+    }
+    public void ChooseCity(Location predictedLocation)
+    {
+        detailsForm.cityName = predictedLocation.cityName;
+        detailsForm.cityPlaceId = predictedLocation.cityPlaceId;
+
+        cityUserInput = predictedLocation.cityName;
+    }
+    private async Task<string> GetDataUrlFromFile(IBrowserFile file)
+    {
+        string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), ".webp");
+        var fileContent = new StreamContent(file.OpenReadStream(maxFileSize));
+
+        using MemoryStream ms = new();
+        await fileContent.CopyToAsync(ms);
+
+        string imageDataUri = $"data:image/webp;base64,{Convert.ToBase64String(ms.ToArray())}";
+
+        return imageDataUri;
+    }
+}
+

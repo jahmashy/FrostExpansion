@@ -1,11 +1,13 @@
 ﻿@using Frost.Shared.Models;
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Linq;
+@inject NavigationManager navManager
 @inject IStringLocalizer<Resource> localizer
-<InputSearchComponent OnSelect="LocationChanged" OnInput="Search" selectionList="districtNames" placeholder="@localizer["District"]"></InputSearchComponent>
+<InputSearchComponent isValid="isValid" userInput="@userInput" OnSelect="LocationChanged" OnInput="Search" selectionList="districtNames" placeholder="@localizer["District"]"></InputSearchComponent>
 
 
 @code {
+    [Parameter]
     public string userInput { get; set; }
 
     [Parameter]
@@ -17,12 +19,15 @@
     [Parameter]
     public EventCallback<string> OnUserInput { get; set; }
 
+    [Parameter]
+    public bool isValid { get; set; } = true;
+
     private List<Location> predictionList = new();
     public List<string> districtNames = new();
 
     public async Task getPredictedLocationsAsync(string input)
     {
-        string apiString = $"https://localhost:44350/api/location/districts?userinput={input}&city={selectedCity}";
+        string apiString = $"{navManager.BaseUri}api/location/districts?userinput={input}&city={selectedCity}";
         if (!string.IsNullOrWhiteSpace(selectedCity))
         {
             using (HttpClient httpClient = new HttpClient())

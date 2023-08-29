@@ -1,0 +1,338 @@
+﻿@page "/property/search/{propertyType}/{offerType}"
+@using System.Text;
+@using Frost.Shared.Models.Enums;
+@using Newtonsoft.Json;
+@using System.Security.Claims;
+@inject IStringLocalizer<Resource> localizer
+@inject NavigationManager navManager
+@inject AuthenticationStateProvider authStateProvider
+@inject IStringLocalizer<Resource> localizer
+@inject IJSRuntime JS
+<Filters OnSearch="@(()=>SearchOffer())" propertyFilters="@propertyFilters" />
+<h2>@localizer[searchedOffers.Count()>0? "SearchResult" : "NoOffers"]</h2>
+<div>
+    @if (searchedOffers.Count() > 0)
+    {
+        <div class="filtersButtons-div">
+            <button class="saveFilters-button" @onclick="SaveFilters">@localizer["SaveFilters"]</button>
+            <div>
+                <div class="sortBy-div">@localizer["SortBy"]</div>
+                <div class="sortList-div">
+                    <button @onclick="@(()=>isSortListVisible = !isSortListVisible)" class="sortValue-button" style="@(isSortListVisible? "border-bottom-right-radius: 0px;" : "")">@localizer[sortValue]</button>
+                    <div class="dropdownSort-list" style="visibility: @(isSortListVisible? "visible" : "collapse")">
+                        <ul>
+                            <li @onclick="@(()=>{sortBy="DateDesc";SearchOffer();})">@localizer["Date:Latest"]</li>
+                            <li @onclick="@(()=>{sortBy="DateAsc";SearchOffer();})">@localizer["Date:Oldest"]</li>
+                            <li @onclick="@(()=>{sortBy="PriceDesc";SearchOffer();})">@localizer["Price:Highest"]</li>
+                            <li @onclick="@(()=>{sortBy="PriceAsc";SearchOffer();})">@localizer["Price:Lowest"]</li>
+                            <li @onclick="@(()=>{sortBy="SurfaceDesc";SearchOffer();})">@localizer["Surface:Highest"]</li>
+                            <li @onclick="@(()=>{sortBy="SurfaceAsc";SearchOffer();})">@localizer["Surface:Lowest"]</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <PropertyList @ref="propertyList" propertyList="searchedOffers"></PropertyList>
+    }
+</div>
+
+@if (searchedOffers.Count() > 0)
+{
+    <div>
+        @foreach(int i in previousPages)
+        {
+            <button class="pageButton" @onclick="@(()=>SearchOffer(i))">@(i)</button>
+        }
+        <button class="pageButton">@pageNumber</button>
+        @foreach(int i in nextPages)
+        {
+            <button class="pageButton" @onclick="@(()=>SearchOffer(i))">@(i)</button>
+        }
+    </div>
+}
+
+
+@code {
+    public List<PropertyDetailsDTO> searchedOffers = new();
+    private PropertyFiltersDTO propertyFilters = new();
+    private int remainingRecords;
+    int otherPages;
+    public bool isSortListVisible { get; set; } = false;
+    public string sortValue { get; set; } = "Date:Latest";
+    private PropertyList propertyList = new PropertyList();
+    private List<int> nextPages = new();
+    private List<int> previousPages = new();
+
+
+    [CascadingParameter]
+    public PopUpComponent popup { get; set; }
+
+    [Parameter]
+    public string propertyType { get; set; }
+    [Parameter]
+    public string offerType{ get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? marketType { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? cityId { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int? minRoomsNumber { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int? maxRoomsNumber { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int? minFloor { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int? maxFloor { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public double? minPrice { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public double? maxPrice { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public double? minMeterPrice { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public double? maxMeterPrice { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public float? minSurface { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public float? maxSurface { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int? minConstructionYear { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int? maxConstructionYear { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public bool? allowRoommates { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? constructionType { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? cityName { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string sortBy { get; set; } = "DateDesc";
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int pageNumber { get; set; } = 1;
+    protected override async Task OnParametersSetAsync()
+    {
+        propertyFilters.marketType = (!string.IsNullOrEmpty(marketType)? (MarketTypeEnum)Enum.Parse(typeof(MarketTypeEnum), marketType, true) : MarketTypeEnum.Any);
+        propertyFilters.minRoomsNumber = minRoomsNumber;
+        propertyFilters.maxRoomsNumber = maxRoomsNumber;
+        propertyFilters.minFloor = minFloor;
+        propertyFilters.maxFloor = maxFloor;
+        propertyFilters.minPrice = minPrice;
+        propertyFilters.maxPrice = maxPrice;
+        propertyFilters.minMeterPrice = minMeterPrice;
+        propertyFilters.maxMeterPrice = maxMeterPrice;
+        propertyFilters.minSurface = minSurface;
+        propertyFilters.maxSurface = maxSurface;
+        propertyFilters.minConstructionYear = minConstructionYear;
+        propertyFilters.maxConstructionYear = maxConstructionYear;
+        if(allowRoommates is not null)
+        {
+            if (allowRoommates == true)
+            {
+                propertyFilters.roommates = (RoommatesEnum)Enum.Parse(typeof(RoommatesEnum), "Included", true);
+            }
+            else
+            {
+                propertyFilters.roommates = (RoommatesEnum)Enum.Parse(typeof(RoommatesEnum), "Excluded", true);
+            }
+        }
+        else
+        {
+            propertyFilters.roommates = (RoommatesEnum)Enum.Parse(typeof(RoommatesEnum), "Any", true);
+        }
+
+        propertyFilters.propertyType = (PropertyTypeEnum)Enum.Parse(typeof(PropertyTypeEnum), propertyType, true);
+        propertyFilters.offerType = (OfferTypeEnum)Enum.Parse(typeof(OfferTypeEnum), offerType, true);
+        propertyFilters.cityName = cityName;
+        propertyFilters.cityPlaceId = cityId;
+
+        this.StateHasChanged();
+        using (HttpClient httpClient = new HttpClient())
+        {
+            string initialApi = $"{navManager.BaseUri}api/property/search/{propertyType}/{offerType}?";
+            StringBuilder sb = new StringBuilder();
+            sb.Append(initialApi);
+            if (marketType is not null)
+                sb.Append($"marketType={marketType}&");
+            if (cityId is not null)
+                sb.Append($"cityId={cityId}&");
+            if (minRoomsNumber is not null)
+                sb.Append($"minRoomsNumber={minRoomsNumber}&");
+            if (maxRoomsNumber is not null)
+                sb.Append($"maxRoomsNumber={maxRoomsNumber}&");
+            if (minFloor is not null)
+                sb.Append($"minFloor={minFloor}&");
+            if (maxFloor is not null)
+                sb.Append($"maxFloor={maxFloor}&");
+            if (minPrice is not null)
+                sb.Append($"minPrice={minPrice}&");
+            if (maxPrice is not null)
+                sb.Append($"maxPrice={maxPrice}&");
+            if (minMeterPrice is not null)
+                sb.Append($"minMeterPrice={minMeterPrice}&");
+            if (maxMeterPrice is not null)
+                sb.Append($"maxMeterPrice={maxMeterPrice}&");
+            if (minSurface is not null)
+                sb.Append($"minSurface={minSurface}&");
+            if (maxSurface is not null)
+                sb.Append($"maxSurface={maxSurface}&");
+            if (minConstructionYear is not null)
+                sb.Append($"minConstructionYear={minConstructionYear}&");
+            if (maxConstructionYear is not null)
+                sb.Append($"maxConstructionYear={maxConstructionYear}&");
+            if (allowRoommates is not null)
+                sb.Append($"allowRoommates={allowRoommates}&");
+            sb.Append($"sortBy={sortBy}&");
+            sb.Append($"pageNumber={pageNumber}");
+            if (sortBy == "DateDesc")
+                sortValue = "Date:Latest";
+            if(sortBy=="DateAsc")
+                sortValue = "Date:Oldest";
+            if(sortBy=="PriceDesc")
+                sortValue = "Price:Highest";
+            if(sortBy=="PriceAsc")
+                sortValue = "Price:Lowest";
+            if(sortBy=="SurfaceDesc")
+                sortValue = "Surface:Highest";
+            if(sortBy=="SurfaceAsc")
+                sortValue = "Surface:Lowest";
+            string apiString = sb.ToString();
+            var response = await httpClient.GetAsync(apiString);
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                SearchResult searchResult = JsonConvert.DeserializeObject<SearchResult>(result);
+                searchedOffers = searchResult.searchedOffers.ToList();
+                remainingRecords = searchResult.remainingResults;
+                int remainder;
+                otherPages =  Math.DivRem(remainingRecords,10,out remainder);
+                if (remainder > 0)
+                    otherPages++;
+                if (otherPages > 9)
+                    otherPages = 9;
+                if(nextPages.Count == 0)
+                {
+                    for (int i = pageNumber + 1; i < pageNumber + otherPages + 1; i++)
+                    {
+                        nextPages.Add(i);
+                    }
+                }
+                if(previousPages.Count == 0 )
+                {
+                    for(int i = pageNumber - 1; i > pageNumber - 5 && i != 0; i--)
+                    {
+                        previousPages.Add(i);
+                    }
+                    previousPages.Reverse();
+                }
+
+
+
+                this.StateHasChanged();
+            }
+        }
+    }
+    private async void SearchOffer(int page = 1)
+    {
+        string initialString = $"/property/search/{propertyFilters.propertyType}/{propertyFilters.offerType}?";
+        StringBuilder sb = new StringBuilder();
+        sb.Append(initialString);
+        if (propertyFilters.marketType is not null && propertyFilters.marketType.ToString() != "Any")
+            sb.Append($"marketType={propertyFilters.marketType}&");
+        if (propertyFilters.cityPlaceId is not null)
+        {
+            sb.Append($"cityId={propertyFilters.cityPlaceId}&");
+            sb.Append($"cityName={propertyFilters.cityName}&");
+        }
+
+        if (propertyFilters.minRoomsNumber is not null)
+            sb.Append($"minRoomsNumber={propertyFilters.minRoomsNumber}&");
+        if (propertyFilters.maxRoomsNumber is not null)
+            sb.Append($"maxRoomsNumber={propertyFilters.maxRoomsNumber}&");
+        if (propertyFilters.minFloor is not null)
+            sb.Append($"minFloor={propertyFilters.minFloor}&");
+        if (propertyFilters.maxFloor is not null)
+            sb.Append($"maxFloor={propertyFilters.maxFloor}&");
+        if (propertyFilters.minPrice is not null)
+            sb.Append($"minPrice={propertyFilters.minPrice}&");
+        if (propertyFilters.maxPrice is not null)
+            sb.Append($"maxPrice={propertyFilters.maxPrice}&");
+        if (propertyFilters.minMeterPrice is not null)
+            sb.Append($"minMeterPrice={propertyFilters.minMeterPrice}&");
+        if (propertyFilters.maxMeterPrice is not null)
+            sb.Append($"maxMeterPrice={propertyFilters.maxMeterPrice}&");
+        if (propertyFilters.minSurface is not null)
+            sb.Append($"minSurface={propertyFilters.minSurface}&");
+        if (propertyFilters.maxSurface is not null)
+            sb.Append($"maxSurface={propertyFilters.maxSurface}&");
+        if (propertyFilters.minConstructionYear is not null)
+            sb.Append($"minConstructionYear={propertyFilters.minConstructionYear}&");
+        if (propertyFilters.maxConstructionYear is not null)
+            sb.Append($"maxConstructionYear={propertyFilters.maxConstructionYear}&");
+        if (propertyFilters.roommates is not null && propertyFilters.roommates != RoommatesEnum.Any)
+        {
+            if (propertyFilters.roommates == RoommatesEnum.Included)
+                sb.Append("allowRoommates=true&");
+            if (propertyFilters.roommates == RoommatesEnum.Excluded)
+                sb.Append("allowRoommates=false&");
+        }
+        sb.Append($"sortBy={sortBy}&");
+        sb.Append($"pageNumber={page}");
+        string navString = sb.ToString();
+        navManager.NavigateTo(navString, forceLoad: true);
+    }
+    private async void SaveFilters()
+    {
+        using (HttpClient httpClient = new HttpClient())
+        {
+            CustomAuthenticationStateProvider customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+            var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            string? myId = authState.User.Claims?.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            var token = await customAuthStateProvider.GetToken();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            if (myId is null)
+            {
+                navManager.NavigateTo("/login");
+                return;
+            }
+            string apiString = $"{navManager.BaseUri}api/filters";
+            FiltersUserModel model = new FiltersUserModel()
+            {
+                filtersDto = propertyFilters,
+                userId = int.Parse(myId)
+            };
+            var response = await httpClient.PostAsJsonAsync<FiltersUserModel>(apiString,model);
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                popup.InvokePopUp(localizer["SavedFilters"]);
+            }
+        }
+    }
+    private async void OnSort(string value)
+    {
+        propertyList.OnSort();
+        sortValue = value;
+        isSortListVisible = false;
+    }
+}

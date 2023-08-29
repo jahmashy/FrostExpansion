@@ -1,0 +1,58 @@
+﻿.userDetails-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    padding-bottom: 2rem;
+    padding-top: 2rem;
+    height: 100%;
+    width: 50%;
+    background-color: #F1F9FF;
+}
+
+div ::deep form {
+    display: flex;
+    flex: 1;
+    width: 75%;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+.userDetails-div button:last-of-type {
+    margin-top: auto;
+}
+::deep form div{
+    display:flex;
+    flex-direction:column;
+}
+::deep form img {
+    height: 200px;
+    width: 200px;
+}
+div > button {
+    margin-top: 5px !important;
+    width: fit-content;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+::deep input:disabled {
+    background-color: #F1F9FF;
+}
+::deep textarea:disabled {
+    background-color: #F1F9FF;
+}
+::deep select:disabled {
+    background-color: #F1F9FF;
+}
+.img-buttons {
+    display: flex;
+    flex-direction: column;
+}
+.img-buttons > button{
+    width:100%;
+}
+.requirements-div {
+    margin: 2rem;
+}
+.errorMsg-div {
+    min-height: 1.5rem;
+}

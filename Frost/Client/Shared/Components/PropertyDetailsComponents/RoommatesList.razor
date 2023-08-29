@@ -1,8 +1,12 @@
-﻿@inject IStringLocalizer<Resource> localizer
+﻿@using Newtonsoft.Json;
+@using System.Security.Claims;
+@inject NavigationManager navManager
+@inject IStringLocalizer<Resource> localizer
+@inject AuthenticationStateProvider authStateProvider
 <div class="list-Wrapper">
     <div class="top-div">
         <p>@localizer["RoommateSearch"]</p>
-        <img src="/images/Icons/Plus.png" />
+        <img @onclick="@(async()=>await OnRoommatesClick.InvokeAsync())" src="@(IsUserInRoommates? "/images/Icons/Minus.png" : "/images/Icons/Plus.png")"  />
     </div>
     
     <ul>
@@ -10,12 +14,11 @@
         {
             <li>
                 <div class="listElement-div">
-                    <img src="@(string.IsNullOrEmpty(user.ProfileImgUrl)? "/images/Icons/ProfileImgList.png" : user.ProfileImgUrl)" />
-                    <p>@user.Name</p>
-                    <img src="/images/Icons/Message.png" />
+                    <img style="cursor:pointer" @onclick="@(()=>navManager.NavigateTo($"/user/{user.userId}"))" src="@(string.IsNullOrEmpty(user.profileImgUrl)? "/images/Icons/ProfileImgList.png" : user.profileImgUrl)" />
+                    <p style="cursor:pointer" @onclick="@(()=>navManager.NavigateTo($"/user/{user.userId}"))">@user.name</p>
+                    <img @onclick="@(()=>HandleSendMessage(user.userId))" src="/images/Icons/Message.png" />
                 </div>
             </li>
-
         }
     </ul>
 </div>
@@ -23,5 +26,41 @@
 
 @code {
     [Parameter]
-    public List<UserDto> roommatesList { get; set; }
+    public List<UserDTO> roommatesList { get; set; }
+    [CascadingParameter]
+    public PopUpComponent popup { get; set; }
+    [Parameter]
+    public EventCallback OnRoommatesClick { get; set; }
+    [Parameter]
+    public bool IsUserInRoommates { get; set; } = false;
+    private async void HandleSendMessage(int userId)
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+        string? myId = authState.User.Claims?.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+        if (myId is null)
+        {
+            navManager.NavigateTo("/login");
+            return;
+        }
+
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var response = await httpClient.GetAsync($"{navManager.BaseUri}api/user/CommunicationStatus?userId={myId}&targetuserid={userId}");
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                bool isCommunicationBlocked = JsonConvert.DeserializeObject<bool>(result);
+                if (!isCommunicationBlocked)
+                {
+                    navManager.NavigateTo($"/account/messages?createChat=true&userId={userId}");
+                }
+                else
+                {
+                    popup.InvokePopUp(localizer["CommunicationIsBlocked"]);
+                }
+
+            }
+        }
+    }
 }

@@ -1,7 +1,7 @@
 ﻿@inject IStringLocalizer<Resource> localizer
 @inject ILocalStorageService localStorage
 @inject NavigationManager navManager
-
+@inject AuthenticationStateProvider authStateProvider
 <div class="form-div">
     <h3>
         @localizer["Registration"]
@@ -20,7 +20,7 @@
 
             <label>@localizer["TelNumber"]</label>
             <ValidationMessage For="@(() => regModel.telNumber)" />
-            <InputText @bind-Value=regModel.telNumber placeholder="@localizer["TelNumberPlaceholder"]"></InputText>
+            <InputNumber @bind-Value=regModel.telNumber placeholder="@localizer["TelNumberPlaceholder"]"></InputNumber>
 
             <label>@localizer["Password"]</label>
             <ValidationMessage For="@(() => regModel.password)" />
@@ -44,13 +44,12 @@
     {
         using (HttpClient httpClient = new HttpClient())
         {
-            var response = await httpClient.PostAsJsonAsync<RegistrationModel>("https://localhost:44350/api/auth/register", regModel);
+            var response = await httpClient.PostAsJsonAsync<RegistrationModel>($"{navManager.BaseUri}api/auth", regModel);
             if (response.IsSuccessStatusCode)
             {
                 LoginResult result = await response.Content.ReadFromJsonAsync<LoginResult>();
-                await localStorage.SetItemAsync<LoginResult>("user", result);
-                isUserLoggedIn = true;
-                userAlreadyExists = false;
+                var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+                await customAuthStateProvider.UpdateAuthenticationState(result);
                 navManager.NavigateTo("/", forceLoad: true);
 
             }

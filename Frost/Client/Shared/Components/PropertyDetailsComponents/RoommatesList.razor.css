@@ -20,16 +20,23 @@ li{
     margin-bottom:1rem;
     border: solid 1px #BCE0FD;
 }
-.listElement-div img{
+.listElement-div img:first-child{
+    width:50px;
+    height:50px;
     cursor:pointer;
 }
-.listElement-div p{
-    margin:0;
-    margin-inline:10px;
-}
+    .listElement-div p {
+        margin: 0;
+        margin-inline: 10px;
+        max-width: 5rem;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
 .listElement-div p + img{
     margin-left:auto;
     margin-right:10px;
+    cursor:pointer;
 
 }
 .top-div{

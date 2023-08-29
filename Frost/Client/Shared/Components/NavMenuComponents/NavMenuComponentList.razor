@@ -2,11 +2,12 @@
 @inject IStringLocalizer<Resource> localizer
 @inject IJSRuntime JS
 @implements IDisposable
+@inject NavigationManager NavManager
 <div id="@id" class="componentList-div" style="visibility: @(isVisible? "visible" : "collapse")">
     <ul>
         @foreach (var value in values)
         {
-            <li>
+            <li @onclick="@(()=>NavManager.NavigateTo($"property/search/" + value.Substring(0,value.Length - 1) + $"/{offerType}?&pageNumber=1",forceLoad:true))">
                 <a>@localizer[value]</a>
             </li>
         }
@@ -23,6 +24,8 @@
     public bool isVisible { get; set; }
     [Parameter]
     public EventCallback<bool> OnVisibilityChange { get; set; }
+    [Parameter]
+    public string offerType { get; set; }
 
     private DotNetObjectReference<NavMenuComponentList> objRef;
     protected override void OnInitialized()

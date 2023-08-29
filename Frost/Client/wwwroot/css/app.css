@@ -8,10 +8,19 @@ html, body {
 h1:focus {
     outline: none;
 }
+h1 {
+    color: #2699FB;
+}
 ul {
     list-style-type: none;
 }
-
+.invitation {
+    color: green;
+    background-color: aquamarine;
+    padding: 0.2rem;
+    border-radius: 4px;
+    word-break:break-word;
+}
 a{
     cursor:pointer;
 }
@@ -34,6 +43,10 @@ a{
 
 .invalid {
     border: 2px solid red !important;
+}
+label {
+    color: #2699FB;
+    font-weight: 600;
 }
 .input-div {
     position: relative;
@@ -99,7 +112,15 @@ button {
     padding: 50px;
     background-color: #BCE0FD;
 }
-
+.ActiveNavLink {
+    color: #2699FB;
+    font-weight: 600;
+}
+.NavLink {
+    color: #2699FB;
+    text-decoration: none;
+    font-size: 1.5rem;
+}
 
 #blazor-error-ui {
     background: lightyellow;

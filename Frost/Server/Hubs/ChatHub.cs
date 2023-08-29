@@ -1,4 +1,5 @@
-﻿using Frost.Server.Services;
+﻿using Frost.Server.Repositories;
+using Frost.Server.Services.Interfaces;
 using Frost.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,37 +10,48 @@ namespace Frost.Server.Hubs
     public interface IChatClient
     {
         Task SendMessageAsync(string message);
-        Task ReceiveMessage(Message message);
+        Task ReceiveMessage(MessageModel message);
+        Task ConnectToNewChat(int newChatId);
+        Task NotifyAboutJoin();
+        Task NotifyAboutLeave();
     }
     [Authorize]
     public class ChatHub : Hub<IChatClient>
     {
         public const string HubUrl = "/chat";
-        public IChatDbService chatDbService { get; set; }
-        public IMessageDbService messageDbService { get; set; }
-        public ChatHub(IChatDbService chatDbService, IMessageDbService messageDbService)
+        public IChatRepository _chatRepository { get; set; }
+        public IUserRepository _userRepository { get; set; }
+        public ChatHub(IChatRepository chatRepository, IUserRepository userRepository)
         {
-            this.chatDbService = chatDbService;
-            this.messageDbService = messageDbService;
+            _chatRepository = chatRepository;
+            _userRepository = userRepository;
 
         }
 
         public async Task SendMessage(string chatId, string message)
         {
-        
+            int maxMsgLength = 4096;
             if (string.IsNullOrEmpty(chatId))
             {
                 await base.OnDisconnectedAsync(new Exception("Chat ID is required"));
                 return;
             }
-            bool validationSuccess = await chatDbService.IsUserChatAsync(int.Parse(Context.UserIdentifier), int.Parse(chatId));
+            if(message.Length > maxMsgLength)
+            {
+                await base.OnDisconnectedAsync(new Exception("Message is too long"));
+                return;
+            }
+            bool validationSuccess = await _chatRepository.IsUserInChatAsync(int.Parse(Context.UserIdentifier), int.Parse(chatId));
             if (!validationSuccess)
             {
                 await base.OnDisconnectedAsync(new Exception("User does not participate in this chat"));
                 return;
             }
-            var newMessage = await messageDbService.AddNewMessageAsync(int.Parse(Context.UserIdentifier),int.Parse(chatId), message);
-            await Clients.Group(chatId).ReceiveMessage(newMessage);
+            MessageModel newMessage;
+            bool success;
+            (newMessage,success) = await _chatRepository.AddNewMessageAsync(int.Parse(Context.UserIdentifier),int.Parse(chatId), message);
+            if (success)
+                await Clients.Group($"chat_{chatId}").ReceiveMessage(newMessage);
         }
 
         public override async Task OnConnectedAsync()
@@ -50,19 +62,44 @@ namespace Frost.Server.Hubs
                 await base.OnDisconnectedAsync(new Exception("User ID is required"));
                 return;
             }
-            List<int> IDs = await chatDbService.GetUserChatsIDAsync(int.Parse(userID));
+            List<int> IDs = await _chatRepository.GetUserChatsIDAsync(int.Parse(userID));
             foreach (int ID in IDs)
             {
-                await Groups.AddToGroupAsync(Context.ConnectionId, ID.ToString());
+                await Groups.AddToGroupAsync(Context.ConnectionId, $"chat_{ID}");
+            }
+            await Groups.AddToGroupAsync(Context.ConnectionId, $"user_{userID}");
+
+            await base.OnConnectedAsync();
+        }
+        public async Task AddClientToGroupAsync(string chatId)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, $"chat_{chatId}");
+        }
+        public async Task RemoveClientFromGroupAsync(int chatId)
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"chat_{chatId}");
+        }
+        public async Task NotifyUserAboutNewChat(int targetUserId, int newChatID)
+        {
+            string userID = Context.UserIdentifier;
+            if (!await _userRepository.IsCommunicationBlockedAsync(int.Parse(userID), targetUserId)) {
+                await Clients.Group($"user_{targetUserId}").ConnectToNewChat(newChatID);
             }
             
-            await base.OnConnectedAsync();
+        }
+        public async Task NotifyUsersAboutJoining(string chatID)
+        {
+            await Clients.Group($"chat_{chatID}").NotifyAboutJoin();
         }
 
         public override async Task OnDisconnectedAsync(Exception e)
         {
             await base.OnDisconnectedAsync(e);
 
+        }
+        public async Task NotifyUsersAboutLeaving(int chatID)
+        {
+            await Clients.Group($"chat_{chatID}").NotifyAboutLeave();
         }
     }
 }

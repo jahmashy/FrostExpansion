@@ -1,6 +1,6 @@
 ﻿@inject IStringLocalizer<Resource> localizer
 <div class="search-div">
-    <InputText class="@(isValid? "" : "invalid")" @bind-Value=userInput @onfocus="() => {if(!String.IsNullOrWhiteSpace(userInput)){ isVisible = true;}}" @onblur="() => {isVisible = false;}" @oninput="Search" placeholder="@placeholder" />
+    <InputText class="@(isValid? "" : "invalid")" @bind-Value=userInput @onfocus="() => {if(!String.IsNullOrWhiteSpace(userInput)){ isVisible = true;}}" @onblur="() => {isVisible = false;}" @oninput="Search" placeholder="@placeholder" disabled="@isDisabled" />
     <div style="visibility: @(isVisible? "visible" : "collapse");position:relative">
         <ul>
             @if (selectionList.Count > 0)
@@ -39,7 +39,11 @@
     [Parameter]
     public bool isValid { get; set; } = true;
 
-    public string userInput { get; set; } = "";
+    [Parameter]
+    public string userInput { get; set; }
+
+    [Parameter]
+    public bool isDisabled { get; set; } = false;
 
     private bool isVisible = false;
 

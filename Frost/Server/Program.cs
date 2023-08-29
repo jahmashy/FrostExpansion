@@ -1,15 +1,23 @@
+using Frost.Server.EntityModels;
 using Frost.Server.Hubs;
 using Frost.Server.Mocks;
+using Frost.Server.Repositories;
 using Frost.Server.Services;
+using Frost.Server.Services.AuthServices;
+using Frost.Server.Services.HostedServices;
+using Frost.Server.Services.ImageServices;
 using Frost.Server.Services.Interfaces;
+using Frost.Server.Services.MailServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Runtime.CompilerServices;
 using System.Text;
+using static Frost.Server.Services.HostedServices.NotificationHostedService;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddAuthentication(opt =>
 {
     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -22,22 +30,32 @@ builder.Services.AddAuthentication(opt =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = "localhost:44350",
-        ValidAudience = "localhost:44350",
+        ValidIssuer = builder.Configuration["JwtSettings:ValidIssuer"],
+        ValidAudience = builder.Configuration["JwtSettings:ValidAudience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["IssuerSigningKey"]))
     };
 });
+
+builder.Services.AddDbContext<FrostDbContext>(opt =>
+{
+    opt.UseSqlServer(builder.Configuration["ConnectionString"]);
+});
+builder.Services.AddHostedService<NotificationHostedService>();
+builder.Services.AddScoped<IScopedProcessingService, ScopedProcessingService>();
+builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddScoped<IGooglePlacesApiService, GooglePlacesApiService>();
-builder.Services.AddScoped<IPropertyService,PropertyDBServiceMock>();
-builder.Services.AddScoped<IUserDbService, UserDbServiceMock>();
+builder.Services.AddScoped<IPropertyRepository,PropertyRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IJWTService, JWTService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPropertyImageService, PropertyImageService>();
-builder.Services.AddScoped<IChatDbService, ChatDbServiceMock>();
-builder.Services.AddScoped<IMessageDbService, MessageDbServiceMock>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
+builder.Services.AddScoped<IUserImageService, UserImageService>();
+builder.Services.AddScoped<IFiltersRepository, FiltersRepository>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddSignalR();
+
 
 var app = builder.Build();
 

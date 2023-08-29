@@ -8,8 +8,8 @@ namespace Frost.Server.Services.Interfaces
 {
     public interface IJWTService
     {
-        public JwtSecurityToken CreateJWT(User user);
-        public Claim[] GetClaims(User user);
+        public JwtSecurityToken CreateJWT(UserDTO user, string role);
+        public Claim[] GetClaims(UserDTO user, string role);
         public SigningCredentials GetSigningCredentials();
         public string GenerateRefreshToken();
         public (ClaimsPrincipal?, bool) GetPrincipalFromExpiredToken(string token);

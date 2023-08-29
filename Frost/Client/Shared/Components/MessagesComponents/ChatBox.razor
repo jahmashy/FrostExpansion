@@ -1,4 +1,6 @@
-﻿@inject IJSRuntime JS
+﻿@using System.Text.RegularExpressions;
+@inject IJSRuntime JS
+@inject NavigationManager navManager
 
 <div class="chatBox-div">
     <div id="@elementToScrollId" class="messages-div">
@@ -10,7 +12,7 @@
                     <span style="font-weight: 600;">@message.userName</span>
                 }
                 <div class="message-box">
-                    @message.content
+                    @SearchMessageForLinks(message.content)
                 </div>
             </div>
         }
@@ -28,7 +30,7 @@
 
 @code {
     [Parameter]
-    public List<Message> messages { get; set; } = new();
+    public List<MessageModel> messages { get; set; } = new();
 
     [Parameter]
     public string elementToScrollId { get; set; }
@@ -44,6 +46,10 @@
 
     [Parameter]
     public EventCallback<string> OnMessageContentChange { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnInvitationClick { get; set; }
+
 
     public int maxMessageLength { get; set; } = 4096;
 
@@ -82,5 +88,51 @@
         {
             await OnMessageContentChange.InvokeAsync(newValue);
         }
+    }
+    protected override void OnParametersSet()
+    {
+        foreach(var message in messages)
+        {
+            SearchMessageForLinks(message.content);
+        }
+
+    }
+    protected override async Task OnAfterRenderAsync(bool firstrender)
+    {
+        await JS.InvokeVoidAsync("ScrollToBottom", elementToScrollId);
+    }
+    private RenderFragment SearchMessageForLinks(string message)
+    {
+        RenderFragment fragment = builder =>
+        {
+
+        }; 
+        string baseurl = navManager.BaseUri;
+        baseurl = baseurl.Replace("/", "\\/");
+        string api = "api/chat/invitation/";
+        api = api.Replace("/", "\\/");
+        var sb = new System.Text.StringBuilder();
+        sb.Append("(");
+        sb.Append(baseurl);
+        sb.Append(api);
+        sb.Append(".{36})+");
+        string pattern = sb.ToString();
+
+        string[] strings = Regex.Split(message, pattern);
+        foreach (string stringPart in strings)
+        {
+            Match m = Regex.Match(stringPart, pattern);
+            if (m.Success)
+            {
+                fragment +=@<a @onclick="@(async ()=>{OnInvitationClick.InvokeAsync(m.Value);})" class="invitation">@m.Value</a>;
+            }
+            else
+            {
+                fragment +=@<span>@stringPart</span>;
+            }
+        }
+
+        return fragment;
+
     }
 }

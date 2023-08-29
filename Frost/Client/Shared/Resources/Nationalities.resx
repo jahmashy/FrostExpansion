@@ -1,0 +1,705 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Afghan" xml:space="preserve">
+    <value>Afgańska</value>
+  </data>
+  <data name="Albanian" xml:space="preserve">
+    <value>Albańska</value>
+  </data>
+  <data name="Algerian" xml:space="preserve">
+    <value>Algierska</value>
+  </data>
+  <data name="American" xml:space="preserve">
+    <value>Amerykańska</value>
+  </data>
+  <data name="Andorran" xml:space="preserve">
+    <value>Androska</value>
+  </data>
+  <data name="Angolan" xml:space="preserve">
+    <value>Angolska</value>
+  </data>
+  <data name="Antiguans" xml:space="preserve">
+    <value>Antiguan</value>
+  </data>
+  <data name="Argentinean" xml:space="preserve">
+    <value>Argentyńska</value>
+  </data>
+  <data name="Armenian" xml:space="preserve">
+    <value>Armeńska</value>
+  </data>
+  <data name="Australian" xml:space="preserve">
+    <value>Australijska</value>
+  </data>
+  <data name="Austrian" xml:space="preserve">
+    <value>Austriacka</value>
+  </data>
+  <data name="Azerbaijani" xml:space="preserve">
+    <value>Azerbejdżańska</value>
+  </data>
+  <data name="Bahamian" xml:space="preserve">
+    <value>Bahamska</value>
+  </data>
+  <data name="Bahraini" xml:space="preserve">
+    <value>Bahrajska</value>
+  </data>
+  <data name="Bangladeshi" xml:space="preserve">
+    <value>Bangladeska</value>
+  </data>
+  <data name="Barbadian" xml:space="preserve">
+    <value>Barbadoska</value>
+  </data>
+  <data name="Barbudans" xml:space="preserve">
+    <value>Barbudzka</value>
+  </data>
+  <data name="Batswana" xml:space="preserve">
+    <value>Botswańska</value>
+  </data>
+  <data name="Belarusian" xml:space="preserve">
+    <value>Białoruska</value>
+  </data>
+  <data name="Belgian" xml:space="preserve">
+    <value>Belgijska</value>
+  </data>
+  <data name="Belizean" xml:space="preserve">
+    <value>Belizeńska</value>
+  </data>
+  <data name="Beninese" xml:space="preserve">
+    <value>Benińska</value>
+  </data>
+  <data name="Bhutanese" xml:space="preserve">
+    <value>Bhutańska</value>
+  </data>
+  <data name="Bolivian" xml:space="preserve">
+    <value>Boliwijska</value>
+  </data>
+  <data name="Bosnian" xml:space="preserve">
+    <value>Bośniacka</value>
+  </data>
+  <data name="Brazilian" xml:space="preserve">
+    <value>Brazylijska</value>
+  </data>
+  <data name="British" xml:space="preserve">
+    <value>Brytyjska</value>
+  </data>
+  <data name="Bruneian" xml:space="preserve">
+    <value>Brunejska</value>
+  </data>
+  <data name="Bulgarian" xml:space="preserve">
+    <value>Bułgarska</value>
+  </data>
+  <data name="Burkinabe" xml:space="preserve">
+    <value>Burkina Faso</value>
+  </data>
+  <data name="Burmese" xml:space="preserve">
+    <value>Burmska</value>
+  </data>
+  <data name="Burundian" xml:space="preserve">
+    <value>Burundyjska</value>
+  </data>
+  <data name="Cambodian" xml:space="preserve">
+    <value>Kambodżańska</value>
+  </data>
+  <data name="Cameroonian" xml:space="preserve">
+    <value>Kameruńska</value>
+  </data>
+  <data name="Canadian" xml:space="preserve">
+    <value>Kanadyjska</value>
+  </data>
+  <data name="Cape_Verdean" xml:space="preserve">
+    <value>Wyspy Zielonego Przylądka</value>
+  </data>
+  <data name="Central_African" xml:space="preserve">
+    <value>Srodkowoafrykańska</value>
+  </data>
+  <data name="Chadian" xml:space="preserve">
+    <value>Czadyjska</value>
+  </data>
+  <data name="Chilean" xml:space="preserve">
+    <value>Chilijska</value>
+  </data>
+  <data name="Chinese" xml:space="preserve">
+    <value>Chińska</value>
+  </data>
+  <data name="Colombian" xml:space="preserve">
+    <value>Kolumbijska</value>
+  </data>
+  <data name="Comoran" xml:space="preserve">
+    <value>Komoryjska</value>
+  </data>
+  <data name="Congolese" xml:space="preserve">
+    <value>Kongijska</value>
+  </data>
+  <data name="Costa_Rican" xml:space="preserve">
+    <value>Kostarykańska</value>
+  </data>
+  <data name="Croatian" xml:space="preserve">
+    <value>Chorwacka</value>
+  </data>
+  <data name="Cuban" xml:space="preserve">
+    <value>Kubańska</value>
+  </data>
+  <data name="Cypriot" xml:space="preserve">
+    <value>Cypryjska</value>
+  </data>
+  <data name="Czech" xml:space="preserve">
+    <value>Czeska</value>
+  </data>
+  <data name="Danish" xml:space="preserve">
+    <value>Duńska</value>
+  </data>
+  <data name="Djibouti" xml:space="preserve">
+    <value>Dżibucka</value>
+  </data>
+  <data name="Dominican" xml:space="preserve">
+    <value>Dominikańska</value>
+  </data>
+  <data name="Dutch" xml:space="preserve">
+    <value>Holenderska</value>
+  </data>
+  <data name="East_Timorese" xml:space="preserve">
+    <value>Timor Wschodni</value>
+  </data>
+  <data name="Ecuadorean" xml:space="preserve">
+    <value>Ekwadorska</value>
+  </data>
+  <data name="Egyptian" xml:space="preserve">
+    <value>Egipska</value>
+  </data>
+  <data name="Emirian" xml:space="preserve">
+    <value>Emiraty Arabskie</value>
+  </data>
+  <data name="Equatorial_Guinean" xml:space="preserve">
+    <value>Gwinea Równikowa</value>
+  </data>
+  <data name="Eritrean" xml:space="preserve">
+    <value>Erytreańska</value>
+  </data>
+  <data name="Estonian" xml:space="preserve">
+    <value>Estońska</value>
+  </data>
+  <data name="Ethiopian" xml:space="preserve">
+    <value>Etiopska</value>
+  </data>
+  <data name="Fijian" xml:space="preserve">
+    <value>Fidżyjska</value>
+  </data>
+  <data name="Filipino" xml:space="preserve">
+    <value>Filipińska</value>
+  </data>
+  <data name="Finnish" xml:space="preserve">
+    <value>Fińska</value>
+  </data>
+  <data name="French" xml:space="preserve">
+    <value>Francuska</value>
+  </data>
+  <data name="Gabonese" xml:space="preserve">
+    <value>Gabońska</value>
+  </data>
+  <data name="Gambian" xml:space="preserve">
+    <value>Gambijska</value>
+  </data>
+  <data name="Georgian" xml:space="preserve">
+    <value>Gruzińska</value>
+  </data>
+  <data name="German" xml:space="preserve">
+    <value>Niemiecka</value>
+  </data>
+  <data name="Ghanaian" xml:space="preserve">
+    <value>Ghańska</value>
+  </data>
+  <data name="Greek" xml:space="preserve">
+    <value>Grecka</value>
+  </data>
+  <data name="Grenadian" xml:space="preserve">
+    <value>Grenadzka</value>
+  </data>
+  <data name="Guatemalan" xml:space="preserve">
+    <value>Gwatemalska</value>
+  </data>
+  <data name="GuineaBissauan" xml:space="preserve">
+    <value>Gwinea Bissau</value>
+  </data>
+  <data name="Guinean" xml:space="preserve">
+    <value>Gwinejska</value>
+  </data>
+  <data name="Guyanese" xml:space="preserve">
+    <value>Gujańska</value>
+  </data>
+  <data name="Haitian" xml:space="preserve">
+    <value>Haitańska</value>
+  </data>
+  <data name="Herzegovinian" xml:space="preserve">
+    <value>Bośnia i Hercegowina</value>
+  </data>
+  <data name="Honduran" xml:space="preserve">
+    <value>Honduraska</value>
+  </data>
+  <data name="Hungarian" xml:space="preserve">
+    <value>Węgierska</value>
+  </data>
+  <data name="Icelander" xml:space="preserve">
+    <value>Islandzka</value>
+  </data>
+  <data name="Indian" xml:space="preserve">
+    <value>Indyjska</value>
+  </data>
+  <data name="Indonesian" xml:space="preserve">
+    <value>Indonezyjska</value>
+  </data>
+  <data name="Iranian" xml:space="preserve">
+    <value>Irańska</value>
+  </data>
+  <data name="Iraqi" xml:space="preserve">
+    <value>Irakijska</value>
+  </data>
+  <data name="Irish" xml:space="preserve">
+    <value>Irlandzka</value>
+  </data>
+  <data name="Israeli" xml:space="preserve">
+    <value>Izraelicka</value>
+  </data>
+  <data name="Italian" xml:space="preserve">
+    <value>Włoska</value>
+  </data>
+  <data name="Ivorian" xml:space="preserve">
+    <value>Wybrzeże Kości Słoniowej</value>
+  </data>
+  <data name="Jamaican" xml:space="preserve">
+    <value>Jamajska</value>
+  </data>
+  <data name="Japanese" xml:space="preserve">
+    <value>Japońska</value>
+  </data>
+  <data name="Jordanian" xml:space="preserve">
+    <value>Jordańska</value>
+  </data>
+  <data name="Kazakhstani" xml:space="preserve">
+    <value>Kazachstańska</value>
+  </data>
+  <data name="Kenyan" xml:space="preserve">
+    <value>Kenijska</value>
+  </data>
+  <data name="Kiribati" xml:space="preserve">
+    <value>Kiribatyjska</value>
+  </data>
+  <data name="Kittian_and_Nevisian" xml:space="preserve">
+    <value>Saint Kitts i Nevis</value>
+  </data>
+  <data name="Kuwaiti" xml:space="preserve">
+    <value>Kuwejcka</value>
+  </data>
+  <data name="Kyrgyz" xml:space="preserve">
+    <value>Kirgiska</value>
+  </data>
+  <data name="Laotian" xml:space="preserve">
+    <value>Laotańska</value>
+  </data>
+  <data name="Latvian" xml:space="preserve">
+    <value>Łotewska</value>
+  </data>
+  <data name="Lebanese" xml:space="preserve">
+    <value>Libańska</value>
+  </data>
+  <data name="Liberian" xml:space="preserve">
+    <value>Liberyjska</value>
+  </data>
+  <data name="Libyan" xml:space="preserve">
+    <value>Libijska</value>
+  </data>
+  <data name="Liechtensteiner" xml:space="preserve">
+    <value>Lichtenstein</value>
+  </data>
+  <data name="Lithuanian" xml:space="preserve">
+    <value>Litewska</value>
+  </data>
+  <data name="Luxembourger" xml:space="preserve">
+    <value>Luksemurska</value>
+  </data>
+  <data name="Macedonian" xml:space="preserve">
+    <value>Macedońska</value>
+  </data>
+  <data name="Malagasy" xml:space="preserve">
+    <value>Madagaskarska</value>
+  </data>
+  <data name="Malawian" xml:space="preserve">
+    <value>Malawijska</value>
+  </data>
+  <data name="Malaysian" xml:space="preserve">
+    <value>Malezyjska</value>
+  </data>
+  <data name="Maldivian" xml:space="preserve">
+    <value>Malediwska</value>
+  </data>
+  <data name="Malian" xml:space="preserve">
+    <value>Malijska</value>
+  </data>
+  <data name="Maltese" xml:space="preserve">
+    <value>Maltańska</value>
+  </data>
+  <data name="Marshallese" xml:space="preserve">
+    <value>Wyspy Marshalla</value>
+  </data>
+  <data name="Mauritanian" xml:space="preserve">
+    <value>Mauretańska</value>
+  </data>
+  <data name="Mauritian" xml:space="preserve">
+    <value>Maurytyjska</value>
+  </data>
+  <data name="Mexican" xml:space="preserve">
+    <value>Meksykańska</value>
+  </data>
+  <data name="Micronesian" xml:space="preserve">
+    <value>Mikronezyjska</value>
+  </data>
+  <data name="Moldovan" xml:space="preserve">
+    <value>Mołdawska</value>
+  </data>
+  <data name="Monacan" xml:space="preserve">
+    <value>Monakijska</value>
+  </data>
+  <data name="Mongolian" xml:space="preserve">
+    <value>Mongolska</value>
+  </data>
+  <data name="Moroccan" xml:space="preserve">
+    <value>Marokańska</value>
+  </data>
+  <data name="Mosotho" xml:space="preserve">
+    <value>Mosotho</value>
+  </data>
+  <data name="Motswana" xml:space="preserve">
+    <value>Botswańska</value>
+  </data>
+  <data name="Mozambican" xml:space="preserve">
+    <value>Mozambijska</value>
+  </data>
+  <data name="Namibian" xml:space="preserve">
+    <value>Nambijska</value>
+  </data>
+  <data name="Nauruan" xml:space="preserve">
+    <value>Nauruańska</value>
+  </data>
+  <data name="Nepalese" xml:space="preserve">
+    <value>Nepalska</value>
+  </data>
+  <data name="New_Zealander" xml:space="preserve">
+    <value>Nowozelandzka</value>
+  </data>
+  <data name="Nicaraguan" xml:space="preserve">
+    <value>Nikaraguańska</value>
+  </data>
+  <data name="Nigerian" xml:space="preserve">
+    <value>Nigeryjska</value>
+  </data>
+  <data name="Nigerien" xml:space="preserve">
+    <value>Nigerska</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Brak</value>
+  </data>
+  <data name="Northern_Irish" xml:space="preserve">
+    <value>Irlandia Północna</value>
+  </data>
+  <data name="North_Korean" xml:space="preserve">
+    <value>Korea Północna</value>
+  </data>
+  <data name="Norwegian" xml:space="preserve">
+    <value>Norweska</value>
+  </data>
+  <data name="Omani" xml:space="preserve">
+    <value>Omańska</value>
+  </data>
+  <data name="Pakistani" xml:space="preserve">
+    <value>Pakistańska</value>
+  </data>
+  <data name="Palauan" xml:space="preserve">
+    <value>Palau</value>
+  </data>
+  <data name="Panamanian" xml:space="preserve">
+    <value>Panamska</value>
+  </data>
+  <data name="Papua_New_Guinean" xml:space="preserve">
+    <value>Papua-Nowa Gwinea</value>
+  </data>
+  <data name="Paraguayan" xml:space="preserve">
+    <value>Paragwajska</value>
+  </data>
+  <data name="Peruvian" xml:space="preserve">
+    <value>Peruwiańska</value>
+  </data>
+  <data name="Polish" xml:space="preserve">
+    <value>Polska</value>
+  </data>
+  <data name="Portuguese" xml:space="preserve">
+    <value>Portugalska</value>
+  </data>
+  <data name="Qatari" xml:space="preserve">
+    <value>Katarska</value>
+  </data>
+  <data name="Romanian" xml:space="preserve">
+    <value>Rumuńska</value>
+  </data>
+  <data name="Russian" xml:space="preserve">
+    <value>Rosyjska</value>
+  </data>
+  <data name="Rwandan" xml:space="preserve">
+    <value>Rwandyjska</value>
+  </data>
+  <data name="Saint_Lucian" xml:space="preserve">
+    <value>Saint Lucia</value>
+  </data>
+  <data name="Salvadoran" xml:space="preserve">
+    <value>Salwadorska</value>
+  </data>
+  <data name="Samoan" xml:space="preserve">
+    <value>Samoańska</value>
+  </data>
+  <data name="San_Marinese" xml:space="preserve">
+    <value>San Marino</value>
+  </data>
+  <data name="Sao_Tomean" xml:space="preserve">
+    <value>Sao Tomean</value>
+  </data>
+  <data name="Saudi" xml:space="preserve">
+    <value>Arabia Saudyjska</value>
+  </data>
+  <data name="Scottish" xml:space="preserve">
+    <value>Szkocka</value>
+  </data>
+  <data name="Senegalese" xml:space="preserve">
+    <value>Senegalska</value>
+  </data>
+  <data name="Serbian" xml:space="preserve">
+    <value>Serbska</value>
+  </data>
+  <data name="Seychellois" xml:space="preserve">
+    <value>Seszelska</value>
+  </data>
+  <data name="Sierra_Leonean" xml:space="preserve">
+    <value>Sierra Leone</value>
+  </data>
+  <data name="Singaporean" xml:space="preserve">
+    <value>Singapurska</value>
+  </data>
+  <data name="Slovakian" xml:space="preserve">
+    <value>Słowacka</value>
+  </data>
+  <data name="Slovenian" xml:space="preserve">
+    <value>Słoweńska</value>
+  </data>
+  <data name="Solomon_Islander" xml:space="preserve">
+    <value>Wyspy Salomona</value>
+  </data>
+  <data name="Somali" xml:space="preserve">
+    <value>Somalijska</value>
+  </data>
+  <data name="South_African" xml:space="preserve">
+    <value>Republika Południowej Afryki</value>
+  </data>
+  <data name="South_Korean" xml:space="preserve">
+    <value>Korea Południowa</value>
+  </data>
+  <data name="Spanish" xml:space="preserve">
+    <value>Hiszpańska</value>
+  </data>
+  <data name="Sri_Lankan" xml:space="preserve">
+    <value>Sri Lanka</value>
+  </data>
+  <data name="Sudanese" xml:space="preserve">
+    <value>Sudańska</value>
+  </data>
+  <data name="Surinamer" xml:space="preserve">
+    <value>Surinamska</value>
+  </data>
+  <data name="Swazi" xml:space="preserve">
+    <value>Eswatyńska</value>
+  </data>
+  <data name="Swedish" xml:space="preserve">
+    <value>Szwedzka</value>
+  </data>
+  <data name="Swiss" xml:space="preserve">
+    <value>Szwajcarska</value>
+  </data>
+  <data name="Syrian" xml:space="preserve">
+    <value>Syryjska</value>
+  </data>
+  <data name="Taiwanese" xml:space="preserve">
+    <value>Tajwańska</value>
+  </data>
+  <data name="Tajik" xml:space="preserve">
+    <value>Tadżykistańska</value>
+  </data>
+  <data name="Tanzanian" xml:space="preserve">
+    <value>Tanzańska</value>
+  </data>
+  <data name="Thai" xml:space="preserve">
+    <value>Tajska</value>
+  </data>
+  <data name="Togolese" xml:space="preserve">
+    <value>Togijska</value>
+  </data>
+  <data name="Tongan" xml:space="preserve">
+    <value>Tongijska</value>
+  </data>
+  <data name="Trinidadian_or_Tobagonian" xml:space="preserve">
+    <value>Trynidad i Tobago</value>
+  </data>
+  <data name="Tunisian" xml:space="preserve">
+    <value>Tunezyjska</value>
+  </data>
+  <data name="Turkish" xml:space="preserve">
+    <value>Turecka</value>
+  </data>
+  <data name="Tuvaluan" xml:space="preserve">
+    <value>Tuwalska</value>
+  </data>
+  <data name="Ugandan" xml:space="preserve">
+    <value>Ugandyjska</value>
+  </data>
+  <data name="Ukrainian" xml:space="preserve">
+    <value>Ukraińska</value>
+  </data>
+  <data name="Uruguayan" xml:space="preserve">
+    <value>Urugwajska</value>
+  </data>
+  <data name="Uzbekistani" xml:space="preserve">
+    <value>Uzbecka</value>
+  </data>
+  <data name="Vanuatu" xml:space="preserve">
+    <value>Vanuatu</value>
+  </data>
+  <data name="Venezuelan" xml:space="preserve">
+    <value>Wenezuelska</value>
+  </data>
+  <data name="Vietnamese" xml:space="preserve">
+    <value>Wietnamska</value>
+  </data>
+  <data name="Welsh" xml:space="preserve">
+    <value>Walijska</value>
+  </data>
+  <data name="Yemenite" xml:space="preserve">
+    <value>Jemeńska</value>
+  </data>
+  <data name="Zambian" xml:space="preserve">
+    <value>Zambijska</value>
+  </data>
+  <data name="Zimbabwean" xml:space="preserve">
+    <value>Zimbabweńska</value>
+  </data>
+</root>

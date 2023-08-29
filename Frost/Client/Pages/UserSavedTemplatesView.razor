@@ -1,0 +1,59 @@
+﻿@page "/account/offers/yourtemplates"
+@using Newtonsoft.Json;
+@using System.Security.Claims;
+@layout UserAccountLayout
+@inject AuthenticationStateProvider authStateProvider
+@inject IStringLocalizer<Resource> localizer
+@inject NavigationManager navManager
+@if (yourTemplates.Count() > 0)
+{
+    <div style="margin-top:1rem;">
+        <PropertyList propertyList="yourTemplates" isUserTemplates="true"></PropertyList>
+    </div>
+}
+else
+{
+    <h1 style ="margin-top:1rem;">@localizer["NoTemplates"]</h1>
+}
+
+
+@code {
+    [CascadingParameter]
+    public UserAccountLayout layout { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authState { get; set; }
+
+    public List<PropertyDetailsDTO> yourTemplates = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        layout.ChangeHeader("YourTemplates");
+        yourTemplates = await InitializeYourOffersAsync();
+    }
+    private async Task<List<PropertyDetailsDTO>> InitializeYourOffersAsync()
+    {
+
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+            var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+            var myId = authState.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).First().Value;
+            string apiString = $"{navManager.BaseUri}api/template/{myId}";
+            var response = await httpClient.GetAsync(apiString);
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                var properties = JsonConvert.DeserializeObject<List<PropertyDetailsDTO>>(result);
+                return properties;
+            }
+
+            else
+            {
+                return new();
+            }
+
+        }
+    }
+
+}

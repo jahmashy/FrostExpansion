@@ -126,6 +126,9 @@
   <data name="AddOffer" xml:space="preserve">
     <value>Dodaj ogłoszenie</value>
   </data>
+  <data name="AddUsersToChat" xml:space="preserve">
+    <value>Dodaj użytkowników do czatu</value>
+  </data>
   <data name="AdvancedFilters" xml:space="preserve">
     <value>Filtry zaawansowane</value>
   </data>
@@ -147,14 +150,59 @@
   <data name="AnyM" xml:space="preserve">
     <value>Dowolny</value>
   </data>
+  <data name="AreYouSureDeleteAcc" xml:space="preserve">
+    <value>Czy na pewno chcesz usunąć konto?</value>
+  </data>
+  <data name="BlockCommunication" xml:space="preserve">
+    <value>Zablokuj komunikację</value>
+  </data>
   <data name="BuildingType" xml:space="preserve">
     <value>Rodzaj zabudowy</value>
   </data>
   <data name="Buy" xml:space="preserve">
     <value>Sprzedaż</value>
   </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="CancelReplacingPhotos" xml:space="preserve">
+    <value>Anuluj zastępowanie zdjęć</value>
+  </data>
+  <data name="ChangeCity" xml:space="preserve">
+    <value>Zmień miasto</value>
+  </data>
+  <data name="ChangeDescription" xml:space="preserve">
+    <value>Zmień opis</value>
+  </data>
+  <data name="ChangeEmail" xml:space="preserve">
+    <value>Zmień email</value>
+  </data>
+  <data name="ChangeName" xml:space="preserve">
+    <value>Zmień imię</value>
+  </data>
+  <data name="ChangeNationality" xml:space="preserve">
+    <value>Zmień narodowość</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Zmień hasło</value>
+  </data>
+  <data name="ChangeTelNumber" xml:space="preserve">
+    <value>Zmień numer</value>
+  </data>
   <data name="City" xml:space="preserve">
     <value>Miasto</value>
+  </data>
+  <data name="ClickToReplacePhotos" xml:space="preserve">
+    <value>Kliknij aby zastąpić istniejące zdjęcia</value>
+  </data>
+  <data name="CommunicationIsBlocked" xml:space="preserve">
+    <value>Komunikacja jest zablokowana.</value>
+  </data>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>Na pewno chcesz usunąć ofertę?</value>
+  </data>
+  <data name="ConfirmNewPassword" xml:space="preserve">
+    <value>Potwierdź nowe hasło</value>
   </data>
   <data name="ConfirmPassword" xml:space="preserve">
     <value>Powtórz hasło</value>
@@ -162,14 +210,50 @@
   <data name="ConfirmPasswordPlaceholder" xml:space="preserve">
     <value>Powtórz hasło</value>
   </data>
+  <data name="ConstructionType" xml:space="preserve">
+    <value>Typ zabudowy</value>
+  </data>
   <data name="ConstructionYear" xml:space="preserve">
     <value>Rok budowy</value>
+  </data>
+  <data name="CopiedToClipboard" xml:space="preserve">
+    <value>Skopiowano do schowka</value>
+  </data>
+  <data name="CopyChatInvitation" xml:space="preserve">
+    <value>Skopiuj zaproszenie do czatu</value>
   </data>
   <data name="Created" xml:space="preserve">
     <value>Utworzone</value>
   </data>
+  <data name="CreateGroupChat" xml:space="preserve">
+    <value>Stwórz czat grupowy</value>
+  </data>
+  <data name="Date:Latest" xml:space="preserve">
+    <value>Data: Najnowsze</value>
+  </data>
+  <data name="Date:Oldest" xml:space="preserve">
+    <value>Data: Najstarsze</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>dni</value>
+  </data>
   <data name="Delete" xml:space="preserve">
     <value>Usuń</value>
+  </data>
+  <data name="DeleteAccount" xml:space="preserve">
+    <value>Usuń konto</value>
+  </data>
+  <data name="DeleteImage" xml:space="preserve">
+    <value>Usuń zdjęcie</value>
+  </data>
+  <data name="DeleteOffer" xml:space="preserve">
+    <value>Usuń ofertę</value>
+  </data>
+  <data name="DeleteSavedFilters" xml:space="preserve">
+    <value>Usuń zapisane filtry</value>
+  </data>
+  <data name="DeleteUser" xml:space="preserve">
+    <value>Usuń konto użytkownika</value>
   </data>
   <data name="Description" xml:space="preserve">
     <value>Opis</value>
@@ -177,11 +261,20 @@
   <data name="District" xml:space="preserve">
     <value>Dzielnica</value>
   </data>
+  <data name="DistrictNotChosenError" xml:space="preserve">
+    <value>Proszę wybrać dzielnicę z listy</value>
+  </data>
   <data name="Earliest" xml:space="preserve">
     <value>Od</value>
   </data>
   <data name="Edit" xml:space="preserve">
     <value>Edytuj</value>
+  </data>
+  <data name="EditOffer" xml:space="preserve">
+    <value>Edytuj ogłoszenie</value>
+  </data>
+  <data name="EditTemplate" xml:space="preserve">
+    <value>Edytuj szablon</value>
   </data>
   <data name="Email" xml:space="preserve">
     <value>Email</value>
@@ -191,6 +284,12 @@
   </data>
   <data name="EmailRequiredError" xml:space="preserve">
     <value>Email jest wymagany</value>
+  </data>
+  <data name="EnterCurrentPassword" xml:space="preserve">
+    <value>Wprowadź aktualne hasło</value>
+  </data>
+  <data name="EnterNewPassword" xml:space="preserve">
+    <value>Wprowadź nowe hasło</value>
   </data>
   <data name="Establishment" xml:space="preserve">
     <value>Lokal</value>
@@ -213,6 +312,9 @@
   <data name="Followed" xml:space="preserve">
     <value>Obserwowane</value>
   </data>
+  <data name="FollowedOffers" xml:space="preserve">
+    <value>Obserwowane oferty</value>
+  </data>
   <data name="FollowOffer" xml:space="preserve">
     <value>Obserwuj ofertę</value>
   </data>
@@ -221,6 +323,9 @@
   </data>
   <data name="Garages" xml:space="preserve">
     <value>Garaże</value>
+  </data>
+  <data name="GroupChat" xml:space="preserve">
+    <value>Czat grupowy</value>
   </data>
   <data name="HighRise" xml:space="preserve">
     <value>Apartamentowiec</value>
@@ -231,11 +336,14 @@
   <data name="Houses" xml:space="preserve">
     <value>Domy</value>
   </data>
+  <data name="ImageRequirements" xml:space="preserve">
+    <value>Zdjęcie powinno spełniać następujące wymagania:</value>
+  </data>
   <data name="Images" xml:space="preserve">
     <value>Zdjęcia</value>
   </data>
   <data name="ImagesAmountRequirement" xml:space="preserve">
-    <value>Należy dodać minimum 5 zdjęć ale nie więcej niż 15.</value>
+    <value>Należy dodać minimum 6 zdjęć ale nie więcej niż 15.</value>
   </data>
   <data name="ImagesExtensionRequirement" xml:space="preserve">
     <value>Zdjęcia mogą być przesłane w następujących formatach: JPG, PNG, JPEG lub WEBP.</value>
@@ -255,6 +363,15 @@
   <data name="InvalidExtensionError" xml:space="preserve">
     <value>Nieprawidłowe rozszerzenie pliku</value>
   </data>
+  <data name="InvalidPassword" xml:space="preserve">
+    <value>Nieprawidłowe hasło</value>
+  </data>
+  <data name="InvitationHasExpired" xml:space="preserve">
+    <value>Zaproszenie wygasło</value>
+  </data>
+  <data name="InvitationIsNotValid" xml:space="preserve">
+    <value>Zaproszenie jest niepoprawne lub zostało już wykorzystane</value>
+  </data>
   <data name="JoinFirst" xml:space="preserve">
     <value>Dołącz jako pierwszy!</value>
   </data>
@@ -263,6 +380,9 @@
   </data>
   <data name="Latest" xml:space="preserve">
     <value>Do</value>
+  </data>
+  <data name="LeaveGroupChat" xml:space="preserve">
+    <value>Opuść czat grupowy</value>
   </data>
   <data name="Localization" xml:space="preserve">
     <value>Lokalizacja</value>
@@ -278,6 +398,9 @@
   </data>
   <data name="LoginDetails" xml:space="preserve">
     <value>Logowanie</value>
+  </data>
+  <data name="LoginDetailsUser" xml:space="preserve">
+    <value>Szczegóły logowania</value>
   </data>
   <data name="LogOut" xml:space="preserve">
     <value>Wyloguj</value>
@@ -312,14 +435,32 @@
   <data name="NamePlaceholder" xml:space="preserve">
     <value>Wpisz imię</value>
   </data>
+  <data name="Nationality" xml:space="preserve">
+    <value>Narodowość</value>
+  </data>
+  <data name="NewGroupChat" xml:space="preserve">
+    <value>Nowy czat grupowy</value>
+  </data>
   <data name="NewOffer" xml:space="preserve">
     <value>Nowe ogłoszenie</value>
   </data>
   <data name="NoChats" xml:space="preserve">
     <value>Brak aktywnych chatów</value>
   </data>
+  <data name="None" xml:space="preserve">
+    <value>Brak</value>
+  </data>
+  <data name="NoOfferFound" xml:space="preserve">
+    <value>Nie znaleziono ogłoszenia</value>
+  </data>
+  <data name="NoOffers" xml:space="preserve">
+    <value>Brak ofert do wyświetlenia</value>
+  </data>
   <data name="NoResults" xml:space="preserve">
     <value>Brak wyników</value>
+  </data>
+  <data name="NoTemplates" xml:space="preserve">
+    <value>Brak szablonów</value>
   </data>
   <data name="NotEnoughFilesError" xml:space="preserve">
     <value>Należy przeslać conajmniej</value>
@@ -329,6 +470,21 @@
   </data>
   <data name="Notifications" xml:space="preserve">
     <value>Powiadomienia</value>
+  </data>
+  <data name="NotifyAboutChangedLoginDetails" xml:space="preserve">
+    <value>Chce otrzymywać powiadomienia Email w razie zmiany szczegółów konta</value>
+  </data>
+  <data name="NotifyAboutExpiringOffers" xml:space="preserve">
+    <value>Chce otrzymywać powiadomienia Email o moich wygasających ogłoszeniach</value>
+  </data>
+  <data name="NotifyAboutNewMessages" xml:space="preserve">
+    <value>Chce otrzymywać powiadomienia Email o nowych wiadomościach</value>
+  </data>
+  <data name="NotifyAboutNewOffers" xml:space="preserve">
+    <value>Chce otrzymywać powiadomienia Email o nowych ofertach</value>
+  </data>
+  <data name="OfferDetails" xml:space="preserve">
+    <value>Szczegóły ogłoszenia</value>
   </data>
   <data name="Offers" xml:space="preserve">
     <value>Ogłoszenia</value>
@@ -342,6 +498,9 @@
   <data name="PasswordPlaceholder" xml:space="preserve">
     <value>Wpisz hasło</value>
   </data>
+  <data name="Picture" xml:space="preserve">
+    <value>Zdjęcie</value>
+  </data>
   <data name="Plot" xml:space="preserve">
     <value>Działka</value>
   </data>
@@ -350,6 +509,12 @@
   </data>
   <data name="Price" xml:space="preserve">
     <value>Cena</value>
+  </data>
+  <data name="Price:Highest" xml:space="preserve">
+    <value>Cena: Największa</value>
+  </data>
+  <data name="Price:Lowest" xml:space="preserve">
+    <value>Cena: Najmniejsza</value>
   </data>
   <data name="Primary" xml:space="preserve">
     <value>Pierwotny</value>
@@ -368,6 +533,9 @@
   </data>
   <data name="Rent" xml:space="preserve">
     <value>Wynajem</value>
+  </data>
+  <data name="Republish" xml:space="preserve">
+    <value>Opublikuj</value>
   </data>
   <data name="RequiredField" xml:space="preserve">
     <value>Pole wymagane</value>
@@ -390,20 +558,47 @@
   <data name="RowHouse" xml:space="preserve">
     <value>Szeregowiec</value>
   </data>
+  <data name="SaveChanges" xml:space="preserve">
+    <value>Zapisz zmiany</value>
+  </data>
+  <data name="SavedChanges" xml:space="preserve">
+    <value>Zapisano zmiany</value>
+  </data>
+  <data name="SavedFilters" xml:space="preserve">
+    <value>Zapisano filtry</value>
+  </data>
+  <data name="SaveFilters" xml:space="preserve">
+    <value>Zapisz filtry</value>
+  </data>
   <data name="SaveTemplate" xml:space="preserve">
     <value>Zapisz szablon</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Szukaj</value>
   </data>
+  <data name="SearchResult" xml:space="preserve">
+    <value>Wyniki wyszukiwania</value>
+  </data>
   <data name="Secondary" xml:space="preserve">
     <value>Wtórny</value>
+  </data>
+  <data name="Sell" xml:space="preserve">
+    <value>Sprzedaż</value>
   </data>
   <data name="SendMessage" xml:space="preserve">
     <value>Wyślij wiadomość</value>
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Ustawienia</value>
+  </data>
+  <data name="SortBy" xml:space="preserve">
+    <value>Sortuj po</value>
+  </data>
+  <data name="Surface:Highest" xml:space="preserve">
+    <value>Powierzchnia: Największa</value>
+  </data>
+  <data name="Surface:Lowest" xml:space="preserve">
+    <value>Powierzchnia: Najmniejsza</value>
   </data>
   <data name="SurfaceArea" xml:space="preserve">
     <value>Powierzchnia</value>
@@ -414,8 +609,14 @@
   <data name="TelNumberPlaceholder" xml:space="preserve">
     <value>Wpisz numer telefonu</value>
   </data>
+  <data name="TemplateDeleted" xml:space="preserve">
+    <value>Usunięto szablon</value>
+  </data>
   <data name="Templates" xml:space="preserve">
     <value>Szablony</value>
+  </data>
+  <data name="TemplateSaved" xml:space="preserve">
+    <value>Zapisano szablon</value>
   </data>
   <data name="Tenement" xml:space="preserve">
     <value>Kamienica</value>
@@ -423,13 +624,46 @@
   <data name="Title" xml:space="preserve">
     <value>Tytuł</value>
   </data>
+  <data name="TooManyFilesError" xml:space="preserve">
+    <value>Dodałeś zbyt dużo plików!</value>
+  </data>
+  <data name="UnblockCommunication" xml:space="preserve">
+    <value>Odblokuj komunikację</value>
+  </data>
+  <data name="UnfollowOffer" xml:space="preserve">
+    <value>Odobserwuj ofertę</value>
+  </data>
   <data name="UserAlreadyExists" xml:space="preserve">
     <value>Użytkownik z podanym adresem email już istnieje</value>
+  </data>
+  <data name="UserDeleted" xml:space="preserve">
+    <value>Usunięto użytkownika</value>
+  </data>
+  <data name="UserIsAlreadyInChat" xml:space="preserve">
+    <value>Należysz już do tego czatu</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>Nie znaleziono użytkownika</value>
+  </data>
+  <data name="UserProfile" xml:space="preserve">
+    <value>Profil użytkownika</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Tak</value>
+  </data>
+  <data name="YourDetails" xml:space="preserve">
+    <value>Twoje szczegóły</value>
   </data>
   <data name="YourMessages" xml:space="preserve">
     <value>Twoje wiadomości</value>
   </data>
+  <data name="YourOfferExpiresIn" xml:space="preserve">
+    <value>Twoje ogłoszenie wygaśnie za</value>
+  </data>
   <data name="YourOffers" xml:space="preserve">
     <value>Twoje ogłoszenia</value>
+  </data>
+  <data name="YourTemplates" xml:space="preserve">
+    <value>Twoje szablony</value>
   </data>
 </root>

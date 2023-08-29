@@ -1,0 +1,54 @@
+﻿@page "/account/settings/details"
+@using System.Security.Claims;
+@using Frost.Shared.Models.Enums;
+@using Newtonsoft.Json;
+@layout UserAccountLayout
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navManager
+<AuthorizeView>
+    <Authorized>
+        <UserDetailsForm profilePicURL="@profilePicURL" detailsForm="detailsForm"></UserDetailsForm>
+    </Authorized>
+    <NotAuthorized>
+        @{
+            navManager.NavigateTo("/login");
+        }
+    </NotAuthorized>
+</AuthorizeView>
+@code {
+    [CascadingParameter]
+    public UserAccountLayout layout { get; set; }
+    public UserDetailsFormModel detailsForm { get; set; }
+    public string profilePicURL { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        layout.ChangeHeader("YourDetails");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+        var id = authState.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).First().Value;
+
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var response = await httpClient.GetAsync($"{navManager.BaseUri}api/user/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                var data = JsonConvert.DeserializeObject<UserDTO>(result);
+                detailsForm = new UserDetailsFormModel
+                    {
+                        name = data.name,
+                        description = data.description,
+                        cityName = data.city,
+                        cityPlaceId = data.cityPlaceId,
+                        nationality = data.nationality ?? Nationality.None
+            };
+                profilePicURL = data.profileImgUrl;
+
+            }
+            else
+            {
+                navManager.NavigateTo("/");
+            }
+        }
+    }
+}

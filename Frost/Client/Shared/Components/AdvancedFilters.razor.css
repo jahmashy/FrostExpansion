@@ -27,6 +27,10 @@
     display: flex;
     flex-direction: column;
     width: 250px;
+    height:100%;
+}
+.advanced-filters-elements-div .button-delete{
+    margin-top:auto;
 }
 .inline-input-div {
     display: flex;

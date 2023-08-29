@@ -1,0 +1,41 @@
+﻿.wrapperIn {
+    display: flex;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 500;
+    transition: transform 0.4s linear;
+}
+.wrapperOut {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+.PopUp {
+    position: fixed;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 400;
+    padding-top: 2rem;
+    padding-inline: 3rem;
+    padding-bottom: 1.5rem;
+    left:40%;
+    top:40%;
+}
+span button:first-child{
+    margin-right:1rem;
+    width:4rem;
+}
+button{
+    margin-top:auto;
+}
+.PopUpIn {
+    transition: transform 0.2s linear;
+}
+.PopUpOut {
+    transition: transform 0.2s linear;
+    transform: translateY(2000px);
+}

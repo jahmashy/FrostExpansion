@@ -22,6 +22,17 @@
 .requirements-div{
     margin:2rem;
 }
+.changeImg-div {
+    display: flex;
+    align-items:flex-end;
+    cursor:pointer;
+    width:fit-content;
+}
+    .changeImg-div > a {
+        margin-left: 0.5rem;
+        color: #2699FB;
+    }
+
 .checkbox-div {
     display: flex;
     flex-direction: row;
@@ -40,12 +51,6 @@
 .description-section{
     display:flex;
     flex-direction:column;
-}
-.img-section{
-}
-label {
-    color: #2699FB;
-    font-weight:600;
 }
 .offerForm-div {
     width:100%;

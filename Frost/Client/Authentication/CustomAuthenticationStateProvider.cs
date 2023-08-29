@@ -34,18 +34,21 @@ namespace Frost.Client.Authentication
                         {
                             new Claim (ClaimTypes.NameIdentifier, newSession.Id.ToString()),
                             new Claim (ClaimTypes.Name, newSession.name),
-                            new Claim (ClaimTypes.Email, newSession.email)
+                            new Claim (ClaimTypes.Email, newSession.email),
+                            new Claim(ClaimTypes.MobilePhone, newSession.telNumber.ToString()),
+                            new Claim(ClaimTypes.Role,session.Role)
                         }, "JwtAuth"));
                         return await Task.FromResult(new AuthenticationState(newClaimsPrincipal));
                     }
-                    
                     return await Task.FromResult(new AuthenticationState(_anonymous));
                 }
                 var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
                 {
                     new Claim (ClaimTypes.NameIdentifier, session.Id.ToString()),
                     new Claim (ClaimTypes.Name, session.name),
-                    new Claim (ClaimTypes.Email, session.email)
+                    new Claim (ClaimTypes.Email, session.email) ,
+                    new Claim(ClaimTypes.MobilePhone, session.telNumber.ToString()),
+                    new Claim(ClaimTypes.Role,session.Role),
                 },"JwtAuth"));
                 return await Task.FromResult(new AuthenticationState(claimsPrincipal));
             }
@@ -68,8 +71,9 @@ namespace Frost.Client.Authentication
                 {
                     new Claim (ClaimTypes.NameIdentifier, session.Id.ToString()),
                     new Claim (ClaimTypes.Name, session.name),
-                    new Claim (ClaimTypes.Email, session.email)
-                    
+                    new Claim (ClaimTypes.Email, session.email),
+                    new Claim(ClaimTypes.MobilePhone, session.telNumber.ToString()),
+                    new Claim(ClaimTypes.Role,session.Role)
                 }));
                 await _localStorageService.SaveItemAsEncryptedAsync("UserSession", session);
             }
@@ -119,7 +123,7 @@ namespace Frost.Client.Authentication
             {
                 JwtDTO jwtDTO = new JwtDTO(jwtToken, refreshToken);
 
-                var response = await httpClient.PostAsJsonAsync<JwtDTO>("https://localhost:44350/api/auth/renewToken", jwtDTO);
+                var response = await httpClient.PostAsJsonAsync<JwtDTO>("https://frosthousing.ddns.net/api/auth/RefreshToken", jwtDTO);
                 if (response.IsSuccessStatusCode)
                 {
                     LoginResult result = await response.Content.ReadFromJsonAsync<LoginResult>();

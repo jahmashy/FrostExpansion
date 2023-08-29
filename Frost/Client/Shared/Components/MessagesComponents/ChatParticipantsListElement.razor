@@ -1,23 +1,23 @@
 ﻿<div class="participant-div">
     <div class="upper-section">
-        @if (string.IsNullOrEmpty(participant.ProfileImgUrl))
+        @if (string.IsNullOrEmpty(participant.profileImgUrl))
         {
             <img src="/images/Icons/ProfileImg.png">
         }
         else
         {
-            <img src="@participant.ProfileImgUrl">
+            <img src="@participant.profileImgUrl">
         }
         <div class="info-div">
-            <h4>@participant.Name</h4>
-            <h5>@participant.City</h5>
+            <h4>@participant.name</h4>
+            <h5>@participant.city</h5>
         </div>
     </div>
-    @if (!string.IsNullOrEmpty(participant.Description))
+    @if (!string.IsNullOrEmpty(participant.description))
     {
         <div class="description-div">
             <p>
-                @participant.Description
+                @participant.description
             </p>
         </div>
     }
@@ -27,6 +27,6 @@
 
 @code {
     [Parameter]
-    public UserDto participant { get; set; } = new();
+    public UserDTO participant { get; set; } = new();
 
 }

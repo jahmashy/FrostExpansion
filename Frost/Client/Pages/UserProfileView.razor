@@ -1,0 +1,36 @@
+﻿@page "/user/{userId}"
+@using Newtonsoft.Json;
+@inject NavigationManager navManager
+@inject IStringLocalizer<Resource> localizer
+@if (userFound)
+{
+    <UserProfileComponent userProfile="user"></UserProfileComponent>
+}else{
+    <h1>@localizer["UserNotFound"]</h1>
+}
+
+@code {
+    [Parameter]
+    public string userId { get; set; }
+    public UserDTO user;
+    public bool userFound;
+    protected override async Task OnInitializedAsync()
+    {
+
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var response = await httpClient.GetAsync($"{navManager.BaseUri}api/user/{userId}");
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                user = JsonConvert.DeserializeObject<UserDTO>(result);
+                userFound = true;
+
+            }
+            else
+            {
+                userFound = false;
+            }
+        }
+    }
+}

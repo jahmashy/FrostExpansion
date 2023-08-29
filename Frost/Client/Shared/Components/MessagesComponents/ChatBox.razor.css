@@ -30,6 +30,7 @@
     border-color: #F1F9FF;
     border-radius: 4px;
     max-width:400px;
+    width:fit-content;
 }
 .myMessage {
     color: #2699FB;

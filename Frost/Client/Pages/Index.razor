@@ -1,7 +1,12 @@
 ﻿@page "/"
+@using Frost.Shared.Models.Enums;
 @using Newtonsoft.Json;
+@using System.Text;
+@using System.Security.Claims;
 @inject IStringLocalizer<Resource> localizer
-<Filters propertyFilters="@propertyFilters" />
+@inject NavigationManager navManager
+@inject AuthenticationStateProvider authStateProvider
+<Filters deleteButtonVisible="filtersLoaded" OnSearch="SearchOffer" propertyFilters="@propertyFilters" />
 <h2>@localizer["PromotedOffers"]</h2>
 <PropertyList propertyList="promotedOffers"></PropertyList>
 
@@ -9,20 +14,92 @@
     private PropertyFiltersDTO propertyFilters = new();
 
     public List<PropertyDetailsDTO> promotedOffers = new();
+    public bool filtersLoaded { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
-        promotedOffers = await InitializePromotedOffersAsync();
+        using (HttpClient httpClient = new HttpClient())
+        {
+            CustomAuthenticationStateProvider customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+            var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            string? myId = authState.User.Claims?.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            if (myId is not null)
+            {
+                string apiString = $"{navManager.BaseUri}api/filters/{myId}";
+                var response = await httpClient.GetAsync(apiString);
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadAsStringAsync();
+                    PropertyFiltersDTO initializedFilters = JsonConvert.DeserializeObject<PropertyFiltersDTO>(result);
+                    if(initializedFilters is not null)
+                    {
+                        propertyFilters = initializedFilters;
+                        filtersLoaded = true;
+                    }
+                }
+
+            }
+            promotedOffers = await InitializePromotedOffersAsync();
+        }
     }
     private async Task<List<PropertyDetailsDTO>> InitializePromotedOffersAsync()
     {
-        string apiString = "https://localhost:44350/api/property/promotedoffers";
+        string apiString = $"{navManager.BaseUri}api/property/promotedoffers";
+        Console.WriteLine(apiString);
         using (HttpClient httpClient = new HttpClient())
         {
             var response = await httpClient.GetAsync(apiString);
             var result = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<List<PropertyDetailsDTO>>(result);
         }
+    }
+    private async void SearchOffer()
+    {
+        string initialString = $"/property/search/{propertyFilters.propertyType}/{propertyFilters.offerType}?";
+        StringBuilder sb = new StringBuilder();
+        sb.Append(initialString);
+        if (propertyFilters.marketType is not null && propertyFilters.marketType.ToString() != "Any")
+            sb.Append($"marketType={propertyFilters.marketType}&");
+        if (propertyFilters.cityPlaceId is not null)
+        {
+            sb.Append($"cityId={propertyFilters.cityPlaceId}&");
+            sb.Append($"cityName={propertyFilters.cityName}&");
+        }
+        if (propertyFilters.minRoomsNumber is not null)
+            sb.Append($"minRoomsNumber={propertyFilters.minRoomsNumber}&");
+        if (propertyFilters.maxRoomsNumber is not null)
+            sb.Append($"maxRoomsNumber={propertyFilters.maxRoomsNumber}&");
+        if (propertyFilters.minFloor is not null)
+            sb.Append($"minFloor={propertyFilters.minFloor}&");
+        if (propertyFilters.maxFloor is not null)
+            sb.Append($"maxFloor={propertyFilters.maxFloor}&");
+        if (propertyFilters.minPrice is not null)
+            sb.Append($"minPrice={propertyFilters.minPrice}&");
+        if (propertyFilters.maxPrice is not null)
+            sb.Append($"maxPrice={propertyFilters.maxPrice}&");
+        if (propertyFilters.minMeterPrice is not null)
+            sb.Append($"minMeterPrice={propertyFilters.minMeterPrice}&");
+        if (propertyFilters.maxMeterPrice is not null)
+            sb.Append($"maxMeterPrice={propertyFilters.maxMeterPrice}&");
+        if (propertyFilters.minSurface is not null)
+            sb.Append($"minSurface={propertyFilters.minSurface}&");
+        if (propertyFilters.maxSurface is not null)
+            sb.Append($"maxSurface={propertyFilters.maxSurface}&");
+        if (propertyFilters.minConstructionYear is not null)
+            sb.Append($"minConstructionYear={propertyFilters.minConstructionYear}&");
+        if (propertyFilters.maxConstructionYear is not null)
+            sb.Append($"maxConstructionYear={propertyFilters.maxConstructionYear}&");
+        if (propertyFilters.roommates is not null && propertyFilters.roommates != RoommatesEnum.Any)
+        {
+            if (propertyFilters.roommates == RoommatesEnum.Included)
+                sb.Append("allowRoommates=true&");
+            if (propertyFilters.roommates == RoommatesEnum.Excluded)
+                sb.Append("allowRoommates=false&");
+        }
+        sb.Append($"pageNumber=1");
+        string navString = sb.ToString();
+        navManager.NavigateTo(navString);
     }
 
 }

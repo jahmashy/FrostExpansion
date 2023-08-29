@@ -79,13 +79,7 @@
                 var extension = Path.GetExtension(file.Name);
                 if (allowExtensions.Contains(extension.ToLower()))
                 {
-                    string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), ".webp");
-                    var fileContent = new StreamContent(file.OpenReadStream(maxFileSize));
-
-                    using MemoryStream ms = new();
-                    await fileContent.CopyToAsync(ms);
-
-                    var imageDataUri = $"data:image/webp;base64,{Convert.ToBase64String(ms.ToArray())}";
+                    var imageDataUri = await GetDataUrlFromFile(file);
                     ImageDataUrlDict.Add(file, imageDataUri);
 
                     if (selectedFiles.Count > 1)
@@ -106,7 +100,6 @@
         inputFilesComponents.Add(++latestInputComponentID, new InputFile());
         identifiers.Add(latestInputComponentID);
         this.StateHasChanged();
-
     }
     private async Task RemoveFile()
     {
@@ -123,13 +116,13 @@
             await JS.InvokeVoidAsync("initializeSlickCarousel");
     }
 
-    private async Task<string> getDataUrlFromFIle(IBrowserFile file)
+    private async Task<string> GetDataUrlFromFile(IBrowserFile file)
     {
-        var imageFile = await file.RequestImageFileAsync("image/jpg", 200, 200);
-        using Stream fileStream = file.OpenReadStream(maxFileSize);
-        using MemoryStream ms = new();
+        string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), ".webp");
+        var fileContent = new StreamContent(file.OpenReadStream(maxFileSize));
 
-        await fileStream.CopyToAsync(ms);
+        using MemoryStream ms = new();
+        await fileContent.CopyToAsync(ms);
 
         string imageDataUri = $"data:image/webp;base64,{Convert.ToBase64String(ms.ToArray())}";
 

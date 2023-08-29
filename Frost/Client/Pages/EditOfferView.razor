@@ -1,0 +1,67 @@
+﻿@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navManager
+@inject IStringLocalizer<Resource> localizer
+@page "/editOffer/{offerId}"
+@using Newtonsoft.Json;
+<AuthorizeView>
+    <Authorized>
+        @if (propertyFound)
+        {
+            <h1 style="margin-top:2rem;">@localizer[editTemplate? "EditTemplate":"EditOffer"]</h1>
+            <PropertyForm offerId="@offerId" editTemplate="editTemplate" propertyForm="@propertyToEdit" editForm="true"></PropertyForm>
+        }
+        else
+        {
+            <h1 style="margin-top:2rem;">@localizer["NoOfferFound"]</h1>
+        }
+    </Authorized>
+    <NotAuthorized>
+        @{
+            navManager.NavigateTo("/login");
+        }
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [Parameter]
+    public string offerId { get; set; }
+    public PropertyFormModel propertyToEdit { get; set; }
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public bool editTemplate { get; set; }
+    public bool propertyFound;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            propertyToEdit = await InitializePropertyAsync(offerId);
+            this.StateHasChanged();
+        }
+    }
+
+    private async Task<PropertyFormModel> InitializePropertyAsync(string offerId)
+    {
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+            var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+            var token = await customAuthStateProvider.GetToken();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            string apiString = $"{navManager.BaseUri}api/property/{offerId}";
+            var response = await httpClient.GetAsync(apiString);
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                var property = JsonConvert.DeserializeObject<PropertyFormModel>(result);
+                propertyFound = true;
+                return property;
+            }
+            else
+            {
+                propertyFound = false ;
+                return null;
+            }
+
+        }
+    }
+}

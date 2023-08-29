@@ -24,6 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Shared\Resources\Nationalities.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Nationalities.resx</DependentUpon>
+    </Compile>
     <Compile Update="Shared\Resources\Resource.en.Designer.cs">
       <DependentUpon>Resource.en.resx</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -37,6 +42,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Shared\Resources\Nationalities.en.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Shared\Resources\Nationalities.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Nationalities.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Shared\Resources\Resource.en.resx">
       <LastGenOutput>Resource.en.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>

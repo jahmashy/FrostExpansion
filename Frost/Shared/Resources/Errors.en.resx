@@ -141,6 +141,9 @@
   <data name="NameRequiredError" xml:space="preserve">
     <value>Name is required</value>
   </data>
+  <data name="NationalityRequiredError" xml:space="preserve">
+    <value>Nationality is required</value>
+  </data>
   <data name="PasswordRequiredError" xml:space="preserve">
     <value>Password is required</value>
   </data>
@@ -156,8 +159,14 @@
   <data name="SurfaceRangeError" xml:space="preserve">
     <value>Surface is out of range</value>
   </data>
+  <data name="TelNumberIsInvalidError" xml:space="preserve">
+    <value>Telephone number is invalid</value>
+  </data>
   <data name="TelNumberRequiredError" xml:space="preserve">
     <value>Telephone number is required</value>
+  </data>
+  <data name="UserDescriptionTooLongError" xml:space="preserve">
+    <value>Description is too long</value>
   </data>
   <data name="YearRangeError" xml:space="preserve">
     <value>Year is out of range.</value>

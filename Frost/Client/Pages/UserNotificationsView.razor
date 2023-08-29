@@ -1,0 +1,85 @@
+﻿@page "/account/settings/notifications"
+@using Newtonsoft.Json;
+@using System.Security.Claims;
+@layout UserAccountLayout
+@inject AuthenticationStateProvider authStateProvider
+@inject IStringLocalizer<Resource> localizer
+@inject NavigationManager navManager
+
+<AuthorizeView Context="Auth">
+    <Authorized>
+        <div class="notificationPage-wrapper">
+            <EditForm Model="userNotificationStatus">
+                <div class="notificationDiv">
+                    <div>
+                        <InputCheckbox @bind-Value="userNotificationStatus.NotifyAboutNewMessages"></InputCheckbox>
+                        <label>@localizer["NotifyAboutNewMessages"]</label>
+                    </div>
+                    <div>
+                        <InputCheckbox @bind-Value="userNotificationStatus.NotifyAboutExpiringOffers"></InputCheckbox>
+                        <label>@localizer["NotifyAboutExpiringOffers"]</label>
+                    </div>
+                    <div>
+                        <InputCheckbox @bind-Value="userNotificationStatus.NotifyAboutNewOffers"></InputCheckbox>
+                        <label>@localizer["NotifyAboutNewOffers"]</label>
+                    </div>
+                    <div>
+                        <InputCheckbox @bind-Value="userNotificationStatus.NotifyAboutChangedLoginDetails"></InputCheckbox>
+                        <label>@localizer["NotifyAboutChangedLoginDetails"]</label>
+                    </div>
+                    <button @onclick="OnSaveChanges">@localizer["SaveChanges"]</button>
+                </div>
+            </EditForm>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        @{
+            navManager.NavigateTo("/login");
+        }
+    </NotAuthorized>
+</AuthorizeView>
+@code {
+    [CascadingParameter]
+    public UserAccountLayout layout { get; set; }
+    [CascadingParameter]
+    public PopUpComponent popup { get; set; }
+    public NotificationModel userNotificationStatus { get; set; } = new();
+    protected override async Task OnInitializedAsync()
+    {
+        layout.ChangeHeader("Notifications");
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+            var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+            var myId = authState.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).First().Value;
+            string apiString = $"{navManager.BaseUri}api/user/{myId}/notifications";
+            var response = await httpClient.GetAsync(apiString);
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                userNotificationStatus = JsonConvert.DeserializeObject<NotificationModel>(result);
+            }
+
+        }
+    }
+    private async void OnSaveChanges()
+    {
+        using (HttpClient httpClient = new HttpClient())
+        {
+            var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+            var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+            var myId = authState.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).First().Value;
+            var token = await customAuthStateProvider.GetToken();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            string apiString = $"{navManager.BaseUri}api/user/{myId}/notifications";
+            var response = await httpClient.PutAsJsonAsync<NotificationModel>(apiString,userNotificationStatus);
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                userNotificationStatus = JsonConvert.DeserializeObject<NotificationModel>(result);
+                popup.InvokePopUp(localizer["SavedChanges"]);
+            }
+
+        }
+    }
+}

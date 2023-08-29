@@ -9,43 +9,45 @@
         <CascadingValue Value="this">
             <div class="top-div">
                 <div class="offers-div">
-                    <h2 @onclick="@(()=> {ToggleOffVisibility(); isOfferMenuVisible=true;}  )">
+                    <h2>
                         @localizer["Offers"]
                     </h2>
-                    <div class="menu-div" style="visibility: @(isOfferMenuVisible? "visible" : "collapse")">
+                    <div class="menu-div">
                         <div class="proxy">
-                            <h3>
-                                @localizer["Templates"]
-                            </h3>
-                            <h3>
+                            <NavLink class="NavLink" href="/account/offers/yourtemplates" ActiveClass="ActiveNavLink" Match="NavLinkMatch.All">
+                                <span>
+                                    @localizer["Templates"]
+                                </span>
+                            </NavLink>
+                            <NavLink class="NavLink" href="/account/offers/youroffers" ActiveClass="ActiveNavLink" Match="NavLinkMatch.All">
                                 @localizer["Created"]
-                            </h3>
-                            <h3>
+                            </NavLink>
+                            <NavLink class="NavLink" href="/account/offers/followedoffers" ActiveClass="ActiveNavLink" Match="NavLinkMatch.All">
                                 @localizer["Followed"]
-                            </h3>
+                            </NavLink>
                         </div>
                     </div>
                 </div>
                 <div class="messages-div">
-                    <h2 @onclick="@(()=> {ToggleOffVisibility(); areMessagesVisible=true;}  )">
+                    <h2 style="cursor:pointer" @onclick="@(()=>navManager.NavigateTo("/account/messages"))">
                         @localizer["Messages"]
                     </h2>
                 </div>
                 <div id="settingsId" class="settings-div">
-                    <h2 @onclick="@(()=> {ToggleOffVisibility(); isSettingsMenuVisible=true;}  )">
+                    <h2>
                         @localizer["Settings"]
                     </h2>
-                    <div class="menu-div" style="visibility: @(isSettingsMenuVisible? "visible" : "collapse")">
+                    <div class="menu-div">
                         <div class="proxy">
-                            <h3>
+                            <NavLink class="NavLink" href="/account/settings/details" ActiveClass="ActiveNavLink" Match="NavLinkMatch.All">
                                 @localizer["Account"]
-                            </h3>
-                            <h3>
+                            </NavLink>
+                            <NavLink class="NavLink" href="/account/settings/login" ActiveClass="ActiveNavLink" Match="NavLinkMatch.All">
                                 @localizer["LoginDetails"]
-                            </h3>
-                            <h3>
+                            </NavLink>
+                            <NavLink class="NavLink" href="/account/settings/notifications" ActiveClass="ActiveNavLink" Match="NavLinkMatch.All">
                                 @localizer["Notifications"]
-                            </h3>
+                            </NavLink>
                         </div>
                     </div>
                 </div>
@@ -67,26 +69,10 @@
 
 @code {
 
-    public bool isOfferMenuVisible { get; set; } = false;
-    public bool isSettingsMenuVisible { get; set; } = false;
-    public bool areMessagesVisible { get; set; } = false;
-
-    public bool areTemplatesVisible { get; set; } = false;
-    public bool areCreatedOffersVisible { get; set; } = false;
-    public bool areFollowedOffersVisible { get; set; } = false;
-
-    public bool isAccountVisible { get; set; } = false;
-    public bool areCreatedOffersViible { get; set; } = false;
-    public bool areFollowedOffersViible { get; set; } = false;
 
     public string header { get; set; } = "null";
-    
-    public void ToggleOffVisibility()
-    {
-        isOfferMenuVisible = false;
-        isSettingsMenuVisible = false;
-        areMessagesVisible = false;
-    }
+    public string templatesMatch { get; set; } = "/account/offers/yourtemplates";
+
     public void ChangeHeader(string newHeader)
     {
         header = newHeader;

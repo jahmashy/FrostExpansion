@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Frost.Shared.Models.Enums
 {
-    public enum PropertyType
+    public enum PropertyTypeEnum
     {
         Flat,
         House,
@@ -15,28 +15,21 @@ namespace Frost.Shared.Models.Enums
         Garage,
         Room
     }
-    public enum OfferType
+    public enum OfferTypeEnum
     {
-        Buy,
+        Sell,
         Rent
     }
-    public enum Roommates
+    public enum RoommatesEnum
     {
         Any,
         Excluded,
         Included
     }
-    public enum MarketType
+    public enum MarketTypeEnum
     {
         Any,
         Primary,
         Secondary
-    }
-    public enum ConstructionType
-    {
-        Any,
-        HighRise,
-        Tenement,
-        RowHouse
     }
 }

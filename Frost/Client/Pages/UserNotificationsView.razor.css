@@ -1,0 +1,21 @@
+﻿::deep input {
+    appearance: auto!important;
+    width:1rem;
+    height:1rem;
+}
+.notificationDiv{
+    margin-top:1rem;
+    display:flex;
+    flex-direction:column;
+    gap:1rem;
+}
+.notificationDiv div{
+    display:flex;
+    flex-direction:row;
+    gap:0.5rem;
+    align-items:center;
+}
+.notificationDiv button {
+    margin-top: 1rem;
+}
+

@@ -1,12 +1,16 @@
-﻿
+﻿@inject IStringLocalizer<Resource> localizer
 <div class="chatElement-div @(chat.Id == selectedChatId? "selected" : "to-Select")" @onclick="OnChatSelect">
     <div class="participants-div">
         <h5>
             @participantString
         </h5>
+        @if (chat.isGroupChat)
+        {
+            <span>@localizer["GroupChat"]</span>
+        }
     </div>
     <div class="messages-div">
-        <span style="font-weight:600">@lastMessageAuthor:</span> @lastMessage
+        <span style="font-weight:600">@(string.IsNullOrEmpty(lastMessageAuthor)? "" : $"{lastMessageAuthor}:")</span> @lastMessage
     </div>
 </div>
 
@@ -30,32 +34,45 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var sb = new System.Text.StringBuilder();
-        for(int i = 0; i < chat.participants.Count; i++)
-        {
-            var participant = chat.participants[i];
-            if (!string.Equals(myId, participant.Id.ToString()))
-            {
-                sb.Append(participant.Name);
-                if (i+1 < chat.participants.Count)
-                {
-                    if (!string.Equals(chat.participants[i + 1].Id.ToString(), myId))
-                    {
-                        sb.Append(", ");
-                    }
-                    else if (i + 2 < chat.participants.Count)
-                    {
-                        sb.Append(", ");
-                    }
-                } 
-            }
-        }
-        participantString = sb.ToString();
+
     }
     protected override void OnParametersSet()
     {
-        lastMessage = chat.messages.Last().content;
-        lastMessageAuthor = chat.messages.Last().userName;
+        var sb = new System.Text.StringBuilder();
+        if (chat.participants.Count == 1 && !chat.isGroupChat)
+        {
+            sb.Append(chat.participants.FirstOrDefault().name);
+        }else
+        if (chat.participants.Count() > 1)
+        {
+            for (int i = 0; i < chat.participants.Count; i++)
+            {
+                var participant = chat.participants[i];
+                if (!string.Equals(myId, participant.userId.ToString()))
+                {
+                    sb.Append(participant.name);
+                    if (i + 1 < chat.participants.Count)
+                    {
+                        if (!string.Equals(chat.participants[i + 1].userId.ToString(), myId))
+                        {
+                            sb.Append(", ");
+                        }
+                        else if (i + 2 < chat.participants.Count)
+                        {
+                            sb.Append(", ");
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            sb.Append(localizer["NewGroupChat"]);
+        }
+
+        participantString = sb.ToString();
+        lastMessage = chat.messages.LastOrDefault()?.content;
+        lastMessageAuthor = chat.messages.LastOrDefault()?.userName;
     }
 
     private async Task OnChatSelect()

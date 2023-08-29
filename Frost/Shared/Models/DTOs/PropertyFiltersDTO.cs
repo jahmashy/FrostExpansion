@@ -11,28 +11,26 @@ namespace Frost.Shared.Models.DTOs
 {
     public class PropertyFiltersDTO
     {
-        public PropertyType propertyType { get; set; }
-        public OfferType transactionType { get; set; }
-        public Location location { get; set; }
-        public int? minPrice { get; set; }
-        public int? maxPrice { get; set; }
-        public double? minSurface { get; set; }
-        public double? maxSurface { get; set; }
-        public int? roomsNumber { get; set; }
+        public PropertyTypeEnum propertyType { get; set; }
+        public OfferTypeEnum offerType { get; set; }
+        public MarketTypeEnum? marketType { get; set; }
+        public string? cityName { get; set; }
+        public string? cityPlaceId { get; set; }
 
-        public int? minMeterPrice { get; set; }
+        public double? minPrice { get; set; }
+        public double? maxPrice { get; set; }
+        public float? minSurface { get; set; }
+        public float? maxSurface { get; set; }
+        public int? minRoomsNumber { get; set; }
+        public int? maxRoomsNumber { get; set; }
+        public double? minMeterPrice { get; set; }
+        public double? maxMeterPrice { get; set;}
+        public RoommatesEnum? roommates { get; set; }
+        public int? minFloor { get; set; }
+        public int? maxFloor { get; set; }
+        public int? minConstructionYear { get; set; }
+        public int? maxConstructionYear { get; set; }
 
-        public int? maxMeterPrice { get; set;}
-        public ConstructionType buildingType { get; set; }
-
-        public Roommates roommates { get; set; }
-
-        [Range(1,53)]
-        public int  ? floor { get; set; }
-        public int minConstructionYear { get; set; }
-
-        public int maxConstructionYear { get; set; }
-        public MarketType _MarketType { get; set; }
 
     }
 }

@@ -16,4 +16,31 @@ namespace Frost.Shared.Models.Enums
         InvalidFileExtension,
         Success
     }
+    public enum ChatStatusCode
+    {
+        Success,
+        ChatDoesNotExists,
+        ChatIsNotGroupChat,
+        UserIsAlreadyInChat,
+        UserIsNotInChat,
+        UserDoesNotExists,
+        CommunicationIsBlocked,
+        MaxParticipantsReached,
+        InvitationIsNotValid,
+        InvitationHasExpired
+    }
+    public enum PropertyStatusCode
+    {
+        Success,
+        PropertyDoesNotExists,
+        UserDoesNotExists,
+        PropertyIsAlreadyFollowed,
+        PropertyIsNotFollowed,
+        PropertyDoesNotAllowRoommates,
+        UserIsAlreadyRoommate,
+        UserIsNotRoommate,
+        TemplateIsAlreadySaved,
+        TemplateDoesNotExist,
+        UserIsNotOwner
+    }
 }

@@ -133,6 +133,15 @@ namespace Frost.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Narodowość jest wymagana.
+        /// </summary>
+        public static string NationalityRequiredError {
+            get {
+                return ResourceManager.GetString("NationalityRequiredError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hasło jest wymagane.
         /// </summary>
         public static string PasswordRequiredError {
@@ -178,11 +187,29 @@ namespace Frost.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Numer telefonu jest nieprawidłowy.
+        /// </summary>
+        public static string TelNumberIsInvalidError {
+            get {
+                return ResourceManager.GetString("TelNumberIsInvalidError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Numer telefonu jest wymagany.
         /// </summary>
         public static string TelNumberRequiredError {
             get {
                 return ResourceManager.GetString("TelNumberRequiredError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Opis jest zbyt długi.
+        /// </summary>
+        public static string UserDescriptionTooLongError {
+            get {
+                return ResourceManager.GetString("UserDescriptionTooLongError", resourceCulture);
             }
         }
         
